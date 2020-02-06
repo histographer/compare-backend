@@ -13,5 +13,13 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <!-- Servlet API dependency -->
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
+      <scope>provided</scope>
+      <!-- Scope is "provided" because a web container (e.g. Tomcat) will provide it at runtime -->
+    </dependency>
   </dependencies>
 </project>
