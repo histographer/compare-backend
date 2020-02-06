@@ -3,4 +3,6 @@
 .classpath
 /target/
 .idea
+/
 backend.iml
+/database/data
