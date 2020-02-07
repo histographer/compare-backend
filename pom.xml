@@ -6,6 +6,11 @@
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Pat or Nat Backend</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -22,4 +27,5 @@
       <!-- Scope is "provided" because a web container (e.g. Tomcat) will provide it at runtime -->
     </dependency>
   </dependencies>
+  
 </project>
