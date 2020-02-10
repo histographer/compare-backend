@@ -27,4 +27,10 @@
   </context-param>
 <!--    End config database -->
 
+  <!-- Cytomine Config -->
+  <context-param>
+    <param-name>CYTOMINE_HOST</param-name>
+    <param-value>users</param-value>
+  </context-param>
+
 </web-app>
