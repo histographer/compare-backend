@@ -9,4 +9,15 @@ Navigate to the folder "database" and execute the script `initialize_database.sh
 The database will by default be available at port localhost:27017 and mongo-express GUI is available in dev mode on localhost:8081.
 
 
-TODO: HOW TO CONNECT TO DB VIA JAVA CLIENT
+### Connection
+Set all necessary variables in `web.xml`
+
+Connection to the database is established when the server is run through MongoDBContextListener.  
+The database client is ready to use for all servlets via the context variable MONGO_CLIENT.
+
+`MongoClient client = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");`
+
+All connections to the DB will go through Database Access Objects (DAO) while the models provide the internal logic needed for non database actions.
+
+
+

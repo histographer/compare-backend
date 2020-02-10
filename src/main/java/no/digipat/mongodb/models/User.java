@@ -10,7 +10,7 @@ public class User implements IUser {
     private String username;
 
     /**
-     * Convert from database obj to java obj
+     *  Creates a database document that can be inserted directly to the db
      * @return
      */
     @Override
@@ -19,7 +19,7 @@ public class User implements IUser {
     }
 
     /**
-     * Convert from databaseobject to java object
+     * Convert from database document to java object
      * @param object
      * @return
      */
