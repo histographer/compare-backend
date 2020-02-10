@@ -1,6 +1,5 @@
-package mongodb.models;
+package no.digipat.mongodb.models;
 
-import com.mongodb.DBObject;
 import org.bson.Document;
 
 public interface IUser{

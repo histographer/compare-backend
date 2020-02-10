@@ -1,7 +1,5 @@
-package mongodb.models;
+package no.digipat.mongodb.models;
 
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

@@ -1,9 +1,8 @@
 import com.mongodb.MongoClient;
-import mongodb.DAO.MongoUserDAO;
-import mongodb.models.IUser;
-import mongodb.models.User;
+import no.digipat.mongodb.DAO.MongoUserDAO;
+import no.digipat.mongodb.models.IUser;
+import no.digipat.mongodb.models.User;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

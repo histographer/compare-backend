@@ -1,11 +1,8 @@
-package mongodb.DAO;
+package no.digipat.mongodb.DAO;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import mongodb.models.IUser;
+import no.digipat.mongodb.models.IUser;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
