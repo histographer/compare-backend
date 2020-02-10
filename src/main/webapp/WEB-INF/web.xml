@@ -21,6 +21,10 @@
     <param-name>MONGODB_PASSWORD</param-name>
     <param-value>secret</param-value>
   </context-param>
+  <context-param>
+    <param-name>MONGODB_DATABASE</param-name>
+    <param-value>users</param-value>
+  </context-param>
 <!--    End config database -->
 
 </web-app>

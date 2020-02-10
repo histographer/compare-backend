@@ -2,6 +2,7 @@ package mongodb.models;
 
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 public class User implements IUser {
@@ -13,11 +14,8 @@ public class User implements IUser {
      * @return
      */
     @Override
-    public DBObject toDBObject() {
-        BasicDBObjectBuilder builder = BasicDBObjectBuilder.start()
-                .append("username", this.getUsername());
-            if(this.getId() != null) builder = builder.append("_id", new ObjectId((this.getId())));
-            return builder.get();
+    public Document toDBDocument() {
+        return new Document("username", this.username);
     }
 
     /**
@@ -26,7 +24,7 @@ public class User implements IUser {
      * @return
      */
     @Override
-    public IUser toJavaObject(DBObject object) {
+    public IUser toJavaObject(Document object) {
         this.setUsername((String) object.get("username"));
         ObjectId id = (ObjectId) object.get("_id");
         this.setId(id.toString());

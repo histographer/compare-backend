@@ -1,33 +1,37 @@
 package mongodb.DAO;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import mongodb.models.IUser;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class MongoUserDAO {
-    private DBCollection collection;
-    private String DB = "patornat";
+    private MongoCollection collection;
+    private String DB = "users";
 
 
     public MongoUserDAO(MongoClient mongo) {
-        this.collection = (DBCollection) mongo.getDatabase(DB).getCollection("user");
+        this.collection = mongo.getDatabase(DB).getCollection("user");
     }
 
     public IUser createUser(IUser user) {
-        DBObject document = user.toDBObject();
-        this.collection.insert(document);
+        Document document = user.toDBDocument();
+        this.collection.insertOne(document);
         ObjectId id = (ObjectId) document.get("_id");
         user.setId(id.toString());
         return user;
     }
 
     public IUser readUser(IUser user) {
-        DBObject query = BasicDBObjectBuilder.start()
-                .append("_id", new ObjectId(user.getId())).get();
-        DBObject returnedUser = this.collection.findOne(query);
+
+        Document returnedUser = (Document) this.collection.find(eq("username", user.getUsername())).first();
+
         return user.toJavaObject(returnedUser);
     }
 }

@@ -7,7 +7,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.net.UnknownHostException;
 
 @WebListener
 public class MongoDBContextListener implements ServletContextListener {
@@ -21,7 +20,8 @@ public class MongoDBContextListener implements ServletContextListener {
             Integer Port = Integer.parseInt(context.getInitParameter("MONGODB_PORT"));
             String Username = context.getInitParameter("MONGODB_USERNAME");
             String Password = context.getInitParameter("MONGODB_PASSWORD");
-            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+Username+":"+Password+"@"+Host+":"+Port);
+            String Database = context.getInitParameter("MONGODB_DATABASE");
+            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+Username+":"+Password+"@"+Host+":"+Port+"/"+Database);
 
             MongoClient client = new MongoClient(MONGO_URI);
             System.out.println("Mongoclient connected successfully at "+Host+":"+Port);
