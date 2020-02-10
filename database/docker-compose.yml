@@ -9,7 +9,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: testpassword
-      MONGO_INITDB_DATABASE: users
+      MONGO_INITDB_DATABASE: patornat
     volumes:
       - mongodata:/data/db
       - ./db-init/:/docker-entrypoint-initdb.d
