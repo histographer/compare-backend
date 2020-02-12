@@ -25,10 +25,10 @@ public class MongoDBContextListener implements ServletContextListener {
 
 
             MongoClient client = new MongoClient(MONGO_URI);
-            System.out.println("Mongoclient connected successfully at "+host+":"+port);
+            context.log("Mongoclient connected successfully at "+host+":"+port);
             servletContextEvent.getServletContext().setAttribute("MONGO_CLIENT", client);
         } catch(Exception error) {
-            throw new RuntimeException("Mongoclient initialization failed");
+            throw new RuntimeException("Mongoclient initialization failed", error);
         }
     }
 
@@ -36,6 +36,6 @@ public class MongoDBContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         MongoClient client = (MongoClient) servletContextEvent.getServletContext().getAttribute(("MONGO_CLIENT"));
         client.close();
-        System.out.println("Mongo connection terminated");
+        servletContextEvent.getServletContext().log("Mongo connection terminated");
     }
 }
