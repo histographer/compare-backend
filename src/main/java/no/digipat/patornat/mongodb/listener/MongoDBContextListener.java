@@ -23,14 +23,15 @@ public class MongoDBContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
             ServletContext context = servletContextEvent.getServletContext();
-            String host = context.getInitParameter("MONGODB_HOST");
-            Integer port = Integer.parseInt(context.getInitParameter("MONGODB_PORT"));
-            String username = context.getInitParameter("MONGODB_USERNAME");
-            String password = context.getInitParameter("MONGODB_PASSWORD");
-            String database = context.getInitParameter("MONGODB_DATABASE");
+            String host = System.getenv("PATORNAT_MONGODB_HOST");
+            String portString = System.getenv("PATORNAT_MONGODB_PORT");
+            int port = Integer.parseInt(portString);
+            String username = System.getenv("PATORNAT_MONGODB_USERNAME");
+            String password = System.getenv("PATORNAT_MONGODB_PASSWORD");
+            String database = System.getenv("PATORNAT_MONGODB_DATABASE");
             MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port+"/"+database);
-
-
+            
+            
             MongoClient client = new MongoClient(MONGO_URI);
             context.log("Mongoclient connected successfully at "+host+":"+port);
             context.setAttribute("MONGO_CLIENT", client);
