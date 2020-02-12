@@ -1,4 +1,4 @@
-package no.digipat.mongodb.listener;
+package no.digipat.patornat.mongodb.listener;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;

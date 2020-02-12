@@ -1,9 +1,10 @@
-package no.digipat.mongodb.dao;
+package no.digipat.patornat.mongodb.dao;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Collation;
-import no.digipat.mongodb.models.IUser;
+import no.digipat.patornat.mongodb.models.IUser;
+import no.digipat.patornat.mongodb.models.IUser;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
