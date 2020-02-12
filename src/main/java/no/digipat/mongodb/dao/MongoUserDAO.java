@@ -2,6 +2,7 @@ package no.digipat.mongodb.dao;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Collation;
 import no.digipat.mongodb.models.IUser;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -9,7 +10,7 @@ import org.bson.types.ObjectId;
 import static com.mongodb.client.model.Filters.eq;
 
 public class MongoUserDAO {
-    private MongoCollection collection;
+    private MongoCollection<Document> collection;
     private String DB = "users";
 
 
