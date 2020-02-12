@@ -16,15 +16,16 @@ public class MongoDBContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
             ServletContext context = servletContextEvent.getServletContext();
-            String Host = context.getInitParameter("MONGODB_HOST");
-            Integer Port = Integer.parseInt(context.getInitParameter("MONGODB_PORT"));
-            String Username = context.getInitParameter("MONGODB_USERNAME");
-            String Password = context.getInitParameter("MONGODB_PASSWORD");
-            String Database = context.getInitParameter("MONGODB_DATABASE");
-            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+Username+":"+Password+"@"+Host+":"+Port+"/"+Database);
+            String host = context.getInitParameter("MONGODB_HOST");
+            Integer port = Integer.parseInt(context.getInitParameter("MONGODB_PORT"));
+            String username = context.getInitParameter("MONGODB_USERNAME");
+            String password = context.getInitParameter("MONGODB_PASSWORD");
+            String database = context.getInitParameter("MONGODB_DATABASE");
+            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port+"/"+database);
+
 
             MongoClient client = new MongoClient(MONGO_URI);
-            System.out.println("Mongoclient connected successfully at "+Host+":"+Port);
+            System.out.println("Mongoclient connected successfully at "+host+":"+port);
             servletContextEvent.getServletContext().setAttribute("MONGO_CLIENT", client);
         } catch(Exception error) {
             throw new RuntimeException("Mongoclient initialization failed");
@@ -33,7 +34,6 @@ public class MongoDBContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
         MongoClient client = (MongoClient) servletContextEvent.getServletContext().getAttribute(("MONGO_CLIENT"));
         client.close();
         System.out.println("Mongo connection terminated");
