@@ -18,7 +18,7 @@ public class MongoUserDAO {
     }
 
     public IUser createUser(IUser user) {
-        Document document = user.toDBDocument();
+        Document document = Converter.userToDBDocument(user);
         this.collection.insertOne(document);
         ObjectId id = (ObjectId) document.get("_id");
         user.setId(id.toString());
@@ -29,6 +29,6 @@ public class MongoUserDAO {
 
         Document returnedUser = (Document) this.collection.find(eq("username", user.getUsername())).first();
 
-        return user.toJavaObject(returnedUser);
+        return Converter.userDocumentToJavaObject(returnedUser);
     }
 }
