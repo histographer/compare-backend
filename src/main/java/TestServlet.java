@@ -1,5 +1,5 @@
 import com.mongodb.MongoClient;
-import no.digipat.mongodb.DAO.MongoUserDAO;
+import no.digipat.mongodb.dao.MongoUserDAO;
 import no.digipat.mongodb.models.IUser;
 import no.digipat.mongodb.models.User;
 

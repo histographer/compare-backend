@@ -1,4 +1,4 @@
-package no.digipat.mongodb.DAO;
+package no.digipat.mongodb.dao;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
