@@ -8,10 +8,17 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+/**
+ * Handles mongodb singleton connection
+ */
 @WebListener
 public class MongoDBContextListener implements ServletContextListener {
 
 
+    /**
+     * Initialize a mongoclient and make it available for servlets to use
+     * @param servletContextEvent
+     */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
@@ -32,10 +39,16 @@ public class MongoDBContextListener implements ServletContextListener {
         }
     }
 
+
+    /**
+     * When the context is destroyed, terminate the mongodb connection
+     * @param servletContextEvent
+     */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        MongoClient client = (MongoClient) servletContextEvent.getServletContext().getAttribute(("MONGO_CLIENT"));
+        ServletContext context = servletContextEvent.getServletContext();
+        MongoClient client = (MongoClient) context.getAttribute(("MONGO_CLIENT"));
         client.close();
-        servletContextEvent.getServletContext().log("Mongo connection terminated");
+        context.log("Mongo connection terminated");
     }
 }
