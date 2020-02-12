@@ -10,7 +10,17 @@ The database will by default be available at port localhost:27017 and mongo-expr
 
 
 ### Connection
-Set all necessary variables in `web.xml`
+You'll need to set some environment variables in order to connect to the database. In Linux, this can be done by adding the following lines to `/etc/environment`, making sure to replace the password with your own password:
+
+```console
+export PATORNAT_MONGODB_HOST=localhost
+export PATORNAT_MONGODB_PORT=27017
+export PATORNAT_MONGODB_USERNAME=user
+export PATORNAT_MONGODB_PASSWORD=secret
+export PATORNAT_MONGODB_DATABASE=users
+
+```
+Then run the command `source /etc/environment`. If this does not successfully set the environment variables, you may have to reboot the system. Note that Tomcat will have to be restarted in order for changes in environment variables to take effect in the application.
 
 Connection to the database is established when the server is run through MongoDBContextListener.  
 The database client is ready to use for all servlets via the context variable MONGO_CLIENT.
