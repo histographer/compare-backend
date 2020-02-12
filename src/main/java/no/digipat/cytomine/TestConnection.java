@@ -5,6 +5,7 @@ import no.digipat.mongodb.DAO.MongoUserDAO;
 import no.digipat.mongodb.models.IUser;
 import no.digipat.mongodb.models.User;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import javax.servlet.ServletException;
@@ -23,22 +24,22 @@ public class TestConnection extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //CytomineConnection.getProjects();
-        CloseableHttpResponse res = CytomineConnection.login();
+        HttpEntity res = CytomineConnection.getUser();
 
-        Header[] cookieHeaders  = res.getHeaders("Set-Cookie");
-        Header[] pathHeaders = res.getHeaders("Location");
-
-        String value = cookieHeaders[1].getValue();
-        String regexString = "(?<=JSESSIONID=)[^;]+";
-        Pattern JsessionRegexPattern = Pattern.compile(regexString);
-
-        Matcher JsessionValue = JsessionRegexPattern.matcher(value);
-        if (JsessionValue.find()) {
-            Cookie JSESSIONID = new Cookie("JSESSIONID", JsessionValue.group(0).toString());
-            JSESSIONID.setHttpOnly(true);
-            JSESSIONID.setPath("/");
-            response.addCookie(JSESSIONID);
-        }
+//        Header[] cookieHeaders  = res.getHeaders("Set-Cookie");
+//        Header[] pathHeaders = res.getHeaders("Location");
+//
+//        String value = cookieHeaders[1].getValue();
+//        String regexString = "(?<=JSESSIONID=)[^;]+";
+//        Pattern JsessionRegexPattern = Pattern.compile(regexString);
+//
+//        Matcher JsessionValue = JsessionRegexPattern.matcher(value);
+//        if (JsessionValue.find()) {
+//            Cookie JSESSIONID = new Cookie("JSESSIONID", JsessionValue.group(0).toString());
+//            JSESSIONID.setHttpOnly(true);
+//            JSESSIONID.setPath("/");
+//            response.addCookie(JSESSIONID);
+//        }
 
         //String regexString = "(?<=JSESSIONID=)[^;]+";
         PrintWriter out = response.getWriter();
