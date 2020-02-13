@@ -17,8 +17,13 @@ export PATORNAT_MONGODB_HOST=localhost
 export PATORNAT_MONGODB_PORT=27017
 export PATORNAT_MONGODB_USERNAME=user
 export PATORNAT_MONGODB_PASSWORD=secret
-export PATORNAT_MONGODB_DATABASE=users
-
+export PATORNAT_MONGODB_DATABASE=patornat
+```
+And for the docker-compose container you need these environment variables
+```console
+export PATORNAT_MONGODB_ROOT_USERNAME=root
+export PATORNAT_MONGODB_ROOT_PASSWORD=secret
+export PATORNAT_MONGODB_INITDB_DATABASE=patornat
 ```
 Then run the command `source /etc/environment`. If this does not successfully set the environment variables, you may have to reboot the system. Note that Tomcat will have to be restarted in order for changes in environment variables to take effect in the application.
 
