@@ -1,10 +1,10 @@
 db.createUser({
     user: "user",
     pwd: "secret",
-    roles: [ { role: "readWrite", db: "users" } ]
+    roles: [ { role: "readWrite", db: "patornat" } ]
 })
 
-db.users.insert({
+db.user.insert({
     name: "user"
 })
 
