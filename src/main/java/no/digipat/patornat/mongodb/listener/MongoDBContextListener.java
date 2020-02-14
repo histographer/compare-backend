@@ -3,6 +3,10 @@ package no.digipat.patornat.mongodb.listener;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -26,8 +30,10 @@ public class MongoDBContextListener implements ServletContextListener {
             String host = System.getenv("PATORNAT_MONGODB_HOST");
             String portString = System.getenv("PATORNAT_MONGODB_PORT");
             int port = Integer.parseInt(portString);
-            String username = System.getenv("PATORNAT_MONGODB_USERNAME");
-            String password = System.getenv("PATORNAT_MONGODB_PASSWORD");
+            // Username and password need to be percent encoded in case they contain special characters such as '@' or ':'
+            final Charset utf8 = StandardCharsets.UTF_8;
+            String username = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_USERNAME"), utf8);
+            String password = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_PASSWORD"), utf8);
             String database = System.getenv("PATORNAT_MONGODB_DATABASE");
             MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port+"/"+database);
             
