@@ -55,7 +55,7 @@ public class MongoDBContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ServletContext context = servletContextEvent.getServletContext();
         MongoClient client = (MongoClient) context.getAttribute(("MONGO_CLIENT"));
-        client.close();
+        if (client != null) client.close();
         context.log("Mongo connection terminated");
     }
 }
