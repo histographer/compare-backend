@@ -33,7 +33,7 @@ public class Converter {
     }
 
 
-    /** Takes in json object and returns image
+    /** Takes in json object and returns image. If the optionals are not provided, empty string or 0
      * {
      *     "id": 1,
      *     "comment": "testcomment",
@@ -42,23 +42,48 @@ public class Converter {
      *     "kontrastKollagen": 1,
      *     "kontrastBindevev": 1
      *  }
-     * @param Json object in the form of Image
+     * @param json in the form of Image
      * @return Image
      */
     public static Image JsonToImage(JSONObject json) {
         try {
             int id = ((Long) json.get("id")).intValue();
-            String comment = (String) json.get("comment");
-            int kjernestruktur = ((Long) json.get("kjernestruktur")).intValue();
-            int cellegrenser = ((Long) json.get("cellegrenser")).intValue();
-            int kontrastKollagen = ((Long) json.get("kontrastKollagen")).intValue();
-            int kontrastBindevev = ((Long) json.get("kontrastBindevev")).intValue();
+            // Should not throw error if null
+            String comment = (json.get("comment") != null) ? (String) json.get("comment") : "";
+            int kjernestruktur = ((json.get("kjernestruktur")) != null) ? ((Long) json.get("kjernestruktur")).intValue() : 0 ;
+            int cellegrenser = ((json.get("cellegrenser")) != null) ? ((Long) json.get("cellegrenser")).intValue() : 0 ;
+            int kontrastKollagen= ((json.get("kontrastKollagen")) != null) ? ((Long) json.get("kontrastKollagen")).intValue() : 0 ;
+            int kontrastBindevev= ((json.get("kontrastBindevev")) != null) ? ((Long) json.get("kontrastBindevev")).intValue() : 0 ;
             return new Image(id, comment, kjernestruktur, cellegrenser, kontrastKollagen, kontrastBindevev);
         } catch (NullPointerException e) {
             throw new NullPointerException("JSON is not valid, something is missing");
         }
     }
 
+
+    /**
+     * Takes in
+     * {
+     *   "chosen": {
+     *     "id": 1,
+     *     "comment": "testcomment",
+     *     "kjernestruktur": 1,
+     *     "cellegrenser": 1,
+     *     "kontrastKollagen": 1,
+     *     "kontrastBindevev": 1
+     *   },
+     *   "other": {
+     *     "id": 2,
+     *     "comment": "testcomment2",
+     *     "kjernestruktur": 2,
+     *     "cellegrenser": 3,
+     *     "kontrastKollagen": 2,
+     *     "kontrastBindevev": 3
+     *   }
+     * }
+     * @param json
+     * @return
+     */
     public static BestImage JsonToBestImage(JSONObject json) {
         Image chosen = Converter.JsonToImage((JSONObject) json.get("chosen"));
         Image other = Converter.JsonToImage((JSONObject) json.get("other"));

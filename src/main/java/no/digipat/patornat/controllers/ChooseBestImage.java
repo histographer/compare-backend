@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static no.digipat.patornat.mongodb.dao.Converter.JsonToBestImage;
+
 @WebServlet(name = "ChooseBestImage",  urlPatterns = {"/bestimage"})
 public class ChooseBestImage extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,17 +40,13 @@ public class ChooseBestImage extends HttpServlet {
         JSONParser parser = new JSONParser();
         // Parsing the json to objects
         try {
-            JSONObject jsonObject =  (JSONObject) parser.parse(stringBuffer.toString());
+            JSONObject bestImageJson=  (JSONObject) parser.parse(stringBuffer.toString());
+            BestImage bestImage = JsonToBestImage(bestImageJson);
         } catch (JSONException |  ParseException e) {
-            // crash and burn
             throw new IOException("Error parsing JSON request string");
         }
 
-        //System.out.println(object);
         // Todo: logic for adding to db
-
-        // Mapping from object to json
-        // mapper.writeValue(response.getOutPutStream(), object)
     }
 
 }
