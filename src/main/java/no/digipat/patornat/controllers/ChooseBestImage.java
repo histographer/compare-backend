@@ -32,7 +32,7 @@ public class ChooseBestImage extends HttpServlet {
 
         // Todo: logic for adding to db
 
-        //
+        // Mapping from object to json
         // mapper.writeValue(response.getOutPutStream(), object)
     }
 
