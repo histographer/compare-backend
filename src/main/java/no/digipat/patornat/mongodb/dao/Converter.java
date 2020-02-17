@@ -8,6 +8,8 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.simple.JSONObject;
 
+import javax.print.Doc;
+
 /**
  *
  */
@@ -45,7 +47,7 @@ public class Converter {
      * @param json in the form of Image
      * @return Image
      */
-    public static Image JsonToImage(JSONObject json) {
+    public static Image jsonToImage(JSONObject json) {
         try {
             int id = ((Long) json.get("id")).intValue();
             // Should not throw error if null, int is primitive and cant be null (so we will use 0)
@@ -60,12 +62,25 @@ public class Converter {
         }
     }
 
-    public static Document BestImageToDBDocument(IUser user) {
-        return new Document("username", user.getUsername());
+    public static Document bestImageToDBDocument(BestImage bestImage) {
+        return new Document().
+                append("chosen", bestImage.getChosen())
+                .append("other", bestImage.getOther());
     }
 
+    public static Integer convertToNullIfZero(int integer) {
+        return (integer == 0) ? null : integer;
+    }
 
-
+    public static Document imageToDBDocument(Image image) {
+       return new Document()
+               .append("id", image.getId())
+               .append("comment", image.getComment())
+               .append("kjernestruktur", convertToNullIfZero(image.getKjernestruktur()))
+               .append("cellegrenser", convertToNullIfZero(image.getCellegrenser()))
+               .append("kontrastKollagen", convertToNullIfZero(image.getKontrastKollagen()))
+               .append("kontrastBindevev", convertToNullIfZero(image.getKontrastBindevev()));
+    }
 
 
     /**
@@ -91,9 +106,9 @@ public class Converter {
      * @param json
      * @return
      */
-    public static BestImage JsonToBestImage(JSONObject json) {
-        Image chosen = Converter.JsonToImage((JSONObject) json.get("chosen"));
-        Image other = Converter.JsonToImage((JSONObject) json.get("other"));
+    public static BestImage jsonToBestImage(JSONObject json) {
+        Image chosen = Converter.jsonToImage((JSONObject) json.get("chosen"));
+        Image other = Converter.jsonToImage((JSONObject) json.get("other"));
         return new BestImage(chosen, other);
     }
 }

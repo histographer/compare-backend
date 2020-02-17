@@ -8,4 +8,21 @@ public class BestImage {
         this.chosen = chosen;
         this.other = other;
     }
+
+    public Image getChosen() {
+        return chosen;
+    }
+
+    public void setChosen(Image chosen) {
+        this.chosen = chosen;
+    }
+
+    public Image getOther() {
+        return other;
+    }
+
+    public void setOther(Image other) {
+        this.other = other;
+    }
+
 }
