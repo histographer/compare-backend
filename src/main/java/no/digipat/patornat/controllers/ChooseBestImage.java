@@ -1,13 +1,9 @@
 package no.digipat.patornat.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.Converter;
 import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
 import no.digipat.patornat.mongodb.models.BestImage;
-import no.digipat.patornat.mongodb.models.Image;
-import org.apache.http.conn.routing.RouteInfo;
-import org.json.HTTP;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

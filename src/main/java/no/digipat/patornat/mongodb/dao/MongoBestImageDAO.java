@@ -1,5 +1,4 @@
 package no.digipat.patornat.mongodb.dao;
-
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import no.digipat.patornat.mongodb.models.BestImage;
@@ -13,7 +12,6 @@ public class MongoBestImageDAO {
     public MongoBestImageDAO(MongoClient mongo) {
         this.collection = mongo.getDatabase(DB).getCollection("BestImage");
     }
-
 
     /**
      * Inserts a new scoring to the database
