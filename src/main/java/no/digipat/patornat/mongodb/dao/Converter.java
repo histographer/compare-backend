@@ -8,11 +8,6 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.simple.JSONObject;
 
-import javax.print.Doc;
-
-/**
- *
- */
 public class Converter {
     /**
      *  Creates a database document that can be inserted directly to the db
@@ -62,16 +57,33 @@ public class Converter {
         }
     }
 
+
+    /**
+     * Takes bestImage object and creates mongodb document
+     * @param bestImage
+     * @return
+     */
     public static Document bestImageToDBDocument(BestImage bestImage) {
         return new Document().
-                append("chosen", bestImage.getChosen())
-                .append("other", bestImage.getOther());
+                append("chosen", imageToDBDocument(bestImage.getChosen()))
+                .append("other", imageToDBDocument(bestImage.getOther()));
     }
 
+
+    /**
+     * Takes in an integer and returns null if the int is null. This is used for easier DB analysis
+     * @param integer
+     * @return
+     */
     public static Integer convertToNullIfZero(int integer) {
         return (integer == 0) ? null : integer;
     }
 
+    /**
+     * Takes image object and creates mongodb document
+     * @param image
+     * @return
+     */
     public static Document imageToDBDocument(Image image) {
        return new Document()
                .append("id", image.getId())
@@ -81,7 +93,6 @@ public class Converter {
                .append("kontrastKollagen", convertToNullIfZero(image.getKontrastKollagen()))
                .append("kontrastBindevev", convertToNullIfZero(image.getKontrastBindevev()));
     }
-
 
     /**
      * Takes in
