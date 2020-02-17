@@ -1,5 +1,6 @@
 package no.digipat.patornat.mongodb.dao;
 
+import no.digipat.patornat.mongodb.models.BestImage;
 import no.digipat.patornat.mongodb.models.IUser;
 import no.digipat.patornat.mongodb.models.Image;
 import no.digipat.patornat.mongodb.models.User;
@@ -56,5 +57,11 @@ public class Converter {
         } catch (NullPointerException e) {
             throw new NullPointerException("JSON is not valid, something is missing");
         }
+    }
+
+    public static BestImage JsonToBestImage(JSONObject json) {
+        Image chosen = Converter.JsonToImage((JSONObject) json.get("chosen"));
+        Image other = Converter.JsonToImage((JSONObject) json.get("other"));
+        return new BestImage(chosen, other);
     }
 }

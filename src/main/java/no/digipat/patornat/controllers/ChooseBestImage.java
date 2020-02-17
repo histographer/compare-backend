@@ -39,8 +39,6 @@ public class ChooseBestImage extends HttpServlet {
         // Parsing the json to objects
         try {
             JSONObject jsonObject =  (JSONObject) parser.parse(stringBuffer.toString());
-            Image chosen = Converter.JsonToImage((JSONObject) jsonObject.get("chosen"));
-            Image other = Converter.JsonToImage((JSONObject) jsonObject.get("other"));
         } catch (JSONException |  ParseException e) {
             // crash and burn
             throw new IOException("Error parsing JSON request string");
