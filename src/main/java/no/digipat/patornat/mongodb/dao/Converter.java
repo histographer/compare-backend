@@ -48,17 +48,24 @@ public class Converter {
     public static Image JsonToImage(JSONObject json) {
         try {
             int id = ((Long) json.get("id")).intValue();
-            // Should not throw error if null
-            String comment = (json.get("comment") != null) ? (String) json.get("comment") : "";
-            int kjernestruktur = ((json.get("kjernestruktur")) != null) ? ((Long) json.get("kjernestruktur")).intValue() : 0 ;
-            int cellegrenser = ((json.get("cellegrenser")) != null) ? ((Long) json.get("cellegrenser")).intValue() : 0 ;
-            int kontrastKollagen= ((json.get("kontrastKollagen")) != null) ? ((Long) json.get("kontrastKollagen")).intValue() : 0 ;
-            int kontrastBindevev= ((json.get("kontrastBindevev")) != null) ? ((Long) json.get("kontrastBindevev")).intValue() : 0 ;
+            // Should not throw error if null, int is primitive and cant be null (so we will use 0)
+            String comment = (json.get("comment") != null) ? (String) json.get("comment") : null;
+            int kjernestruktur = (json.get("kjernestruktur") != null) ? ((Long) json.get("kjernestruktur")).intValue() : 0;
+            int cellegrenser = (json.get("cellegrenser") != null) ? ((Long) json.get("cellegrenser")).intValue() : 0;
+            int kontrastKollagen= (json.get("kontrastKollagen") != null) ? ((Long) json.get("kontrastKollagen")).intValue() : 0;
+            int kontrastBindevev= (json.get("kontrastBindevev") != null) ? ((Long) json.get("kontrastBindevev")).intValue() : 0;
             return new Image(id, comment, kjernestruktur, cellegrenser, kontrastKollagen, kontrastBindevev);
         } catch (NullPointerException e) {
             throw new NullPointerException("JSON is not valid, something is missing");
         }
     }
+
+    public static Document BestImageToDBDocument(IUser user) {
+        return new Document("username", user.getUsername());
+    }
+
+
+
 
 
     /**

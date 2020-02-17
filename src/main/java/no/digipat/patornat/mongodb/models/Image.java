@@ -18,6 +18,7 @@ public class Image {
         this.kontrastBindevev = kontrastBindevev;
     }
 
+
     public int getId() {
         return id;
     }
