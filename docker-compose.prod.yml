@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo:latest
+    container_name: patornatmongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME} # root username
+      MONGO_INITDB_ROOT_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD} # root password
+      MONGO_INITDB_DATABASE: ${PATORNAT_MONGODB_INITDB_DATABASE} # in this case it is patornat
+      PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_USERNAME} # For creation of r/w user
+      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_PASSWORD} # password for r/w user
+      PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE} # database the user will have r/w access to
+    volumes:
+      - mongodata:/data/db
+      - ./database/db-init/:/docker-entrypoint-initdb.d
+
+  patornatbackend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: patornatbackend
+    ports:
+      - 9292:8080
+    environment:
+        PATORNAT_MONGODB_HOST: ${PATORNAT_MONGODB_HOST}
+        PATORNAT_MONGODB_PORT: ${PATORNAT_MONGODB_PORT}
+        PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_USERNAME}
+        PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_PASSWORD}
+
+volumes:
+  mongodata:
