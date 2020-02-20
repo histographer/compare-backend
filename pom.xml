@@ -50,6 +50,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.httpunit</groupId>
+      <artifactId>httpunit</artifactId>
+      <version>1.7.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <!-- Servlet API dependency -->
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -102,7 +108,7 @@
         <configuration>
           <excludedEnvironmentVariables>
             <!-- The environment variables we need may already be set, so we have to exclude them first -->
-            PATORNAT_TOMCAT_PORT,PATORNAT_MONGODB_HOST,PATORNAT_MONGODB_PORT,PATORNAT_MONGODB_USERNAME,PATORNAT_MONGODB_PASSWORD,PATORNAT_MONGODB_DATABASE
+            PATORNAT_TOMCAT_PORTPATORNAT_MONGODB_HOST,PATORNAT_MONGODB_PORT,PATORNAT_MONGODB_USERNAME,PATORNAT_MONGODB_PASSWORD,PATORNAT_MONGODB_DATABASE
           </excludedEnvironmentVariables>
           <environmentVariables>
             <!-- Set environment variables for integration tests -->
