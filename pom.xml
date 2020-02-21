@@ -12,21 +12,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <skip.unit.tests>false</skip.unit.tests>
-    
-    <!-- Properties for integration tests: -->
-    <docker.host>unix:///var/run/docker.sock</docker.host>
-    <docker.autoCreateCustomNetworks>true</docker.autoCreateCustomNetworks>
-    
-    <mongodb.test.host>localhost</mongodb.test.host>
-    <mongodb.test.port>27018</mongodb.test.port>
-    <mongodb.test.username>testuser</mongodb.test.username>
-    <mongodb.test.password>testpassword</mongodb.test.password>
-    <mongodb.test.database>patornat_test</mongodb.test.database>
-    <mongodb.test.root.username>admin</mongodb.test.root.username>
-    <mongodb.test.root.password>hunter2</mongodb.test.root.password>
-    
-    <tomcat.test.port>8082</tomcat.test.port>
-    
   </properties>
 
   <repositories>
@@ -80,7 +65,6 @@
       <artifactId>json</artifactId>
       <version>20190722</version>
     </dependency>
-
   </dependencies>
   
   <build>
@@ -106,66 +90,12 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.0.0-M4</version>
         <configuration>
-          <excludedEnvironmentVariables>
-            <!-- The environment variables we need may already be set, so we have to exclude them first -->
-            PATORNAT_TOMCAT_PORTPATORNAT_MONGODB_HOST,PATORNAT_MONGODB_PORT,PATORNAT_MONGODB_USERNAME,PATORNAT_MONGODB_PASSWORD,PATORNAT_MONGODB_DATABASE
-          </excludedEnvironmentVariables>
-          <environmentVariables>
-            <!-- Set environment variables for integration tests -->
-            <PATORNAT_TOMCAT_PORT>${tomcat.test.port}</PATORNAT_TOMCAT_PORT>
-            <PATORNAT_MONGODB_HOST>${mongodb.test.host}</PATORNAT_MONGODB_HOST>
-            <PATORNAT_MONGODB_PORT>${mongodb.test.port}</PATORNAT_MONGODB_PORT>
-            <PATORNAT_MONGODB_USERNAME>${mongodb.test.username}</PATORNAT_MONGODB_USERNAME>
-            <PATORNAT_MONGODB_PASSWORD>${mongodb.test.password}</PATORNAT_MONGODB_PASSWORD>
-            <PATORNAT_MONGODB_DATABASE>${mongodb.test.database}</PATORNAT_MONGODB_DATABASE>
-          </environmentVariables>
         </configuration>
         <executions>
           <execution>
             <goals>
               <goal>integration-test</goal>
               <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>com.dkanejs.maven.plugins</groupId>
-        <artifactId>docker-compose-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <composeFile>${project.basedir}/docker-compose.test.yml</composeFile>
-          <host>${docker.host}</host>
-          <build>true</build>
-          <removeImages>true</removeImages>
-          <detachedMode>true</detachedMode>
-          <envVars>
-            <PATORNAT_TOMCAT_PORT>${tomcat.test.port}</PATORNAT_TOMCAT_PORT>
-            <PATORNAT_MONGODB_HOST>patornatmongo</PATORNAT_MONGODB_HOST>
-            <PATORNAT_MONGODB_USERNAME>${mongodb.test.username}</PATORNAT_MONGODB_USERNAME>
-            <PATORNAT_MONGODB_PASSWORD>${mongodb.test.password}</PATORNAT_MONGODB_PASSWORD>
-            <PATORNAT_MONGODB_DATABASE>${mongodb.test.database}</PATORNAT_MONGODB_DATABASE>
-            <PATORNAT_MONGODB_ROOT_USERNAME>${mongodb.test.root.username}</PATORNAT_MONGODB_ROOT_USERNAME>
-            <PATORNAT_MONGODB_ROOT_PASSWORD>${mongodb.test.root.password}</PATORNAT_MONGODB_ROOT_PASSWORD>
-            <PATORNAT_MONGODB_INITDB_DATABASE>${mongodb.test.database}</PATORNAT_MONGODB_INITDB_DATABASE>
-            <PATORNAT_MONGODB_PORT>${mongodb.test.port}</PATORNAT_MONGODB_PORT>
-          </envVars>
-        </configuration>
-        <executions>
-          <execution>
-            <id>setup</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>pull</goal>
-              <goal>up</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>down</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>down</goal>
             </goals>
           </execution>
         </executions>
