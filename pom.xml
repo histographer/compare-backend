@@ -90,6 +90,9 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.0.0-M4</version>
         <configuration>
+          <includes>
+            <include>IntegrationTests.java</include>
+          </includes>
         </configuration>
         <executions>
           <execution>
