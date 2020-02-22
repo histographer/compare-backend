@@ -26,48 +26,27 @@ public class ChooseBestImageServlet extends HttpServlet {
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",
-     *     "kjernestruktur": 1,
-     *     "cellegrenser": 1,
-     *     "kontrastKollagen": 1,
-     *     "kontrastBindevev": 1
      *   },
      *   "other": {
      *     "id": 2,
      *     "comment": "testcomment2",
-     *     "kjernestruktur": 2,
-     *     "cellegrenser": 3,
-     *     "kontrastKollagen": 2,
-     *     "kontrastBindevev": 3
      *   }
      * }
      * @param request
      * @param response
-     * @throws ServletException
-     * @throws IOException
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Gets the json from the request
-        StringBuffer stringBuffer = new StringBuffer();
-        String line = "";
-        try {
-            BufferedReader reader = request.getReader();
-            while((line = reader.readLine()) != null) {
-                stringBuffer.append(line);
-            }
-        } catch (Exception e){
-            throw new IOException("Reading buffer failed: ", e);
-        }
 
-        // Parsing the json to objects
         JSONParser parser = new JSONParser();
         try {
-            JSONObject bestImageJson=  (JSONObject) parser.parse(stringBuffer.toString());
+            BufferedReader reader = request.getReader();
+            JSONObject bestImageJson = (JSONObject) parser.parse(reader);
             BestImageChoice bestImageChoice = Converter.jsonToBestImageChoice(bestImageJson);
             MongoClient client = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
             MongoBestImageDAO bestImageDAO = new MongoBestImageDAO(client);
             bestImageDAO.createBestImage(bestImageChoice);
-        } catch (JSONException |  ParseException e) {
-            throw new IOException("Error parsing JSON request string", e);
+        } catch (ParseException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 }
