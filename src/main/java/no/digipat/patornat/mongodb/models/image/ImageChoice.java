@@ -1,6 +1,6 @@
-package no.digipat.patornat.mongodb.models;
+package no.digipat.patornat.mongodb.models.image;
 
-public class Image {
+public class ImageChoice {
     private int id;
     private String comment;
     // Todo change names to english
@@ -9,7 +9,7 @@ public class Image {
     private int kontrastKollagen;
     private int kontrastBindevev;
 
-    public Image(int id, String comment, int kjernestruktur, int cellegrenser, int kontrastKollagen, int kontrastBindevev) {
+    public ImageChoice(int id, String comment, int kjernestruktur, int cellegrenser, int kontrastKollagen, int kontrastBindevev) {
         this.id = id;
         this.comment = comment;
         this.kjernestruktur = kjernestruktur;

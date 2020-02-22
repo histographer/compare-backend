@@ -1,9 +1,9 @@
-package no.digipat.patornat.controllers;
+package no.digipat.patornat.servlets;
 
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.Converter;
 import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
-import no.digipat.patornat.mongodb.models.BestImage;
+import no.digipat.patornat.mongodb.models.image.BestImageChoice;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,7 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet(name = "ChooseBestImage",  urlPatterns = {"/scoring"})
-public class ChooseBestImage extends HttpServlet {
+public class ChooseBestImageServlet extends HttpServlet {
 
     /**
      * The json request looks like this
@@ -62,10 +62,10 @@ public class ChooseBestImage extends HttpServlet {
         JSONParser parser = new JSONParser();
         try {
             JSONObject bestImageJson=  (JSONObject) parser.parse(stringBuffer.toString());
-            BestImage bestImage = Converter.jsonToBestImage(bestImageJson);
+            BestImageChoice bestImageChoice = Converter.jsonToBestImageChoice(bestImageJson);
             MongoClient client = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
             MongoBestImageDAO bestImageDAO = new MongoBestImageDAO(client);
-            bestImageDAO.createBestImage(bestImage);
+            bestImageDAO.createBestImage(bestImageChoice);
         } catch (JSONException |  ParseException e) {
             throw new IOException("Error parsing JSON request string", e);
         }

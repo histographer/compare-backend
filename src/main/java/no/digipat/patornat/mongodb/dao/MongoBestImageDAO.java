@@ -1,7 +1,7 @@
 package no.digipat.patornat.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import no.digipat.patornat.mongodb.models.BestImage;
+import no.digipat.patornat.mongodb.models.image.BestImageChoice;
 import org.bson.Document;
 
 public class MongoBestImageDAO {
@@ -15,13 +15,13 @@ public class MongoBestImageDAO {
 
     /**
      * Inserts a new scoring to the database
-     * @param bestImage
+     * @param bestImageChoice
      * @return
      */
-    public BestImage createBestImage(BestImage bestImage) {
-        Document document = Converter.bestImageToDBDocument(bestImage);
+    public BestImageChoice createBestImage(BestImageChoice bestImageChoice) {
+        Document document = Converter.bestImageToDBDocument(bestImageChoice);
         System.out.println(document);
         this.collection.insertOne(document);
-        return bestImage;
+        return bestImageChoice;
     }
 }

@@ -1,9 +1,9 @@
 package no.digipat.patornat.mongodb.dao;
 
-import no.digipat.patornat.mongodb.models.BestImage;
-import no.digipat.patornat.mongodb.models.IUser;
-import no.digipat.patornat.mongodb.models.Image;
-import no.digipat.patornat.mongodb.models.User;
+import no.digipat.patornat.mongodb.models.image.BestImageChoice;
+import no.digipat.patornat.mongodb.models.user.IUser;
+import no.digipat.patornat.mongodb.models.image.ImageChoice;
+import no.digipat.patornat.mongodb.models.user.User;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.simple.JSONObject;
@@ -42,7 +42,7 @@ public class Converter {
      * @param json in the form of Image
      * @return Image
      */
-    public static Image jsonToImage(JSONObject json) {
+    public static ImageChoice jsonToImage(JSONObject json) {
         try {
             int id = ((Long) json.get("id")).intValue();
             // Should not throw error if null, int is primitive and cant be null (so we will use 0)
@@ -51,7 +51,7 @@ public class Converter {
             int cellegrenser = (json.get("cellegrenser") != null) ? ((Long) json.get("cellegrenser")).intValue() : 0;
             int kontrastKollagen= (json.get("kontrastKollagen") != null) ? ((Long) json.get("kontrastKollagen")).intValue() : 0;
             int kontrastBindevev= (json.get("kontrastBindevev") != null) ? ((Long) json.get("kontrastBindevev")).intValue() : 0;
-            return new Image(id, comment, kjernestruktur, cellegrenser, kontrastKollagen, kontrastBindevev);
+            return new ImageChoice(id, comment, kjernestruktur, cellegrenser, kontrastKollagen, kontrastBindevev);
         } catch (NullPointerException e) {
             throw new NullPointerException("JSON is not valid, something is missing");
         }
@@ -60,13 +60,13 @@ public class Converter {
 
     /**
      * Takes bestImage object and creates mongodb document
-     * @param bestImage
+     * @param bestImageChoice
      * @return
      */
-    public static Document bestImageToDBDocument(BestImage bestImage) {
+    public static Document bestImageToDBDocument(BestImageChoice bestImageChoice) {
         return new Document().
-                append("chosen", imageToDBDocument(bestImage.getChosen()))
-                .append("other", imageToDBDocument(bestImage.getOther()));
+                append("chosen", imageToDBDocument(bestImageChoice.getChosen()))
+                .append("other", imageToDBDocument(bestImageChoice.getOther()));
     }
 
 
@@ -81,17 +81,17 @@ public class Converter {
 
     /**
      * Takes image object and creates mongodb document
-     * @param image
+     * @param imageChoice
      * @return
      */
-    public static Document imageToDBDocument(Image image) {
+    public static Document imageToDBDocument(ImageChoice imageChoice) {
        return new Document()
-               .append("id", image.getId())
-               .append("comment", image.getComment())
-               .append("kjernestruktur", convertToNullIfZero(image.getKjernestruktur()))
-               .append("cellegrenser", convertToNullIfZero(image.getCellegrenser()))
-               .append("kontrastKollagen", convertToNullIfZero(image.getKontrastKollagen()))
-               .append("kontrastBindevev", convertToNullIfZero(image.getKontrastBindevev()));
+               .append("id", imageChoice.getId())
+               .append("comment", imageChoice.getComment())
+               .append("kjernestruktur", convertToNullIfZero(imageChoice.getKjernestruktur()))
+               .append("cellegrenser", convertToNullIfZero(imageChoice.getCellegrenser()))
+               .append("kontrastKollagen", convertToNullIfZero(imageChoice.getKontrastKollagen()))
+               .append("kontrastBindevev", convertToNullIfZero(imageChoice.getKontrastBindevev()));
     }
 
     /**
@@ -117,9 +117,9 @@ public class Converter {
      * @param json
      * @return
      */
-    public static BestImage jsonToBestImage(JSONObject json) {
-        Image chosen = Converter.jsonToImage((JSONObject) json.get("chosen"));
-        Image other = Converter.jsonToImage((JSONObject) json.get("other"));
-        return new BestImage(chosen, other);
+    public static BestImageChoice jsonToBestImageChoice(JSONObject json) {
+        ImageChoice chosen = Converter.jsonToImage((JSONObject) json.get("chosen"));
+        ImageChoice other = Converter.jsonToImage((JSONObject) json.get("other"));
+        return new BestImageChoice(chosen, other);
     }
 }
