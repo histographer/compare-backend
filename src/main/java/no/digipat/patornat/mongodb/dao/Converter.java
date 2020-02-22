@@ -34,10 +34,6 @@ public class Converter {
      * {
      *     "id": 1,
      *     "comment": "testcomment",
-     *     "kjernestruktur": 1,
-     *     "cellegrenser": 1,
-     *     "kontrastKollagen": 1,
-     *     "kontrastBindevev": 1
      *  }
      * @param json in the form of Image
      * @return Image
@@ -45,15 +41,10 @@ public class Converter {
     public static ImageChoice jsonToImage(JSONObject json) {
         try {
             int id = ((Long) json.get("id")).intValue();
-            // Should not throw error if null, int is primitive and cant be null (so we will use 0)
-            String comment = (json.get("comment") != null) ? (String) json.get("comment") : null;
-            int kjernestruktur = (json.get("kjernestruktur") != null) ? ((Long) json.get("kjernestruktur")).intValue() : 0;
-            int cellegrenser = (json.get("cellegrenser") != null) ? ((Long) json.get("cellegrenser")).intValue() : 0;
-            int kontrastKollagen= (json.get("kontrastKollagen") != null) ? ((Long) json.get("kontrastKollagen")).intValue() : 0;
-            int kontrastBindevev= (json.get("kontrastBindevev") != null) ? ((Long) json.get("kontrastBindevev")).intValue() : 0;
-            return new ImageChoice(id, comment, kjernestruktur, cellegrenser, kontrastKollagen, kontrastBindevev);
-        } catch (NullPointerException e) {
-            throw new NullPointerException("JSON is not valid, something is missing");
+            String comment = (String) json.getOrDefault("comment", "");
+            return new ImageChoice(id, comment);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("JSON is not valid, id is missing");
         }
     }
 
@@ -71,15 +62,6 @@ public class Converter {
 
 
     /**
-     * Takes in an integer and returns null if the int is null. This is used for easier DB analysis
-     * @param integer
-     * @return
-     */
-    public static Integer convertToNullIfZero(int integer) {
-        return (integer == 0) ? null : integer;
-    }
-
-    /**
      * Takes image object and creates mongodb document
      * @param imageChoice
      * @return
@@ -87,11 +69,7 @@ public class Converter {
     public static Document imageToDBDocument(ImageChoice imageChoice) {
        return new Document()
                .append("id", imageChoice.getId())
-               .append("comment", imageChoice.getComment())
-               .append("kjernestruktur", convertToNullIfZero(imageChoice.getKjernestruktur()))
-               .append("cellegrenser", convertToNullIfZero(imageChoice.getCellegrenser()))
-               .append("kontrastKollagen", convertToNullIfZero(imageChoice.getKontrastKollagen()))
-               .append("kontrastBindevev", convertToNullIfZero(imageChoice.getKontrastBindevev()));
+               .append("comment", imageChoice.getComment());
     }
 
     /**
@@ -100,18 +78,10 @@ public class Converter {
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",
-     *     "kjernestruktur": 1,
-     *     "cellegrenser": 1,
-     *     "kontrastKollagen": 1,
-     *     "kontrastBindevev": 1
      *   },
      *   "other": {
      *     "id": 2,
      *     "comment": "testcomment2",
-     *     "kjernestruktur": 2,
-     *     "cellegrenser": 3,
-     *     "kontrastKollagen": 2,
-     *     "kontrastBindevev": 3
      *   }
      * }
      * @param json
