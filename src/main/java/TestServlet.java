@@ -1,7 +1,7 @@
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.MongoUserDAO;
-import no.digipat.patornat.mongodb.models.IUser;
-import no.digipat.patornat.mongodb.models.User;
+import no.digipat.patornat.mongodb.models.user.IUser;
+import no.digipat.patornat.mongodb.models.user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

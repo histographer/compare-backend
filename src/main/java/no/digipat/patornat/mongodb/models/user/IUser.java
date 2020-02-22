@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb.models;
+package no.digipat.patornat.mongodb.models.user;
 
 import org.bson.Document;
 
