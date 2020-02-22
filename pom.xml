@@ -41,6 +41,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>mongo-java-server</artifactId>
+      <version>1.24.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <!-- Servlet API dependency -->
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -76,10 +82,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M4</version>
         <configuration>
-          <!-- Update this when there are some unit tests -->
-          <excludes>
-            <exclude>*</exclude>
-          </excludes>
+          <includes>
+            <include>DatabaseUnitTests.java</include>
+          </includes>
           <skipTests>${skip.unit.tests}</skipTests>
         </configuration>
       </plugin>
