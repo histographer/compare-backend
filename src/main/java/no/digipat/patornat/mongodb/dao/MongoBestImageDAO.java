@@ -6,10 +6,11 @@ import org.bson.Document;
 
 public class MongoBestImageDAO {
     private MongoCollection<Document> collection;
-    private String DB = System.getenv("PATORNAT_MONGODB_DATABASE");
+    private String DB;
 
 
-    public MongoBestImageDAO(MongoClient mongo) {
+
+    public MongoBestImageDAO(MongoClient mongo, String DB) {
         this.collection = mongo.getDatabase(DB).getCollection("BestImage");
     }
 
@@ -20,7 +21,6 @@ public class MongoBestImageDAO {
      */
     public BestImageChoice createBestImage(BestImageChoice bestImageChoice) {
         Document document = Converter.bestImageToDBDocument(bestImageChoice);
-        System.out.println(document);
         this.collection.insertOne(document);
         return bestImageChoice;
     }

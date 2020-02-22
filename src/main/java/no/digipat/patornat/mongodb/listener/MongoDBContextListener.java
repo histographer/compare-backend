@@ -35,10 +35,12 @@ public class MongoDBContextListener implements ServletContextListener {
             String password = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_PASSWORD"), "utf8");
             String database = System.getenv("PATORNAT_MONGODB_DATABASE");
             MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port+"/"+database);
-            
+
+
             
             MongoClient client = new MongoClient(MONGO_URI);
             context.log("Mongoclient connected successfully at "+host+":"+port);
+            context.setAttribute("MONGO_DATABASE", database);
             context.setAttribute("MONGO_CLIENT", client);
         } catch(Exception error) {
             throw new RuntimeException("Mongoclient initialization failed", error);
@@ -54,7 +56,7 @@ public class MongoDBContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ServletContext context = servletContextEvent.getServletContext();
         MongoClient client = (MongoClient) context.getAttribute(("MONGO_CLIENT"));
-        if (client != null) client.close();
+        client.close();
         context.log("Mongo connection terminated");
     }
 }
