@@ -12,7 +12,7 @@ The database will by default be available at port localhost:27017 and mongo-expr
 ### Connection
 You'll need to set some environment variables in order to connect to the database. In Linux, this can be done by adding the following lines to `/etc/environment`, making sure to replace the password with your own password:
 
-```console
+```bash
 export PATORNAT_MONGODB_HOST=localhost
 export PATORNAT_MONGODB_PORT=27017
 export PATORNAT_MONGODB_USERNAME=user
@@ -21,7 +21,7 @@ export PATORNAT_MONGODB_DATABASE=patornat
 ```
 And for the docker-compose container you need these environment variables
 
-```console
+```bash
 export PATORNAT_MONGODB_ROOT_USERNAME=root
 export PATORNAT_MONGODB_ROOT_PASSWORD=secret
 export PATORNAT_MONGODB_INITDB_DATABASE=patornat
@@ -64,7 +64,7 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 ## Testing
 Before you can run the integration tests for the first time, you have to set some environment variables:
 
-```console
+```bash
 export PATORNAT_TEST_MONGODB_HOST=localhost
 export PATORNAT_TEST_MONGODB_PORT=27018
 export PATORNAT_TEST_TOMCAT_HOST=localhost
