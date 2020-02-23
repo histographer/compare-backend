@@ -40,21 +40,14 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 ### Post - /scoring
 ```json 
 {
+  "user": "string",
   "chosen": {
     "id": 1,
-    "comment": "testcomment",
-    "kjernestruktur": 1,
-    "cellegrenser": 1,
-    "kontrastKollagen": 1,
-    "kontrastBindevev": 1
+    "comment": "testcomment"
   },
   "other": {
     "id": 2,
-    "comment": "testcomment2",
-    "kjernestruktur": 2,
-    "cellegrenser": 3,
-    "kontrastKollagen": 2,
-    "kontrastBindevev": 3
+    "comment": "testcomment2"
   }
 }
 
