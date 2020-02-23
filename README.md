@@ -53,5 +53,21 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 
 ```
 
+### Post - /user
+#### Request
+```json
+{ 
+    "monitorType": "IPS laptop",
+    "hospital": "St. Olavs"
+}
+```
+
+#### Response
+```json
+{
+   "user": "8acfd1d6-cd86-4356-bf6a-38c85d56ed92"
+}
+```
+
 
 

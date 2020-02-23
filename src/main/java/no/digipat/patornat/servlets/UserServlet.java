@@ -25,7 +25,14 @@ public class UserServlet extends HttpServlet {
 
     /**
      * @param request
+     * {
+     *     monitorType, string
+     *     hospital, string
+     * }
      * @param response
+     * {
+     *    user: uuid(string)
+     * }
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletContext context = request.getServletContext();
