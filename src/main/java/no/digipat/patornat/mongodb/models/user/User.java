@@ -1,15 +1,18 @@
 package no.digipat.patornat.mongodb.models.user;
 
-import no.digipat.patornat.mongodb.models.user.IUser;
+import java.util.UUID;
 
-public class User implements IUser {
+public class User {
     private String id;
-    private String username;
+    private String hospital;
+    private String monitorType;
 
 
-    public User(String id, String username) {
-        this.id = id;
-        this.username = username;
+
+    public User(String monitorType, String hospital) {
+        this.id = UUID.randomUUID().toString();
+        this.monitorType = monitorType;
+        this.hospital = hospital;
     }
 
     public String getId() {
@@ -20,11 +23,19 @@ public class User implements IUser {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getHospital() {
+        return hospital;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setHospital(String hospital) {
+        this.hospital = hospital;
+    }
+
+    public String getMonitorType() {
+        return monitorType;
+    }
+
+    public void setMonitorType(String monitorType) {
+        this.monitorType = monitorType;
     }
 }
