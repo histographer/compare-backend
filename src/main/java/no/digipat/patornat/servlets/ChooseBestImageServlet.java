@@ -23,6 +23,7 @@ public class ChooseBestImageServlet extends HttpServlet {
     /**
      * The json request looks like this
      * {
+     *   "user": "string",
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",
