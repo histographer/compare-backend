@@ -1,7 +1,6 @@
-package no.digipat.patornat.mongodb.models;
+package no.digipat.patornat.mongodb.models.user;
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
+import no.digipat.patornat.mongodb.models.user.IUser;
 
 public class User implements IUser {
     private String id;

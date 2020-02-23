@@ -35,4 +35,30 @@ The database client is ready to use for all servlets via the context variable MO
 All connections to the DB will go through Database Access Objects (DAO) while the models provide the internal logic needed for non database actions.
 
 
+## Endpoints
+
+### Post - /scoring
+```json 
+{
+  "chosen": {
+    "id": 1,
+    "comment": "testcomment",
+    "kjernestruktur": 1,
+    "cellegrenser": 1,
+    "kontrastKollagen": 1,
+    "kontrastBindevev": 1
+  },
+  "other": {
+    "id": 2,
+    "comment": "testcomment2",
+    "kjernestruktur": 2,
+    "cellegrenser": 3,
+    "kontrastKollagen": 2,
+    "kontrastBindevev": 3
+  }
+}
+
+```
+
+
 

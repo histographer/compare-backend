@@ -2,7 +2,7 @@ package no.digipat.patornat.mongodb.dao;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import no.digipat.patornat.mongodb.models.IUser;
+import no.digipat.patornat.mongodb.models.user.IUser;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

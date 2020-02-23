@@ -31,15 +31,16 @@ public class MongoDBContextListener implements ServletContextListener {
             String portString = System.getenv("PATORNAT_MONGODB_PORT");
             int port = Integer.parseInt(portString);
             // Username and password need to be percent encoded in case they contain special characters such as '@' or ':'
-            final Charset utf8 = StandardCharsets.UTF_8;
-            String username = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_USERNAME"), utf8);
-            String password = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_PASSWORD"), utf8);
+            String username = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_USERNAME"), "utf8");
+            String password = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_PASSWORD"), "utf8");
             String database = System.getenv("PATORNAT_MONGODB_DATABASE");
-            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port+"/"+database);
-            
+            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port);
+
+
             
             MongoClient client = new MongoClient(MONGO_URI);
             context.log("Mongoclient connected successfully at "+host+":"+port);
+            context.setAttribute("MONGO_DATABASE", database);
             context.setAttribute("MONGO_CLIENT", client);
         } catch(Exception error) {
             throw new RuntimeException("Mongoclient initialization failed", error);
