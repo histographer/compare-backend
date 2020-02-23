@@ -57,7 +57,8 @@ public class Converter {
     public static Document bestImageToDBDocument(BestImageChoice bestImageChoice) {
         return new Document().
                 append("chosen", imageToDBDocument(bestImageChoice.getChosen()))
-                .append("other", imageToDBDocument(bestImageChoice.getOther()));
+                .append("other", imageToDBDocument(bestImageChoice.getOther()))
+                .append("user", bestImageChoice.getUser());
     }
 
 
@@ -75,6 +76,7 @@ public class Converter {
     /**
      * Takes in
      * {
+     *   "user": "string"
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",
@@ -90,6 +92,7 @@ public class Converter {
     public static BestImageChoice jsonToBestImageChoice(JSONObject json) {
         ImageChoice chosen = Converter.jsonToImage((JSONObject) json.get("chosen"));
         ImageChoice other = Converter.jsonToImage((JSONObject) json.get("other"));
-        return new BestImageChoice(chosen, other);
+        String user = (String) json.get("user");
+        return new BestImageChoice(user, chosen, other);
     }
 }

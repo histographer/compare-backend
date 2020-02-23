@@ -34,7 +34,7 @@ public class MongoDBContextListener implements ServletContextListener {
             String username = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_USERNAME"), "utf8");
             String password = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_PASSWORD"), "utf8");
             String database = System.getenv("PATORNAT_MONGODB_DATABASE");
-            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port+"/"+database);
+            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port);
 
 
             

@@ -3,8 +3,11 @@ package no.digipat.patornat.mongodb.models.image;
 public class BestImageChoice {
     private ImageChoice chosen;
     private ImageChoice other;
+    private String user;
 
-    public BestImageChoice(ImageChoice chosen, ImageChoice other) {
+
+    public BestImageChoice(String user, ImageChoice chosen, ImageChoice other) {
+        this.user = user;
         this.chosen = chosen;
         this.other = other;
     }
@@ -25,4 +28,7 @@ public class BestImageChoice {
         this.other = other;
     }
 
+    public String getUser() {
+        return user;
+    }
 }
