@@ -1,7 +1,6 @@
 package no.digipat.patornat.mongodb.dao;
 
 import no.digipat.patornat.mongodb.models.image.BestImageChoice;
-import no.digipat.patornat.mongodb.models.user.IUser;
 import no.digipat.patornat.mongodb.models.image.ImageChoice;
 import no.digipat.patornat.mongodb.models.user.User;
 import org.bson.Document;
@@ -13,8 +12,11 @@ public class Converter {
      *  Creates a database document that can be inserted directly to the db
      * @return
      */
-    public static Document userToDBDocument(IUser user) {
-        return new Document("username", user.getUsername());
+    public static Document userToDBDocument(User user) {
+        return new Document()
+                .append("user", user.getId())
+                .append("monitorType", user.getMonitorType())
+                .append("hospital", user.getHospital());
     }
 
     /**
@@ -22,10 +24,10 @@ public class Converter {
      * @param object
      * @return
      */
-    public static IUser userDocumentToJavaObject(Document object) {
-        String username = (String) object.get("username");
-        ObjectId id = (ObjectId) object.get("_id");
-        User user = new User(id.toString(), username);
+    public static User userDocumentToJavaObject(Document object) {
+        String monitorType = (String) object.get("monitorType");
+        String hospital = (String) object.get("hospital");
+        User user = new User(monitorType, hospital);
         return user;
     }
 
