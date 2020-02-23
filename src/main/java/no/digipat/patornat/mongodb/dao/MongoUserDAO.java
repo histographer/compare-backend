@@ -10,11 +10,10 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class MongoUserDAO {
     private MongoCollection<Document> collection;
-    private String DB;
 
 
-    public MongoUserDAO(MongoClient mongo) {
-        this.collection = mongo.getDatabase(DB).getCollection("user");
+    public MongoUserDAO(MongoClient mongo, String database) {
+        this.collection = mongo.getDatabase(database).getCollection("user");
     }
 
     public void createUser(User user) {
@@ -22,8 +21,4 @@ public class MongoUserDAO {
         this.collection.insertOne(document);
     }
 
-    public User readUser(User user) {
-        Document returnedUser = this.collection.find(eq("id", user.getId())).first();
-        return Converter.userDocumentToJavaObject(returnedUser);
-    }
 }

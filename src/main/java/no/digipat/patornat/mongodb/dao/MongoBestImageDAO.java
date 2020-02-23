@@ -6,12 +6,11 @@ import org.bson.Document;
 
 public class MongoBestImageDAO {
     private MongoCollection<Document> collection;
-    private String DB;
 
 
 
-    public MongoBestImageDAO(MongoClient mongo, String DB) {
-        this.collection = mongo.getDatabase(DB).getCollection("BestImage");
+    public MongoBestImageDAO(MongoClient mongo, String database) {
+        this.collection = mongo.getDatabase(database).getCollection("BestImage");
     }
 
     /**

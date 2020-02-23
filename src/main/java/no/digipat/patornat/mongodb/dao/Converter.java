@@ -21,12 +21,12 @@ public class Converter {
 
     /**
      * Convert from database document to java object
-     * @param object
+     * @param json in the form of user
      * @return
      */
-    public static User userDocumentToJavaObject(Document object) {
-        String monitorType = (String) object.get("monitorType");
-        String hospital = (String) object.get("hospital");
+    public static User jsonToUser(JSONObject json) {
+        String monitorType = (String) json.get("monitorType");
+        String hospital = (String) json.get("hospital");
         User user = new User(monitorType, hospital);
         return user;
     }
