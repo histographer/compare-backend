@@ -4,13 +4,11 @@ import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.Converter;
 import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
 import no.digipat.patornat.mongodb.models.image.BestImageChoice;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
