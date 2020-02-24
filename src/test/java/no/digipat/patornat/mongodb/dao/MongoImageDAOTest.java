@@ -20,16 +20,22 @@ public class MongoImageDAOTest {
 
     private static MongoClient client;
     private static String databaseName;
+    private static MongoImageDAO dao;
     
     @BeforeClass
     public static void setUpClass() {
         client = DatabaseUnitTests.getMongoClient();
         databaseName = DatabaseUnitTests.getDatabaseName();
+        dao = new MongoImageDAO(client, databaseName);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testCreateNullImage() {
+        dao.createImage(null);
     }
     
     @Test
     public void testGetAllImages() {
-        MongoImageDAO dao = new MongoImageDAO(client, databaseName);
         // Test with no data
         assertEquals(0, dao.getAllImages().size());
         // Test with data
