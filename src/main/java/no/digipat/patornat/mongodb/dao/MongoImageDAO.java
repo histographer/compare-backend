@@ -37,9 +37,13 @@ public class MongoImageDAO {
      * @throws IllegalArgumentException if {@code image} is {@code null} 
      */
     public void createImage(Image image) {
-        Document document = new Document();
-        document.put("id", image.getId());
-        collection.insertOne(document);
+        try {
+            Document document = new Document();
+            document.put("id", image.getId());
+            collection.insertOne(document);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Image cannot be null", e);
+        }
     }
     
     /**
