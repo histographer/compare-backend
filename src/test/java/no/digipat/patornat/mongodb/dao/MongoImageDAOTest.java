@@ -29,7 +29,7 @@ public class MongoImageDAOTest {
         dao = new MongoImageDAO(client, databaseName);
     }
     
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected=NullPointerException.class)
     public void testCreateNullImage() {
         dao.createImage(null);
     }

@@ -33,17 +33,12 @@ public class MongoImageDAO {
     /**
      * Inserts a new image into the database.
      * 
-     * @param image the image to be inserted
-     * @throws IllegalArgumentException if {@code image} is {@code null} 
+     * @param image the image to be inserted 
      */
     public void createImage(Image image) {
-        try {
-            Document document = new Document();
-            document.put("id", image.getId());
-            collection.insertOne(document);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("Image cannot be null", e);
-        }
+        Document document = new Document();
+        document.put("id", image.getId());
+        collection.insertOne(document);
     }
     
     /**
