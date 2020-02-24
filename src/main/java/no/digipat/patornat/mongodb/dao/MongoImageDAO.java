@@ -1,5 +1,6 @@
 package no.digipat.patornat.mongodb.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -36,8 +37,9 @@ public class MongoImageDAO {
      * @throws IllegalArgumentException if {@code image} is {@code null} 
      */
     public void createImage(Image image) {
-        // TODO
-        
+        Document document = new Document();
+        document.put("id", image.getId());
+        collection.insertOne(document);
     }
     
     /**
@@ -46,9 +48,11 @@ public class MongoImageDAO {
      * @return a list of every image in the database
      */
     public List<Image> getAllImages() {
-        // TODO
-        
-        return null;
+        final List<Image> images = new ArrayList<>();
+        for (Document document : collection.find()) {
+            images.add(new Image(document.getInteger("id")));
+        }
+        return images;
     }
     
 }
