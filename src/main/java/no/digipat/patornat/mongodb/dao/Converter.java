@@ -60,8 +60,22 @@ public class Converter {
                 .append("other", imageToDBDocument(bestImageChoice.getOther()))
                 .append("user", bestImageChoice.getUser());
     }
-
-
+    
+    /**
+     * Converts a MongoDB document to an instance of {@code BestImageChoice}.
+     * 
+     * @param document the MongoDB document
+     * @return an instance of {@code BestImageChoice} representing the given document
+     * @throws IllegalArgumentException if {@code document} is not valid. Specifically,
+     * if it is {@code null}, its {@code chosen} or {@code other} attribute is not a
+     * non-{@code null} document, or if any attribute cannot be cast to the appropriate type.
+     */
+    public static BestImageChoice dbDocumentToBestImageChoice(Document document) {
+        // TODO
+        
+        return null;
+    }
+    
     /**
      * Takes image object and creates mongodb document
      * @param imageChoice
