@@ -15,8 +15,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 @RunWith(Suite.class)
-@SuiteClasses({ // Add tests here
-    ExampleTest.class
+@SuiteClasses({
+    NextImagePairTest.class
 })
 public class IntegrationTests {
     
@@ -33,7 +33,7 @@ public class IntegrationTests {
         String databaseName = System.getenv("PATORNAT_TEST_MONGODB_DATABASE");
         IntegrationTests.databaseName = databaseName;
         MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://" + databaseUsername + ":" + databasePassword
-                + "@" + databaseHost + ":" + databasePort + "/" + databaseName);
+                + "@" + databaseHost + ":" + databasePort);
         client = new MongoClient(MONGO_URI);
         String tomcatProtocol = System.getenv("PATORNAT_TEST_TOMCAT_PROTOCOL"); // http or https
         String tomcatHost = System.getenv("PATORNAT_TEST_TOMCAT_HOST");
