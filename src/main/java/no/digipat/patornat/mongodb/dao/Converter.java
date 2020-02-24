@@ -71,9 +71,21 @@ public class Converter {
      * non-{@code null} document, or if any attribute cannot be cast to the appropriate type.
      */
     public static BestImageChoice dbDocumentToBestImageChoice(Document document) {
-        // TODO
-        
-        return null;
+        try {
+            String user = document.getString("user");
+            Document chosenDoc = (Document) document.get("chosen");
+            int chosenId = (int) (Integer) chosenDoc.get("id");
+            String chosenComment = chosenDoc.getString("comment");
+            ImageChoice chosen = new ImageChoice(chosenId, chosenComment);
+            Document otherDoc = (Document) document.get("other");
+            int otherId = (int) (Integer) otherDoc.get("id");
+            String otherComment = otherDoc.getString("comment");
+            ImageChoice other = new ImageChoice(otherId, otherComment);
+            BestImageChoice bestImageChoice = new BestImageChoice(user, chosen, other);
+            return bestImageChoice;
+        } catch (NullPointerException | ClassCastException e) {
+            throw new IllegalArgumentException("Invalid document", e);
+        }
     }
     
     /**
