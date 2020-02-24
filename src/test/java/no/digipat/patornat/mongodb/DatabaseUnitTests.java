@@ -11,6 +11,7 @@ import com.mongodb.MongoClient;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 import no.digipat.patornat.mongodb.dao.MongoBestImageDAOTest;
+import no.digipat.patornat.mongodb.dao.MongoImageDAOTest;
 
 /**
  * A suite of unit tests that require database connectivity.
@@ -22,7 +23,8 @@ import no.digipat.patornat.mongodb.dao.MongoBestImageDAOTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    MongoBestImageDAOTest.class
+    MongoBestImageDAOTest.class,
+    MongoImageDAOTest.class
 })
 public class DatabaseUnitTests {
     
