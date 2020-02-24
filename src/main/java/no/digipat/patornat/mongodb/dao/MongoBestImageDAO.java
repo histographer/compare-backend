@@ -3,6 +3,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import no.digipat.patornat.mongodb.models.image.BestImageChoice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -29,14 +30,16 @@ public class MongoBestImageDAO {
     }
     
     /**
-     * Retrieves every image choice from the database.
+     * Retrieves every choice of best image from the database.
      * 
      * @return a list of every choice of best image
      */
-    public List<BestImageChoice> getAllImageChoices() {
-        // TODO
-        
-        return null;
+    public List<BestImageChoice> getAllBestImageChoices() {
+        final List<BestImageChoice> choices = new ArrayList<>();
+        for (Document document : this.collection.find()) {
+            choices.add(Converter.dbDocumentToBestImageChoice(document));
+        }
+        return choices;
     }
     
 }

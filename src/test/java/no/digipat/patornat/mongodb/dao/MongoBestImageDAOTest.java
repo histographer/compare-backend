@@ -28,16 +28,16 @@ public class MongoBestImageDAOTest {
     }
     
     @Test
-    public void testGetAllImageChoices() {
+    public void testGetAllBestImageChoices() {
         MongoBestImageDAO dao = new MongoBestImageDAO(client, databaseName);
         // Test with no data in database
-        assertEquals(0, dao.getAllImageChoices().size());
+        assertEquals(0, dao.getAllBestImageChoices().size());
         // Test with some data
         BestImageChoice choice1 = new BestImageChoice("user1", new ImageChoice(1, "comment1"), new ImageChoice(2, "comment2"));
         BestImageChoice choice2 = new BestImageChoice("user2", new ImageChoice(3, "comment3"),  new ImageChoice(1, "comment4"));
         dao.createBestImage(choice1);
         dao.createBestImage(choice2);
-        List<BestImageChoice> allChoices = dao.getAllImageChoices();
+        List<BestImageChoice> allChoices = dao.getAllBestImageChoices();
         assertEquals(2, allChoices.size());
         Collections.sort(allChoices, new Comparator<BestImageChoice>() {
             // Sort by ID of chosen image so we can more easily test the contents of the list 
