@@ -19,7 +19,6 @@ import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
 import no.digipat.patornat.mongodb.dao.MongoImageDAO;
 import no.digipat.patornat.mongodb.models.image.BestImageChoice;
 import no.digipat.patornat.mongodb.models.image.Image;
-import sun.jvm.hotspot.types.basic.BasicCIntegerField;
 
 /**
  * A servlet for retrieving the pair of images that should be
