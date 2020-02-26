@@ -6,8 +6,6 @@ services:
     image: mongo:latest
     container_name: patornatmongo_test
     restart: always
-    ports:
-      - ${PATORNAT_TEST_MONGODB_PORT}:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${PATORNAT_TEST_MONGODB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${PATORNAT_TEST_MONGODB_ROOT_PASSWORD}
@@ -18,6 +16,8 @@ services:
     volumes:
       - mongodata:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
+    ports:
+      - ${PATORNAT_TEST_MONGODB_PORT}:27017
 
   patornatbackend:
     build:
@@ -27,11 +27,11 @@ services:
     ports:
       - ${PATORNAT_TEST_TOMCAT_PORT}:8080
     environment:
-        PATORNAT_MONGODB_HOST: patornatmongo_test
-        PATORNAT_MONGODB_PORT: ${PATORNAT_TEST_MONGODB_PORT}
-        PATORNAT_MONGODB_USERNAME: ${PATORNAT_TEST_MONGODB_USERNAME}
-        PATORNAT_MONGODB_PASSWORD: ${PATORNAT_TEST_MONGODB_PASSWORD}
-        PATORNAT_MONGODB_DATABASE: ${PATORNAT_TEST_MONGODB_DATABASE}
+      PATORNAT_MONGODB_HOST: patornatmongo_test
+      PATORNAT_MONGODB_PORT: 27017
+      PATORNAT_MONGODB_USERNAME: ${PATORNAT_TEST_MONGODB_USERNAME}
+      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_TEST_MONGODB_PASSWORD}
+      PATORNAT_MONGODB_DATABASE: ${PATORNAT_TEST_MONGODB_DATABASE}
 
 volumes:
   mongodata:
