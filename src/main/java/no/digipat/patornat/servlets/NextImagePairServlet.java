@@ -1,6 +1,11 @@
 package no.digipat.patornat.servlets;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.mongodb.MongoClient;
 
@@ -39,6 +46,8 @@ public class NextImagePairServlet extends HttpServlet {
      * @param response the HTTP response
      * 
      * @throws ServletException if there are not at least two images in the database
+     * @throws IOException if an I/O error occurs. In particular, if an I/O error
+     * occurs when connecting to the analysis backend.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,8 +62,15 @@ public class NextImagePairServlet extends HttpServlet {
         MongoBestImageDAO comparisonDao = new MongoBestImageDAO(client, databaseName);
         List<BestImageChoice> comparisons = comparisonDao.getAllBestImageChoices();
         JSONObject jsonForAnalysisBackend = createRequestJson(images, comparisons);
-        String requestBody = jsonForAnalysisBackend.toString();
-        // TODO send request to analysis backend and send response to user
+        URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
+        JSONObject analysisResponse;
+        try {
+            analysisResponse = getAnalysisResponse(baseUrl, jsonForAnalysisBackend);
+        } catch (ParseException e) {
+            throw new ServletException("Analysis backend returned an invalid response", e);
+            // This isn't documented in the Javadoc because it should never happen
+        }
+        // TODO respond to user
         
     }
     
@@ -78,6 +94,25 @@ public class NextImagePairServlet extends HttpServlet {
         }
         json.put("comparison_data", jsonComparisons);
         return json;
+    }
+    
+    private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody) throws IOException, ParseException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair").openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        try (PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
+            writer.print(requestBody);
+            writer.flush();
+        }
+        connection.connect();
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            throw new IOException("Expected response code 200 from analysis backend, but got " + responseCode);
+        }
+        try (Reader responseReader = new InputStreamReader(connection.getInputStream())) {
+            JSONParser parser = new JSONParser();
+            return (JSONObject) parser.parse(responseReader);
+        }
     }
     
 }
