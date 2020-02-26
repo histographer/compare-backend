@@ -42,7 +42,6 @@ public class NextImagePairServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JSONObject jsonForAnalysisBackend = new JSONObject();
         ServletContext context = getServletContext();
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
@@ -51,13 +50,21 @@ public class NextImagePairServlet extends HttpServlet {
         if (images.size() < 2) {
             throw new ServletException("Not enough images in the database");
         }
+        MongoBestImageDAO comparisonDao = new MongoBestImageDAO(client, databaseName);
+        List<BestImageChoice> comparisons = comparisonDao.getAllBestImageChoices();
+        JSONObject jsonForAnalysisBackend = createRequestJson(images, comparisons);
+        String requestBody = jsonForAnalysisBackend.toString();
+        // TODO send request to analysis backend and send response to user
+        
+    }
+    
+    private static JSONObject createRequestJson(List<Image> images, List<BestImageChoice> comparisons) {
+        JSONObject json = new JSONObject();
         List<Integer> imageIds = new ArrayList<>();
         for (Image image : images) {
             imageIds.add(image.getId());
         }
-        jsonForAnalysisBackend.put("image_ids", imageIds);
-        MongoBestImageDAO comparisonDao = new MongoBestImageDAO(client, databaseName);
-        List<BestImageChoice> comparisons = comparisonDao.getAllBestImageChoices();
+        json.put("image_ids", imageIds);
         List<JSONObject> jsonComparisons = new ArrayList<>();
         for (BestImageChoice comparison : comparisons) {
             JSONObject comparisonJson = new JSONObject();
@@ -69,10 +76,8 @@ public class NextImagePairServlet extends HttpServlet {
             comparisonJson.put("loser", loserJson);
             jsonComparisons.add(comparisonJson);
         }
-        jsonForAnalysisBackend.put("comparison_data", jsonComparisons);
-        String requestBody = jsonForAnalysisBackend.toString();
-        // TODO send request to analysis backend and send response to user
-        
+        json.put("comparison_data", jsonComparisons);
+        return json;
     }
     
 }
