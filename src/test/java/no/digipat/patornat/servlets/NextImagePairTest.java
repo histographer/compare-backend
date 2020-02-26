@@ -63,7 +63,6 @@ public class NextImagePairTest {
     
     @Test
     public void testWithValidServerState() throws Exception {
-        choiceDao.getAllBestImageChoices();
         imageDao.createImage(new Image(1337));
         imageDao.createImage(new Image(42));
         choiceDao.createBestImage(new BestImageChoice("some_user", new ImageChoice(1, "good"), new ImageChoice(2, "really bad")));
