@@ -31,7 +31,7 @@ public class ConverterTest {
         // Class cast tests
         Document doc4 = new Document();
         Document choiceDocument = new Document();
-        choiceDocument.put("id", 1);
+        choiceDocument.put("id", 1L);
         choiceDocument.put("comment", "a comment");
         doc4.put("chosen", "this is not a document");
         doc4.put("other", choiceDocument);
@@ -73,9 +73,9 @@ public class ConverterTest {
         Document bestImageChoiceDoc = new Document();
         Document chosenImageDoc = new Document();
         Document otherImageDoc = new Document();
-        chosenImageDoc.put("id", 1);
+        chosenImageDoc.put("id", 1L);
         chosenImageDoc.put("comment", "this is a comment");
-        otherImageDoc.put("id", 2);
+        otherImageDoc.put("id", 2L);
         // Other image's comment is null
         bestImageChoiceDoc.put("chosen", chosenImageDoc);
         bestImageChoiceDoc.put("other", otherImageDoc);
@@ -83,10 +83,10 @@ public class ConverterTest {
         BestImageChoice choice = Converter.dbDocumentToBestImageChoice(bestImageChoiceDoc);
         assertEquals("cool_username", choice.getUser());
         ImageChoice chosen = choice.getChosen();
-        assertEquals(1, chosen.getId());
+        assertEquals(1L, chosen.getId());
         assertEquals("this is a comment", chosen.getComment());
         ImageChoice other = choice.getOther();
-        assertEquals(2, other.getId());
+        assertEquals(2L, other.getId());
         assertNull(other.getComment());
     }
 
