@@ -39,9 +39,9 @@ public class MongoImageDAOTest {
         // Test with no data
         assertEquals(0, dao.getAllImages().size());
         // Test with data
-        dao.createImage(new Image(1));
-        dao.createImage(new Image(1337));
-        dao.createImage(new Image(69));
+        dao.createImage(new Image().setId(1L));
+        dao.createImage(new Image().setId(1337L));
+        dao.createImage(new Image().setId(69L));
         List<Image> images = dao.getAllImages();
         Collections.sort(images, new Comparator<Image>() {
             @Override

@@ -56,15 +56,15 @@ public class NextImagePairTest {
         WebResponse response1 = conversation.getResponse(request);
         assertEquals(500, response1.getResponseCode());
         // One image in database
-        imageDao.createImage(new Image(1));
+        imageDao.createImage(new Image().setId(1L));
         WebResponse response2 = conversation.getResponse(request);
         assertEquals(500, response2.getResponseCode());
     }
     
     @Test
     public void testWithValidServerState() throws Exception {
-        imageDao.createImage(new Image(1337L));
-        imageDao.createImage(new Image(42L));
+        imageDao.createImage(new Image().setId(1337L));
+        imageDao.createImage(new Image().setId(42L));
         choiceDao.createBestImage(new BestImageChoice("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
         WebConversation conversation = new WebConversation();
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");

@@ -36,9 +36,7 @@ public class MongoImageDAO {
      * @param image the image to be inserted 
      */
     public void createImage(Image image) {
-        Document document = new Document();
-        document.put("id", image.getId());
-        collection.insertOne(document);
+        collection.insertOne(imageToDocument(image));
     }
     
     /**
@@ -49,9 +47,21 @@ public class MongoImageDAO {
     public List<Image> getAllImages() {
         final List<Image> images = new ArrayList<>();
         for (Document document : collection.find()) {
-            images.add(new Image(document.getLong("id")));
+            images.add(documentToImage(document));
         }
         return images;
+    }
+    
+    private static Image documentToImage(Document document) {
+        return new Image().setId(document.getLong("id"));
+        // TODO other properties
+    }
+    
+    private static Document imageToDocument(Image image) {
+        Document document = new Document();
+        document.put("id", image.getId());
+        return document;
+        // TODO other properties
     }
     
 }
