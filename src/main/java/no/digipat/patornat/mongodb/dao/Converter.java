@@ -40,7 +40,7 @@ public class Converter {
      */
     public static ImageChoice jsonToImage(JSONObject json) {
         try {
-            int id = ((Long) json.get("id")).intValue();
+            long id = (Long) json.get("id");
             String comment = (String) json.getOrDefault("comment", "");
             return new ImageChoice(id, comment);
         } catch (IllegalArgumentException e) {
@@ -74,11 +74,11 @@ public class Converter {
         try {
             String user = document.getString("user");
             Document chosenDoc = (Document) document.get("chosen");
-            int chosenId = (int) (Integer) chosenDoc.get("id");
+            long chosenId = (Long) chosenDoc.get("id");
             String chosenComment = chosenDoc.getString("comment");
             ImageChoice chosen = new ImageChoice(chosenId, chosenComment);
             Document otherDoc = (Document) document.get("other");
-            int otherId = (int) (Integer) otherDoc.get("id");
+            long otherId = (Long) otherDoc.get("id");
             String otherComment = otherDoc.getString("comment");
             ImageChoice other = new ImageChoice(otherId, otherComment);
             BestImageChoice bestImageChoice = new BestImageChoice(user, chosen, other);

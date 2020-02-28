@@ -8,17 +8,17 @@ package no.digipat.patornat.mongodb.models.image;
  */
 public class Image {
     
-    private int id;
+    private long id;
     
-    public Image(int id) {
+    public Image(long id) {
         this.id = id;
     }
     
-    public int getId() {
+    public long getId() {
         return id;
     }
     
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     

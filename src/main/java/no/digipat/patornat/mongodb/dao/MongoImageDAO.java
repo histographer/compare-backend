@@ -49,7 +49,7 @@ public class MongoImageDAO {
     public List<Image> getAllImages() {
         final List<Image> images = new ArrayList<>();
         for (Document document : collection.find()) {
-            images.add(new Image(document.getInteger("id")));
+            images.add(new Image(document.getLong("id")));
         }
         return images;
     }

@@ -46,10 +46,10 @@ public class MongoImageDAOTest {
         Collections.sort(images, new Comparator<Image>() {
             @Override
             public int compare(Image img1, Image img2) {
-                return img1.getId() - img2.getId();
+                return (int) (img1.getId() - img2.getId());
             }
         });
-        assertArrayEquals(new int[] {1, 69, 1337}, images.stream().mapToInt(img -> img.getId()).toArray());
+        assertArrayEquals(new long[] {1, 69, 1337}, images.stream().mapToLong(img -> img.getId()).toArray());
     }
     
     @After

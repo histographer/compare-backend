@@ -63,9 +63,9 @@ public class NextImagePairTest {
     
     @Test
     public void testWithValidServerState() throws Exception {
-        imageDao.createImage(new Image(1337));
-        imageDao.createImage(new Image(42));
-        choiceDao.createBestImage(new BestImageChoice("some_user", new ImageChoice(1, "good"), new ImageChoice(2, "really bad")));
+        imageDao.createImage(new Image(1337L));
+        imageDao.createImage(new Image(42L));
+        choiceDao.createBestImage(new BestImageChoice("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
         WebConversation conversation = new WebConversation();
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
         WebResponse response = conversation.getResponse(request);
@@ -81,12 +81,12 @@ public class NextImagePairTest {
         expectedKeys.add("pair");
         assertEquals(expectedKeys, json.keySet());
         JSONArray pair = (JSONArray) json.get("pair");
-        Set<Integer> expectedIds = new HashSet<>();
-        expectedIds.add(42);
-        expectedIds.add(1337);
-        Set<Integer> actualIds = new HashSet<>();
+        Set<Long> expectedIds = new HashSet<>();
+        expectedIds.add(42L);
+        expectedIds.add(1337L);
+        Set<Long> actualIds = new HashSet<>();
         for (Object object : pair) {
-            int id = (int) (Integer) object;
+            long id = (Long) object;
             actualIds.add(id);
         }
         assertEquals(expectedIds, actualIds);

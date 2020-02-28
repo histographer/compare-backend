@@ -43,7 +43,7 @@ public class MongoBestImageDAOTest {
             // Sort by ID of chosen image so we can more easily test the contents of the list 
             @Override
             public int compare(BestImageChoice arg0, BestImageChoice arg1) {
-                return arg0.getChosen().getId() - arg1.getChosen().getId();
+                return (int) (arg0.getChosen().getId() - arg1.getChosen().getId());
             }
         });
         BestImageChoice retrievedChoice1 = allChoices.get(0);
