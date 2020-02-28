@@ -42,7 +42,7 @@ public class AnalysisBackendContextListener implements ServletContextListener {
         try {
             URL url = new URL(protocol, host, Integer.parseInt(port), "");
             servletContextEvent.getServletContext().setAttribute("ANALYSIS_BASE_URL", url);
-        } catch (MalformedURLException | NumberFormatException e) {
+        } catch (MalformedURLException | NumberFormatException | NullPointerException e) {
             throw new IllegalStateException("Environment variables have not been set correctly", e);
         }
     }
