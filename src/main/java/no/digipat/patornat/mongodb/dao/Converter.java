@@ -1,6 +1,6 @@
 package no.digipat.patornat.mongodb.dao;
 
-import no.digipat.patornat.mongodb.models.image.BestImageChoice;
+import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import no.digipat.patornat.mongodb.models.user.IUser;
 import no.digipat.patornat.mongodb.models.image.ImageChoice;
 import no.digipat.patornat.mongodb.models.user.User;
@@ -50,27 +50,27 @@ public class Converter {
 
 
     /**
-     * Takes bestImage object and creates mongodb document
-     * @param bestImageChoice
+     * Takes imageComparison object and creates mongodb document
+     * @param imageComparison
      * @return
      */
-    public static Document bestImageToDBDocument(BestImageChoice bestImageChoice) {
+    public static Document imageComparisonToDBDocument(ImageComparison imageComparison) {
         return new Document().
-                append("chosen", imageToDBDocument(bestImageChoice.getChosen()))
-                .append("other", imageToDBDocument(bestImageChoice.getOther()))
-                .append("user", bestImageChoice.getUser());
+                append("chosen", imageToDBDocument(imageComparison.getChosen()))
+                .append("other", imageToDBDocument(imageComparison.getOther()))
+                .append("user", imageComparison.getUser());
     }
     
     /**
-     * Converts a MongoDB document to an instance of {@code BestImageChoice}.
+     * Converts a MongoDB document to an instance of {@code ImageComparison}.
      * 
      * @param document the MongoDB document
-     * @return an instance of {@code BestImageChoice} representing the given document
+     * @return an instance of {@code ImageComparison} representing the given document
      * @throws IllegalArgumentException if {@code document} is not valid. Specifically,
      * if it is {@code null}, its {@code chosen} or {@code other} attribute is not a
      * non-{@code null} document, or if any attribute cannot be cast to the appropriate type.
      */
-    public static BestImageChoice dbDocumentToBestImageChoice(Document document) {
+    public static ImageComparison dbDocumentToImageComparison(Document document) {
         try {
             String user = document.getString("user");
             Document chosenDoc = (Document) document.get("chosen");
@@ -81,8 +81,8 @@ public class Converter {
             long otherId = (Long) otherDoc.get("id");
             String otherComment = otherDoc.getString("comment");
             ImageChoice other = new ImageChoice(otherId, otherComment);
-            BestImageChoice bestImageChoice = new BestImageChoice(user, chosen, other);
-            return bestImageChoice;
+            ImageComparison imageComparison = new ImageComparison(user, chosen, other);
+            return imageComparison;
         } catch (NullPointerException | ClassCastException e) {
             throw new IllegalArgumentException("Invalid document", e);
         }
@@ -115,10 +115,10 @@ public class Converter {
      * @param json
      * @return
      */
-    public static BestImageChoice jsonToBestImageChoice(JSONObject json) {
+    public static ImageComparison jsonToImageComparison(JSONObject json) {
         ImageChoice chosen = Converter.jsonToImage((JSONObject) json.get("chosen"));
         ImageChoice other = Converter.jsonToImage((JSONObject) json.get("other"));
         String user = (String) json.get("user");
-        return new BestImageChoice(user, chosen, other);
+        return new ImageComparison(user, chosen, other);
     }
 }

@@ -20,9 +20,9 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.mongodb.MongoClient;
 
-import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
+import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.mongodb.models.image.BestImageChoice;
+import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import no.digipat.patornat.mongodb.models.image.Image;
 import no.digipat.patornat.mongodb.models.image.ImageChoice;
 
@@ -32,7 +32,7 @@ public class NextImagePairTest {
     private static MongoClient client;
     private static String databaseName;
     private MongoImageDAO imageDao;
-    private MongoBestImageDAO choiceDao;
+    private MongoImageComparisonDAO comparisonDao;
     
     @BeforeClass
     public static void setUpClass() {
@@ -44,7 +44,7 @@ public class NextImagePairTest {
     @Before
     public void setUp() {
         imageDao = new MongoImageDAO(client, databaseName);
-        choiceDao = new MongoBestImageDAO(client, databaseName);
+        comparisonDao = new MongoImageComparisonDAO(client, databaseName);
     }
     
     @Test
@@ -65,7 +65,7 @@ public class NextImagePairTest {
     public void testWithValidServerState() throws Exception {
         imageDao.createImage(new Image().setId(1337L));
         imageDao.createImage(new Image().setId(42L));
-        choiceDao.createBestImage(new BestImageChoice("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
+        comparisonDao.createImageComparison(new ImageComparison("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
         WebConversation conversation = new WebConversation();
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
         WebResponse response = conversation.getResponse(request);

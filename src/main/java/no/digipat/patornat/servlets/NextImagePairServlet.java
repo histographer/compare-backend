@@ -22,9 +22,9 @@ import org.json.simple.parser.ParseException;
 
 import com.mongodb.MongoClient;
 
-import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
+import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.mongodb.models.image.BestImageChoice;
+import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import no.digipat.patornat.mongodb.models.image.Image;
 
 /**
@@ -59,8 +59,8 @@ public class NextImagePairServlet extends HttpServlet {
         if (images.size() < 2) {
             throw new ServletException("Not enough images in the database");
         }
-        MongoBestImageDAO comparisonDao = new MongoBestImageDAO(client, databaseName);
-        List<BestImageChoice> comparisons = comparisonDao.getAllBestImageChoices();
+        MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
+        List<ImageComparison> comparisons = comparisonDao.getAllBestImageChoices();
         JSONObject jsonForAnalysisBackend = createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONObject analysisResponse;
@@ -74,7 +74,7 @@ public class NextImagePairServlet extends HttpServlet {
         
     }
     
-    private static JSONObject createRequestJson(List<Image> images, List<BestImageChoice> comparisons) {
+    private static JSONObject createRequestJson(List<Image> images, List<ImageComparison> comparisons) {
         JSONObject json = new JSONObject();
         List<Long> imageIds = new ArrayList<>();
         for (Image image : images) {
@@ -82,7 +82,7 @@ public class NextImagePairServlet extends HttpServlet {
         }
         json.put("image_ids", imageIds);
         List<JSONObject> jsonComparisons = new ArrayList<>();
-        for (BestImageChoice comparison : comparisons) {
+        for (ImageComparison comparison : comparisons) {
             JSONObject comparisonJson = new JSONObject();
             JSONObject winnerJson = new JSONObject();
             winnerJson.put("id", comparison.getChosen().getId());

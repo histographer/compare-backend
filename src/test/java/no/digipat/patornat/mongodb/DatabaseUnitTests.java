@@ -10,7 +10,7 @@ import com.mongodb.MongoClient;
 
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
-import no.digipat.patornat.mongodb.dao.MongoBestImageDAOTest;
+import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAOTest;
 import no.digipat.patornat.mongodb.dao.MongoImageDAOTest;
 
 /**
@@ -23,7 +23,7 @@ import no.digipat.patornat.mongodb.dao.MongoImageDAOTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    MongoBestImageDAOTest.class,
+    MongoImageComparisonDAOTest.class,
     MongoImageDAOTest.class
 })
 public class DatabaseUnitTests {

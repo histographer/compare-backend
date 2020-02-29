@@ -2,8 +2,8 @@ package no.digipat.patornat.servlets;
 
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.Converter;
-import no.digipat.patornat.mongodb.dao.MongoBestImageDAO;
-import no.digipat.patornat.mongodb.models.image.BestImageChoice;
+import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
+import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,11 +42,11 @@ public class ChooseBestImageServlet extends HttpServlet {
         JSONParser parser = new JSONParser();
         try {
             BufferedReader reader = request.getReader();
-            JSONObject bestImageJson = (JSONObject) parser.parse(reader);
-            BestImageChoice bestImageChoice = Converter.jsonToBestImageChoice(bestImageJson);
+            JSONObject imageComparisonJson = (JSONObject) parser.parse(reader);
+            ImageComparison imageComparison = Converter.jsonToImageComparison(imageComparisonJson);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
-            MongoBestImageDAO bestImageDAO = new MongoBestImageDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
-            bestImageDAO.createBestImage(bestImageChoice);
+            MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
+            comparisonDAO.createImageComparison(imageComparison);
         } catch (ParseException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

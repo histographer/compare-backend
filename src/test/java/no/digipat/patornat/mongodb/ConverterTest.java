@@ -9,13 +9,13 @@ import org.bson.Document;
 import org.junit.Test;
 
 import no.digipat.patornat.mongodb.dao.Converter;
-import no.digipat.patornat.mongodb.models.image.BestImageChoice;
+import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import no.digipat.patornat.mongodb.models.image.ImageChoice;
 
 public class ConverterTest {
 
     @Test
-    public void testDbDocumentToBestImageChoice_invalid() {
+    public void testDbDocumentToImageComparison_invalid() {
         final List<Document> documents = new ArrayList<>();
         // Null tests
         Document doc1 = null;
@@ -58,7 +58,7 @@ public class ConverterTest {
         for (int i = 0; i < documents.size(); i++) {
             Document document = documents.get(i);
             try {
-                Converter.dbDocumentToBestImageChoice(document);
+                Converter.dbDocumentToImageComparison(document);
                 fail("Expected IllegalArgumentException for document " + (i + 1) + ", but got nothing");
             } catch (IllegalArgumentException e) {
                 // Nothing to see here
@@ -69,23 +69,23 @@ public class ConverterTest {
     }
     
     @Test
-    public void testDbDocumentToBestImageChoice_valid() {
-        Document bestImageChoiceDoc = new Document();
+    public void testDbDocumentToImageComparison_valid() {
+        Document imageComparisonDoc = new Document();
         Document chosenImageDoc = new Document();
         Document otherImageDoc = new Document();
         chosenImageDoc.put("id", 1L);
         chosenImageDoc.put("comment", "this is a comment");
         otherImageDoc.put("id", 2L);
         // Other image's comment is null
-        bestImageChoiceDoc.put("chosen", chosenImageDoc);
-        bestImageChoiceDoc.put("other", otherImageDoc);
-        bestImageChoiceDoc.put("user", "cool_username");
-        BestImageChoice choice = Converter.dbDocumentToBestImageChoice(bestImageChoiceDoc);
-        assertEquals("cool_username", choice.getUser());
-        ImageChoice chosen = choice.getChosen();
+        imageComparisonDoc.put("chosen", chosenImageDoc);
+        imageComparisonDoc.put("other", otherImageDoc);
+        imageComparisonDoc.put("user", "cool_username");
+        ImageComparison comparison = Converter.dbDocumentToImageComparison(imageComparisonDoc);
+        assertEquals("cool_username", comparison.getUser());
+        ImageChoice chosen = comparison.getChosen();
         assertEquals(1L, chosen.getId());
         assertEquals("this is a comment", chosen.getComment());
-        ImageChoice other = choice.getOther();
+        ImageChoice other = comparison.getOther();
         assertEquals(2L, other.getId());
         assertNull(other.getComment());
     }
