@@ -1,7 +1,5 @@
 package no.digipat.patornat.mongodb.models.image;
 
-import java.net.URL;
-
 /**
  * A representation of a single image. All the setters of this
  * class return the instance on which they are called.
@@ -18,7 +16,7 @@ public class Image {
     private Long magnification;
     private Double resolution;
     private String mimeType;
-    private URL[] imageServerURLs;
+    private String[] imageServerURLs;
     
     public Long getId() {
         return id;
@@ -83,11 +81,11 @@ public class Image {
         return this;
     }
     
-    public URL[] getImageServerURLs() {
+    public String[] getImageServerURLs() {
         return imageServerURLs;
     }
     
-    public Image setImageServerURLs(URL[] imageServerURLs) {
+    public Image setImageServerURLs(String[] imageServerURLs) {
         this.imageServerURLs = imageServerURLs;
         return this;
     }
