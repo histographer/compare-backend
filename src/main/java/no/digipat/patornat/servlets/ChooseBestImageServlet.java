@@ -1,8 +1,8 @@
 package no.digipat.patornat.servlets;
 
 import com.mongodb.MongoClient;
-import no.digipat.patornat.mongodb.dao.Converter;
 import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
+import no.digipat.patornat.mongodb.models.image.ImageChoice;
 import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -43,7 +43,7 @@ public class ChooseBestImageServlet extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
             JSONObject imageComparisonJson = (JSONObject) parser.parse(reader);
-            ImageComparison imageComparison = Converter.jsonToImageComparison(imageComparisonJson);
+            ImageComparison imageComparison = jsonToImageComparison(imageComparisonJson);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
             MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
             comparisonDAO.createImageComparison(imageComparison);
@@ -51,4 +51,22 @@ public class ChooseBestImageServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
+    
+    private static ImageComparison jsonToImageComparison(JSONObject json) {
+        ImageChoice chosen = jsonToImageChoice((JSONObject) json.get("chosen"));
+        ImageChoice other = jsonToImageChoice((JSONObject) json.get("other"));
+        String user = (String) json.get("user");
+        return new ImageComparison(user, chosen, other);
+    }
+    
+    private static ImageChoice jsonToImageChoice(JSONObject json) {
+        try {
+            long id = (Long) json.get("id");
+            String comment = (String) json.getOrDefault("comment", "");
+            return new ImageChoice(id, comment);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("JSON is not valid, id is missing");
+        }
+    }
+    
 }

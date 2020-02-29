@@ -84,7 +84,6 @@
         <configuration>
           <includes>
             <include>DatabaseUnitTests.java</include>
-            <include>ConverterTest.java</include>
           </includes>
           <skipTests>${skip.unit.tests}</skipTests>
         </configuration>
