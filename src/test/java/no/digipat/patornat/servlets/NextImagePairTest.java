@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.json.JSONArray;
-import org.json.simple.parser.JSONParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -84,19 +84,19 @@ public class NextImagePairTest {
         assertEquals("application/json", response.getContentType());
         // Test response body
         String body = response.getText();
-        JSONParser parser = new JSONParser();
-        JSONArray json = (JSONArray) parser.parse(body);
+        JSONArray json = new JSONArray(body);
         Image[] receivedImages = json.toList().stream().map(new Function<Object, Image>() {
             @Override
             public Image apply(Object object) {
                 Map<String, Object> map = (Map<String, Object>) object;
-                return new Image().setId((Long) map.get("id"))
-                        .setWidth((Long) map.get("width"))
-                        .setHeight((Long) map.get("height"))
-                        .setDepth((Long) map.get("depth"))
-                        .setMagnification((Long) map.get("magnification"))
+                return new Image().setId((long) (int) map.get("id"))
+                        .setWidth((long) (int) map.get("width"))
+                        .setHeight((long) (int) map.get("height"))
+                        .setDepth((long) (int) map.get("depth"))
+                        .setMagnification((long) (int) map.get("magnification"))
+                        .setResolution((double) map.get("resolution"))
                         .setMimeType((String) map.get("mime"))
-                        .setImageServerURLs((String[]) map.get("imageServerURLs"));
+                        .setImageServerURLs(((List<String>) map.get("imageServerURLs")).toArray(new String[] {}));
             }
         }).toArray(Image[]::new);
         Arrays.sort(receivedImages, new Comparator<Image>() {
