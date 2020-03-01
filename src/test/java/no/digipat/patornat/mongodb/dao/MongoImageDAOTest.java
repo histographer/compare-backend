@@ -33,6 +33,12 @@ public class MongoImageDAOTest {
         dao.createImage(null);
     }
     
+    @Test(expected=IllegalStateException.class)
+    public void testCreateImageWithDuplicateId() {
+        dao.createImage(new Image().setId(1L).setDepth(2L));
+        dao.createImage(new Image().setId(1L).setWidth(100L));
+    }
+    
     @Test
     public void testGetAllImages() {
         // Test with no data
