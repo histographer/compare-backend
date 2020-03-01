@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -39,8 +43,24 @@ public class NextImagePairServlet extends HttpServlet {
     
     /**
      * Gets a pair of images for comparison. The response body will contain
-     * a JSON object of the form <code>{"pair": [id1, id2]}</code>, where {@code id1}
-     * and {@code id2} are longs.
+     * a JSON array whose elements are two JSON objects of the form
+     * 
+     * <pre>
+     * {
+     *   "id": id,
+     *   "width": width,
+     *   "height": height,
+     *   "depth": depth,
+     *   "magnification": magnification,
+     *   "resolution": resolution,
+     *   "mime": mime,
+     *   "imageServerURLs": [url1, url2, ..., urlN]
+     * },
+     * </pre>
+     * 
+     * where {@code id}, {@code width}, {@code height}, {@code depth}, and
+     * {@code magnification} are longs, {@code resolution} is a double,
+     * {@code mime} is a string, and {@code url1, url2, ..., urlN} are strings.
      * 
      * @param request the HTTP request
      * @param response the HTTP response
@@ -48,6 +68,8 @@ public class NextImagePairServlet extends HttpServlet {
      * @throws ServletException if there are not at least two images in the database
      * @throws IOException if an I/O error occurs. In particular, if an I/O error
      * occurs when connecting to the analysis backend.
+     * 
+     * @see Image
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,18 +82,23 @@ public class NextImagePairServlet extends HttpServlet {
             throw new ServletException("Not enough images in the database");
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        List<ImageComparison> comparisons = comparisonDao.getAllBestImageChoices();
+        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons();
         JSONObject jsonForAnalysisBackend = createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
-        JSONObject analysisResponse;
+        JSONArray responseForUser;
         try {
-            analysisResponse = getAnalysisResponse(baseUrl, jsonForAnalysisBackend);
-        } catch (ParseException e) {
-            throw new ServletException("Analysis backend returned an invalid response", e);
-            // This isn't documented in the Javadoc because it should never happen
+            JSONObject analysisResponse = getAnalysisResponse(baseUrl, jsonForAnalysisBackend);
+            JSONArray pair = analysisResponse.getJSONArray("pair");
+            long id1 = pair.getLong(0), id2 = pair.getLong(1);
+            Stream<Image> stream = images.stream();
+            Image image1 = stream.filter(image -> image.getId() == id1).findFirst().get();
+            Image image2 = stream.filter(image -> image.getId() == id2).findFirst().get();
+            responseForUser = createResponseJson(image1, image2);
+        } catch (ParseException | JSONException | NoSuchElementException e) {
+            throw new IOException("Analysis backend returned an invalid response", e);
         }
-        // TODO respond to user
-        
+        response.setContentType("application/json");
+        response.getWriter().print(responseForUser);
     }
     
     private static JSONObject createRequestJson(List<Image> images, List<ImageComparison> comparisons) {
@@ -113,6 +140,23 @@ public class NextImagePairServlet extends HttpServlet {
             JSONParser parser = new JSONParser();
             return (JSONObject) parser.parse(responseReader);
         }
+    }
+    
+    private static JSONArray createResponseJson(Image image1, Image image2) {
+        JSONArray returnJson = new JSONArray();
+        for (Image image : new Image[] {image1, image2}) {
+            JSONObject imageJson = new JSONObject();
+            imageJson.put("id", image.getId());
+            imageJson.put("width", image.getWidth());
+            imageJson.put("height", image.getHeight());
+            imageJson.put("depth", image.getDepth());
+            imageJson.put("magnification", image.getMagnification());
+            imageJson.put("resolution", image.getResolution());
+            imageJson.put("mime", image.getMimeType());
+            imageJson.put("imageServerURLs", image.getImageServerURLs());
+            returnJson.put(imageJson);
+        }
+        return returnJson;
     }
     
 }
