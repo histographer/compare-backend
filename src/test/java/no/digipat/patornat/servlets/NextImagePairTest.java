@@ -3,11 +3,12 @@ package no.digipat.patornat.servlets;
 import static org.junit.Assert.*;
 
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.After;
 import org.junit.Before;
@@ -63,8 +64,16 @@ public class NextImagePairTest {
     
     @Test
     public void testWithValidServerState() throws Exception {
-        imageDao.createImage(new Image().setId(1337L));
-        imageDao.createImage(new Image().setId(42L));
+        Image image1 = new Image().setId(42L).setWidth(150L).setHeight(200L)
+                .setDepth(10L).setMagnification(4L).setResolution(50.67)
+                .setMimeType("image/png")
+                .setImageServerURLs(new String[] {"https://example.com"});
+        imageDao.createImage(image1);
+        Image image2 = new Image().setId(1337L).setWidth(100L).setHeight(50L)
+                .setDepth(5L).setMagnification(3L).setResolution(123.45)
+                .setMimeType("image/jpeg")
+                .setImageServerURLs(new String[] {"http://digipat.no"});
+        imageDao.createImage(image2);
         comparisonDao.createImageComparison(new ImageComparison("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
         WebConversation conversation = new WebConversation();
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
@@ -76,20 +85,27 @@ public class NextImagePairTest {
         // Test response body
         String body = response.getText();
         JSONParser parser = new JSONParser();
-        JSONObject json = (JSONObject) parser.parse(body);
-        Set<String> expectedKeys = new HashSet<>();
-        expectedKeys.add("pair");
-        assertEquals(expectedKeys, json.keySet());
-        JSONArray pair = (JSONArray) json.get("pair");
-        Set<Long> expectedIds = new HashSet<>();
-        expectedIds.add(42L);
-        expectedIds.add(1337L);
-        Set<Long> actualIds = new HashSet<>();
-        for (Object object : pair) {
-            long id = (Long) object;
-            actualIds.add(id);
-        }
-        assertEquals(expectedIds, actualIds);
+        JSONArray json = (JSONArray) parser.parse(body);
+        Image[] receivedImages = json.toList().stream().map(new Function<Object, Image>() {
+            @Override
+            public Image apply(Object object) {
+                Map<String, Object> map = (Map<String, Object>) object;
+                return new Image().setId((Long) map.get("id"))
+                        .setWidth((Long) map.get("width"))
+                        .setHeight((Long) map.get("height"))
+                        .setDepth((Long) map.get("depth"))
+                        .setMagnification((Long) map.get("magnification"))
+                        .setMimeType((String) map.get("mime"))
+                        .setImageServerURLs((String[]) map.get("imageServerURLs"));
+            }
+        }).toArray(Image[]::new);
+        Arrays.sort(receivedImages, new Comparator<Image>() {
+            @Override
+            public int compare(Image img1, Image img2) {
+                return (int) (img1.getId() - img2.getId());
+            }
+        });
+        assertArrayEquals(new Image[] {image1, image2}, receivedImages);
     }
     
     @After
