@@ -7,6 +7,7 @@ import java.util.List;
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 
 import no.digipat.patornat.mongodb.models.image.Image;
@@ -34,10 +35,21 @@ public class MongoImageDAO {
     /**
      * Inserts a new image into the database.
      * 
-     * @param image the image to be inserted 
+     * @param image the image to be inserted
+     * 
+     * @throws IllegalStateException if an image with the given ID already exists
+     * 
      */
-    public void createImage(Image image) {
-        collection.insertOne(imageToDocument(image));
+    public void createImage(Image image) throws IllegalStateException {
+        try {
+            collection.insertOne(imageToDocument(image));
+        } catch (MongoWriteException e) {
+            if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
+                throw new IllegalStateException("Duplicate image ID", e);
+            } else {
+                throw e;
+            }
+        }
     }
     
     /**
@@ -54,7 +66,7 @@ public class MongoImageDAO {
     }
     
     private static Image documentToImage(Document document) {
-        Image image =  new Image().setId(document.getLong("id"))
+        Image image =  new Image().setId(document.getLong("_id"))
                 .setWidth(document.getLong("width"))
                 .setHeight(document.getLong("height"))
                 .setDepth(document.getLong("depth"))
@@ -70,7 +82,7 @@ public class MongoImageDAO {
     
     private static Document imageToDocument(Image image) {
         Document document = new Document();
-        document.put("id", image.getId());
+        document.put("_id", image.getId());
         document.put("width", image.getWidth());
         document.put("height", image.getHeight());
         document.put("depth", image.getDepth());
