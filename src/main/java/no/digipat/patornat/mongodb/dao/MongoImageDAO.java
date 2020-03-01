@@ -38,6 +38,7 @@ public class MongoImageDAO {
      * @param image the image to be inserted
      * 
      * @throws IllegalStateException if an image with the given ID already exists
+     * @throws NullPointerException if {@code image} or {@code image.getId()} is {@code null}
      * 
      */
     public void createImage(Image image) throws IllegalStateException {
