@@ -2,7 +2,6 @@ package no.digipat.patornat.mongodb.dao;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,9 +38,12 @@ public class MongoImageDAOTest {
         // Test with no data
         assertEquals(0, dao.getAllImages().size());
         // Test with data
-        dao.createImage(new Image().setId(1L));
-        dao.createImage(new Image().setId(1337L));
-        dao.createImage(new Image().setId(69L));
+        Image image1 = new Image().setId(1L).setDepth(12L).setHeight(150L).setWidth(200L),
+                image2 = new Image().setId(69L).setMagnification(4L).setResolution(100.1).setMimeType("image/png"),
+                image3 = new Image().setId(1337L).setImageServerURLs(new String[] {"http://www.example.com"});
+        dao.createImage(image1);
+        dao.createImage(image2);
+        dao.createImage(image3);
         List<Image> images = dao.getAllImages();
         Collections.sort(images, new Comparator<Image>() {
             @Override
@@ -49,7 +51,7 @@ public class MongoImageDAOTest {
                 return (int) (img1.getId() - img2.getId());
             }
         });
-        assertArrayEquals(new long[] {1, 69, 1337}, images.stream().mapToLong(img -> img.getId()).toArray());
+        assertArrayEquals(new Image[] {image1, image2, image3}, images.toArray());
     }
     
     @After
