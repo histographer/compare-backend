@@ -1,9 +1,8 @@
 package no.digipat.patornat.servlets;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,8 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONTokener;
 
 import com.mongodb.MongoClient;
 
@@ -94,7 +92,7 @@ public class NextImagePairServlet extends HttpServlet {
             Image image1 = stream.filter(image -> image.getId() == id1).findFirst().get();
             Image image2 = stream.filter(image -> image.getId() == id2).findFirst().get();
             responseForUser = createResponseJson(image1, image2);
-        } catch (ParseException | JSONException | NoSuchElementException e) {
+        } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
         }
         response.setContentType("application/json");
@@ -123,7 +121,7 @@ public class NextImagePairServlet extends HttpServlet {
         return json;
     }
     
-    private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody) throws IOException, ParseException {
+    private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody) throws IOException, JSONException {
         HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair").openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
@@ -136,9 +134,8 @@ public class NextImagePairServlet extends HttpServlet {
         if (responseCode != 200) {
             throw new IOException("Expected response code 200 from analysis backend, but got " + responseCode);
         }
-        try (Reader responseReader = new InputStreamReader(connection.getInputStream())) {
-            JSONParser parser = new JSONParser();
-            return (JSONObject) parser.parse(responseReader);
+        try (InputStream inputStream = connection.getInputStream()) {
+            return new JSONObject(new JSONTokener(inputStream));
         }
     }
     
