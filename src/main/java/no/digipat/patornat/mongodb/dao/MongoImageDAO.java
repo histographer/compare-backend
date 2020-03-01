@@ -82,7 +82,7 @@ public class MongoImageDAO {
     
     private static Document imageToDocument(Image image) {
         Document document = new Document();
-        document.put("_id", image.getId());
+        document.put("_id", (long) image.getId());
         document.put("width", image.getWidth());
         document.put("height", image.getHeight());
         document.put("depth", image.getDepth());
