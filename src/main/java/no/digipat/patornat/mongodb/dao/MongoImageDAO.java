@@ -1,6 +1,7 @@
 package no.digipat.patornat.mongodb.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bson.Document;
@@ -53,15 +54,34 @@ public class MongoImageDAO {
     }
     
     private static Image documentToImage(Document document) {
-        return new Image().setId(document.getLong("id"));
-        // TODO other properties
+        Image image =  new Image().setId(document.getLong("id"))
+                .setWidth(document.getLong("width"))
+                .setHeight(document.getLong("height"))
+                .setDepth(document.getLong("depth"))
+                .setMagnification(document.getLong("magnification"))
+                .setResolution(document.getDouble("resolution"))
+                .setMimeType(document.getString("mimeType"));
+        List<String> urls = document.getList("imageServerURLs", String.class);
+        if (urls != null) {
+            image.setImageServerURLs(urls.toArray(new String[urls.size()]));
+        }
+        return image;
     }
     
     private static Document imageToDocument(Image image) {
         Document document = new Document();
         document.put("id", image.getId());
+        document.put("width", image.getWidth());
+        document.put("height", image.getHeight());
+        document.put("depth", image.getDepth());
+        document.put("magnification", image.getMagnification());
+        document.put("resolution", image.getResolution());
+        document.put("mimeType", image.getMimeType());
+        String[] imageServerURLs = image.getImageServerURLs();
+        if (imageServerURLs != null) {
+            document.put("imageServerURLs", Arrays.asList(imageServerURLs));
+        }
         return document;
-        // TODO other properties
     }
     
 }
