@@ -1,5 +1,8 @@
 package no.digipat.patornat.mongodb.models.image;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A representation of a single image. All the setters of this
  * class return the instance on which they are called.
@@ -88,6 +91,43 @@ public class Image {
     public Image setImageServerURLs(String[] imageServerURLs) {
         this.imageServerURLs = imageServerURLs;
         return this;
+    }
+    
+    /**
+     * Indicates whether this image is "equal to" some other object.
+     * This image is equal to {@code obj} if and only if {@code obj}
+     * is an instance of {@code Image} whose properties have the same
+     * values as those of this image.
+     * 
+     * @param obj the object to which this image is compared
+     * 
+     * @return {@code true} if {@code obj} is equal to this image,
+     * {@code false} otherwise
+     * 
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Image) {
+            Image img = (Image) obj;
+            return Objects.equals(id, img.getId())
+                    && Objects.equals(width, img.getWidth())
+                    && Objects.equals(height, img.getHeight())
+                    && Objects.equals(depth, img.getDepth())
+                    && Objects.equals(magnification, img.getMagnification())
+                    && Objects.equals(resolution, img.getResolution())
+                    && Objects.equals(mimeType, img.getMimeType())
+                    && Arrays.equals(imageServerURLs, img.getImageServerURLs());
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        // We need to override hashCode since we're overriding equals
+        int code = Objects.hash(id, width, height, depth, magnification, resolution, mimeType);
+        code += 31 * Arrays.hashCode(imageServerURLs);
+        return code;
     }
     
 }
