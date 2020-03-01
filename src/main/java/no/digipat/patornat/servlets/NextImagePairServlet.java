@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -88,9 +87,8 @@ public class NextImagePairServlet extends HttpServlet {
             JSONObject analysisResponse = getAnalysisResponse(baseUrl, jsonForAnalysisBackend);
             JSONArray pair = analysisResponse.getJSONArray("pair");
             long id1 = pair.getLong(0), id2 = pair.getLong(1);
-            Stream<Image> stream = images.stream();
-            Image image1 = stream.filter(image -> image.getId() == id1).findFirst().get();
-            Image image2 = stream.filter(image -> image.getId() == id2).findFirst().get();
+            Image image1 = images.stream().filter(image -> image.getId() == id1).findFirst().get();
+            Image image2 = images.stream().filter(image -> image.getId() == id2).findFirst().get();
             responseForUser = createResponseJson(image1, image2);
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
