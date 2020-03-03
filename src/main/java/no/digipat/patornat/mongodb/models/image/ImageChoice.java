@@ -1,20 +1,20 @@
 package no.digipat.patornat.mongodb.models.image;
 
 public class ImageChoice {
-    private int id;
+    private long id;
     private String comment;
 
-    public ImageChoice(int id, String comment) {
+    public ImageChoice(long id, String comment) {
         this.id = id;
         this.comment = comment;
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -17,7 +17,7 @@ services:
       - mongodata:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
     ports:
-      - 27017:27017
+      - ${PATORNAT_MONGODB_PORT}:27017
 
   mongo-express:
     image: mongo-express
@@ -27,7 +27,14 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME} #root
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD} #testpassword
-
+  
+  analysis_backend:
+    image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+    container_name: analysis_backend_test
+    restart: always
+    expose:
+      - 9000
+  
   patornatbackend:
     build:
       context: .
@@ -36,13 +43,14 @@ services:
     ports:
       - 9292:8080
     environment:
-        PATORNAT_MONGODB_HOST: ${PATORNAT_MONGODB_HOST}
-        PATORNAT_MONGODB_PORT: ${PATORNAT_MONGODB_PORT}
-        PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME}
-        PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD}
-        PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE}
-
-
+      PATORNAT_MONGODB_HOST: patornatmongo
+      PATORNAT_MONGODB_PORT: 27017
+      PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME}
+      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD}
+      PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE}
+      PATORNAT_ANALYSIS_BACKEND_PROTOCOL: http
+      PATORNAT_ANALYSIS_BACKEND_HOST: analysis_backend_test
+      PATORNAT_ANALYSIS_BACKEND_PORT: 9000
 
 volumes:
   mongodata:

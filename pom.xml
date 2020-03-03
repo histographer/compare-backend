@@ -11,6 +11,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <skip.unit.tests>false</skip.unit.tests>
   </properties>
 
   <repositories>
@@ -31,6 +32,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.httpunit</groupId>
+      <artifactId>httpunit</artifactId>
+      <version>1.7.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>mongo-java-server</artifactId>
+      <version>1.24.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -58,7 +71,46 @@
       <artifactId>json</artifactId>
       <version>20190722</version>
     </dependency>
-
   </dependencies>
-
+  
+  <build>
+    <plugins>
+      
+      <plugin>
+        <!-- Unit test config -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <configuration>
+          <includes>
+            <include>DatabaseUnitTests.java</include>
+            <include>ImageTest.java</include>
+          </includes>
+          <skipTests>${skip.unit.tests}</skipTests>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <!-- Integration test config -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <configuration>
+          <includes>
+            <include>IntegrationTests.java</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+  </build>
+  
 </project>
