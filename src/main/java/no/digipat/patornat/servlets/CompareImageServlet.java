@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet(name = "ChooseBestImage",  urlPatterns = {"/scoring"})
-public class ChooseBestImageServlet extends HttpServlet {
+@WebServlet(name = "CompareImage",  urlPatterns = {"/scoring"})
+public class CompareImageServlet extends HttpServlet {
 
     /**
      * The json request looks like this
