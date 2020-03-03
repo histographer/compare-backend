@@ -1,12 +1,12 @@
 package no.digipat.patornat.mongodb.models.image;
 
-public class BestImageChoice {
+public class ImageComparison {
     private ImageChoice chosen;
     private ImageChoice other;
     private String user;
 
 
-    public BestImageChoice(String user, ImageChoice chosen, ImageChoice other) {
+    public ImageComparison(String user, ImageChoice chosen, ImageChoice other) {
         this.user = user;
         this.chosen = chosen;
         this.other = other;

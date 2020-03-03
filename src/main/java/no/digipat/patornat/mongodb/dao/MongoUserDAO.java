@@ -3,6 +3,8 @@ package no.digipat.patornat.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import no.digipat.patornat.mongodb.models.user.IUser;
+import no.digipat.patornat.mongodb.models.user.User;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -18,7 +20,7 @@ public class MongoUserDAO {
     }
 
     public IUser createUser(IUser user) {
-        Document document = Converter.userToDBDocument(user);
+        Document document = userToDBDocument(user);
         this.collection.insertOne(document);
         ObjectId id = (ObjectId) document.get("_id");
         user.setId(id.toString());
@@ -29,6 +31,18 @@ public class MongoUserDAO {
 
         Document returnedUser = (Document) this.collection.find(eq("username", user.getUsername())).first();
 
-        return Converter.userDocumentToJavaObject(returnedUser);
+        return userDocumentToJavaObject(returnedUser);
     }
+    
+    private static Document userToDBDocument(IUser user) {
+        return new Document("username", user.getUsername());
+    }
+    
+    private static IUser userDocumentToJavaObject(Document object) {
+        String username = (String) object.get("username");
+        ObjectId id = (ObjectId) object.get("_id");
+        User user = new User(id.toString(), username);
+        return user;
+    }
+    
 }
