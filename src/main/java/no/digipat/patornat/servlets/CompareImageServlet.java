@@ -23,7 +23,7 @@ public class CompareImageServlet extends HttpServlet {
     /**
      * The json request looks like this
      * {
-     *   "user": "string",
+     *   "session": "string",
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",

@@ -1,11 +1,12 @@
 package no.digipat.patornat.mongodb.listener;
 
+import be.cytomine.client.*;
+import be.cytomine.client.models.*;
+import be.cytomine.client.collections.*;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -37,7 +38,6 @@ public class MongoDBContextListener implements ServletContextListener {
             MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port);
 
 
-            
             MongoClient client = new MongoClient(MONGO_URI);
             context.log("Mongoclient connected successfully at "+host+":"+port);
             context.setAttribute("MONGO_DATABASE", database);

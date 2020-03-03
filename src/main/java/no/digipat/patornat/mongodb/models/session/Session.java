@@ -1,41 +1,45 @@
-package no.digipat.patornat.mongodb.models.user;
+package no.digipat.patornat.mongodb.models.session;
 
 import java.util.UUID;
 
-public class User {
+public class Session {
     private String id;
     private String hospital;
     private String monitorType;
 
 
 
-    public User(String monitorType, String hospital) {
+    public Session(String monitorType, String hospital) {
         this.id = UUID.randomUUID().toString();
         this.monitorType = monitorType;
         this.hospital = hospital;
     }
+    public Session(){}
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public Session setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getHospital() {
         return hospital;
     }
 
-    public void setHospital(String hospital) {
+    public Session setHospital(String hospital) {
         this.hospital = hospital;
+        return this;
     }
 
     public String getMonitorType() {
         return monitorType;
     }
 
-    public void setMonitorType(String monitorType) {
+    public Session setMonitorType(String monitorType) {
         this.monitorType = monitorType;
+        return this;
     }
 }

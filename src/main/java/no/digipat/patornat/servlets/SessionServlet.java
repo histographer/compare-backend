@@ -1,9 +1,8 @@
 package no.digipat.patornat.servlets;
 
 import com.mongodb.MongoClient;
-import no.digipat.patornat.mongodb.dao.Converter;
-import no.digipat.patornat.mongodb.dao.MongoUserDAO;
-import no.digipat.patornat.mongodb.models.user.User;
+import no.digipat.patornat.mongodb.dao.MongoSessionDAO;
+import no.digipat.patornat.mongodb.models.session.Session;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,10 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-@WebServlet(name = "no.digipat.patornat.servlets.UserServlet", urlPatterns = {"/user"})
-public class UserServlet extends HttpServlet {
+@WebServlet(name = "no.digipat.patornat.servlets.UserServlet", urlPatterns = {"/session"})
+public class SessionServlet extends HttpServlet {
 
 
     /**
@@ -28,30 +26,35 @@ public class UserServlet extends HttpServlet {
      *     hospital, string
      * }
      * @param response
-     * {
-     *    user: uuid(string)
-     * }
+     *
+     * StatusCode: 200
+     *
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         ServletContext context = request.getServletContext();
         JSONParser parser = new JSONParser();
         try {
-            PrintWriter out = response.getWriter();
 
             BufferedReader reader = request.getReader();
-            JSONObject userJson = (JSONObject) parser.parse(reader);
-            User user = Converter.jsonToUser(userJson);
+            JSONObject sessionJson = (JSONObject) parser.parse(reader);
 
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
-            MongoUserDAO userDAO = new MongoUserDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
-            userDAO.createUser(user);
+            MongoSessionDAO sessionDAO = new MongoSessionDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
+            sessionDAO.createSession(jsonToSession(sessionJson));
 
-            response.setContentType("application/json");
-            JSONObject userResponse = new JSONObject();
-            userResponse.put("user", user.getId());
-            out.println(userResponse);
         } catch (ParseException |  IOException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+
+    private static Session jsonToSession(JSONObject json) {
+        try {
+            String hospital= (String) json.get("hospital");
+            String monitorType = (String) json.getOrDefault("monitorType", null);
+            return new Session().setHospital(hospital).setMonitorType(monitorType);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("JSON is not valid, hospital is missing");
         }
     }
 
