@@ -4,4 +4,13 @@
 
 <web-app>
   <display-name>Pat or Nat Backend</display-name>
+  
+  <!-- In order to ensure that listeners are notified in a certain order, they need to be specified in this file -->
+  <listener>
+    <listener-class>no.digipat.patornat.mongodb.listener.MongoDBContextListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>no.digipat.patornat.ImageRetrievalContextListener</listener-class>
+  </listener>
+  
 </web-app>

@@ -4,18 +4,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 
 /**
  * Handles mongodb singleton connection
  */
-@WebListener
 public class MongoDBContextListener implements ServletContextListener {
 
 
