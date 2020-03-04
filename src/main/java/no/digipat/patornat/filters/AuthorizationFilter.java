@@ -16,7 +16,7 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.config = config;
+        this.config = filterConfig;
     }
 
     @Override

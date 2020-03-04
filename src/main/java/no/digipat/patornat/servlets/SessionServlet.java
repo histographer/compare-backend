@@ -44,6 +44,7 @@ public class SessionServlet extends HttpServlet {
             if(!sessionDAO.sessionExists(servletSessionID)) {
                 sessionDAO.createSession(jsonToSession(sessionJson, servletSessionID));
             }
+
         } catch (ParseException |  IOException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -54,7 +55,7 @@ public class SessionServlet extends HttpServlet {
         try {
             String hospital= (String) json.get("hospital");
             String monitorType = (String) json.getOrDefault("monitorType", null);
-            return new Session().setHospital(hospital).setMonitorType(monitorType);
+            return new Session().setHospital(hospital).setMonitorType(monitorType).setId(id);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("JSON is not valid, hospital is missing");
         }
