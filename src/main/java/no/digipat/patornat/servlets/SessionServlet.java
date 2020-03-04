@@ -35,10 +35,8 @@ public class SessionServlet extends HttpServlet {
         ServletContext context = request.getServletContext();
         String servletSessionID = request.getSession().getId();
 
-
         JSONParser parser = new JSONParser();
         try {
-
             BufferedReader reader = request.getReader();
             JSONObject sessionJson = (JSONObject) parser.parse(reader);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");

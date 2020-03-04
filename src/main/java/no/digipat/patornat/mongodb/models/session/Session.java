@@ -9,11 +9,6 @@ public class Session {
 
 
 
-    public Session(String monitorType, String hospital) {
-        this.id = UUID.randomUUID().toString();
-        this.monitorType = monitorType;
-        this.hospital = hospital;
-    }
     public Session(){}
 
     public String getId() {
