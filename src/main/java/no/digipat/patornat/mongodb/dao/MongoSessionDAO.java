@@ -1,11 +1,10 @@
 package no.digipat.patornat.mongodb.dao;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
-import javassist.NotFoundException;
 import no.digipat.patornat.mongodb.models.session.Session;
 import org.bson.Document;
-import org.json.simple.JSONObject;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -33,11 +32,24 @@ public class MongoSessionDAO {
     /**
      * inserts a new session to the database.
      *
-     * @param session the session
+     * @param session the session that has to be inserted
+     *
+     * @throws IllegalStateException if an session with the given ID already exists
+     * @throws NullPointerException if {@code session} or {@code session.getId()} is {@code null}
      */
-    public void createSession (Session session) {
-        this.collection.insertOne(sessionToDocument(session));
+    public void createSession (Session session) throws IllegalStateException {
+        try {
+            this.collection.insertOne(sessionToDocument(session));
+        }
+        catch (
+            MongoWriteException e) {
+            if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
+                throw new IllegalStateException("Duplicate session ID", e);
+            } else {
+                throw e;
+            }
     }
+}
 
     /**
      * Checks if a session exists in the database.
@@ -49,7 +61,7 @@ public class MongoSessionDAO {
         try {
             Session session = getSession(id);
             return true;
-        } catch(NotFoundException e) {
+        } catch(IllegalArgumentException e) {
             return false;
         }
     }
@@ -59,12 +71,12 @@ public class MongoSessionDAO {
      *
      * @param id the id
      * @return the session
-     * @throws NotFoundException if not found exception
+     * @throws IllegalArgumentException if not found exception
      */
-    public Session getSession(String id) throws NotFoundException {
+    public Session getSession(String id) throws IllegalArgumentException {
        Document session = this.collection.find(eq("_id", id)).first();
        if(session == null) {
-           throw new NotFoundException("There is no session with this id that exists in the database");
+           throw new IllegalArgumentException("There is no session with this id that exists in the database");
        }
        return documentToSession(session);
     }
