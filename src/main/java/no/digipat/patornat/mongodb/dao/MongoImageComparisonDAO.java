@@ -54,7 +54,7 @@ public class MongoImageComparisonDAO {
         return new Document().
                 append("chosen", imageChoiceToDBDocument(imageComparison.getChosen()))
                 .append("other", imageChoiceToDBDocument(imageComparison.getOther()))
-                .append("user", imageComparison.getUser());
+                .append("id", imageComparison.getUser());
     }
     
     private static ImageComparison dbDocumentToImageComparison(Document document) {

@@ -23,7 +23,6 @@ public class CompareImageServlet extends HttpServlet {
     /**
      * The json request looks like this
      * {
-     *   "session": "string",
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",
@@ -39,11 +38,12 @@ public class CompareImageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         ServletContext context = request.getServletContext();
+        String servletSessionID = request.getSession().getId();
         JSONParser parser = new JSONParser();
         try {
             BufferedReader reader = request.getReader();
             JSONObject imageComparisonJson = (JSONObject) parser.parse(reader);
-            ImageComparison imageComparison = jsonToImageComparison(imageComparisonJson);
+            ImageComparison imageComparison = jsonToImageComparison(imageComparisonJson, servletSessionID);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
             MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
             comparisonDAO.createImageComparison(imageComparison);
@@ -52,11 +52,10 @@ public class CompareImageServlet extends HttpServlet {
         }
     }
     
-    private static ImageComparison jsonToImageComparison(JSONObject json) {
+    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) {
         ImageChoice chosen = jsonToImageChoice((JSONObject) json.get("chosen"));
         ImageChoice other = jsonToImageChoice((JSONObject) json.get("other"));
-        String user = (String) json.get("user");
-        return new ImageComparison(user, chosen, other);
+        return new ImageComparison(sessionID, chosen, other);
     }
     
     private static ImageChoice jsonToImageChoice(JSONObject json) {

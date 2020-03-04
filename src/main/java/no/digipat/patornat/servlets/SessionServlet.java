@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -32,23 +33,26 @@ public class SessionServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         ServletContext context = request.getServletContext();
+        String servletSessionID = request.getSession().getId();
+
+
         JSONParser parser = new JSONParser();
         try {
 
             BufferedReader reader = request.getReader();
             JSONObject sessionJson = (JSONObject) parser.parse(reader);
-
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
             MongoSessionDAO sessionDAO = new MongoSessionDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
-            sessionDAO.createSession(jsonToSession(sessionJson));
-
+            if(!sessionDAO.sessionExists(servletSessionID)) {
+                sessionDAO.createSession(jsonToSession(sessionJson, servletSessionID));
+            }
         } catch (ParseException |  IOException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
 
-    private static Session jsonToSession(JSONObject json) {
+    private static Session jsonToSession(JSONObject json, String id) {
         try {
             String hospital= (String) json.get("hospital");
             String monitorType = (String) json.getOrDefault("monitorType", null);
