@@ -59,7 +59,7 @@ public class MongoImageComparisonDAO {
     
     private static ImageComparison dbDocumentToImageComparison(Document document) {
         try {
-            String user = document.getString("user");
+            String user = document.getString("id");
             Document chosenDoc = (Document) document.get("chosen");
             long chosenId = (Long) chosenDoc.get("id");
             String chosenComment = chosenDoc.getString("comment");
