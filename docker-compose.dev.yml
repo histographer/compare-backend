@@ -1,7 +1,6 @@
 version: '3.1'
 
 services:
-
   mongo:
     image: mongo:latest
     container_name: patornatmongo
@@ -27,14 +26,25 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME} #root
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD} #testpassword
-  
-  analysis_backend:
-    image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+
+  # analysis_backend:
+  #   image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+  #   container_name: analysis_backend_test
+  #   restart: always
+  #   expose:
+  #     - 8000
+
+  web:
+    build:
+      context: ../analysis-rest-api
+      dockerfile: Dockerfile
+    command: gunicorn --bind 0.0.0.0:8000 api.wsgi
     container_name: analysis_backend_test
-    restart: always
-    expose:
-      - 8000
-  
+    volumes:
+      - ../analysis-rest-api:/src
+    ports:
+      - '8000:8000'
+
   patornatbackend:
     build:
       context: .
