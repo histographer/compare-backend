@@ -11,7 +11,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: pat-or-nat-backend
+  IMAGE_NAME: compare-backend
 
 jobs:
   test:
@@ -59,4 +59,4 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script: ../cytomine/bootstrap/redeploy.sh pat-or-nat-backend
+          script: docker service update --image $IMAGE_ID compare-backend
