@@ -116,12 +116,14 @@ public class NextImagePairServlet extends HttpServlet {
             jsonComparisons.add(comparisonJson);
         }
         json.put("comparison_data", jsonComparisons);
+        System.out.println(json.toString());
         return json;
     }
     
     private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody) throws IOException, JSONException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair/").openConnection();
         connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
         try (PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
             writer.print(requestBody);

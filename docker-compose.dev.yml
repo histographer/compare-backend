@@ -39,7 +39,7 @@ services:
       context: ../analysis-rest-api
       dockerfile: Dockerfile
     command: gunicorn --bind 0.0.0.0:8000 api.wsgi
-    container_name: analysis_backend_test
+    container_name: analysis
     volumes:
       - ../analysis-rest-api:/src
     ports:
@@ -59,7 +59,7 @@ services:
       PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD}
       PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE}
       PATORNAT_ANALYSIS_BACKEND_PROTOCOL: http
-      PATORNAT_ANALYSIS_BACKEND_HOST: analysis_backend_test
+      PATORNAT_ANALYSIS_BACKEND_HOST: analysis
       PATORNAT_ANALYSIS_BACKEND_PORT: 8000
       PATORNAT_CYTOMINE_URL: ${PATORNAT_CYTOMINE_URL}
       PATORNAT_CYTOMINE_PUBLIC_KEY: ${PATORNAT_CYTOMINE_PUBLIC_KEY}
