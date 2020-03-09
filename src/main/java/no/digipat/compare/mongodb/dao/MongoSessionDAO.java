@@ -11,7 +11,7 @@ import org.bson.Document;
 import static com.mongodb.client.model.Filters.eq;
 
 /**
- * A data access object (DAO) for images.
+ * A data access object (DAO) for sessions.
  *
  * @author Kent Are Torvik
  *

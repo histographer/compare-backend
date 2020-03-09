@@ -52,8 +52,8 @@ public class MongoImageComparisonDAO {
     /**
      * Retrieves the number of times each image in the database has been compared.
      * 
-     * @return a list of map entries, each of whose key is an image ID and value
-     * is the number of times that image has been compared
+     * @return a list of map entries, in which every entry's key is an image ID
+     * and the entry's value is the number of times that image has been compared
      */
     public List<Map.Entry<Long, Long>> getNumberOfComparisonsForEachImage() {
         final List<Map.Entry<Long, Long>> numbers = new ArrayList<>();
@@ -61,7 +61,6 @@ public class MongoImageComparisonDAO {
         for (Image image : imageDao.getAllImages()) {
             Long id = image.getId();
             long count = collection.countDocuments(or(eq("chosen.id", id), eq("other.id", id)));
-            System.out.println(count);
             numbers.add(new Map.Entry<Long, Long>() {
                 @Override
                 public Long getKey() {
@@ -72,7 +71,9 @@ public class MongoImageComparisonDAO {
                     return count;
                 }
                 @Override
-                public Long setValue(Long value) {return null;}
+                public Long setValue(Long value) {
+                    throw new UnsupportedOperationException();
+                }
             });
         }
         return numbers;

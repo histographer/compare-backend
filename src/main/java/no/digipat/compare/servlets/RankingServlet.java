@@ -33,19 +33,18 @@ import java.util.NoSuchElementException;
 public class RankingServlet extends HttpServlet {
 
     /**
-     * Gets a pair of images for comparison. The response body will contain a JSON
-     * array whose elements are two JSON objects of the form
+     * Gets a ranking of the images that are stored in the database. The response
+     * body will contain a JSON array whose elements are JSON objects of the form
      *
      * <pre>
-     * { [
-     *    {
-     *      "id": id,
-     *      "score": score,
-     *      "rankings: rankings
+     * {
+     *   "id": id,
+     *   "score": score,
+     *   "rankings": rankings
      * },
      * </pre>
      *
-     * where {@code id} is long, {@code score} is float, and {@code rankings} is int.
+     * where {@code id} is a long, {@code score} is a float, and {@code rankings} is a long.
      *
      * @param request  the HTTP request
      * @param response the HTTP response
@@ -55,7 +54,6 @@ public class RankingServlet extends HttpServlet {
      *                          error occurs when connecting to the analysis
      *                          backend.
      *
-     * @see Image
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -72,7 +70,6 @@ public class RankingServlet extends HttpServlet {
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons();
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
-        JSONArray responseForUser;
         JSONObject analysisResponse;
         JSONArray score;
         try {
