@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import no.digipat.patornat.servlets.utils.Analysis;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,7 +83,7 @@ public class NextImagePairServlet extends HttpServlet {
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons();
-        JSONObject jsonForAnalysisBackend = createRequestJson(images, comparisons);
+        JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
         try {
@@ -97,29 +98,6 @@ public class NextImagePairServlet extends HttpServlet {
         }
         response.setContentType("application/json");
         response.getWriter().print(responseForUser);
-    }
-
-    private static JSONObject createRequestJson(List<Image> images, List<ImageComparison> comparisons) {
-        JSONObject json = new JSONObject();
-        List<Long> imageIds = new ArrayList<>();
-        for (Image image : images) {
-            imageIds.add(image.getId());
-        }
-        json.put("image_ids", imageIds);
-        List<JSONObject> jsonComparisons = new ArrayList<>();
-        for (ImageComparison comparison : comparisons) {
-            JSONObject comparisonJson = new JSONObject();
-            JSONObject winnerJson = new JSONObject();
-            winnerJson.put("id", comparison.getChosen().getId());
-            JSONObject loserJson = new JSONObject();
-            loserJson.put("id", comparison.getOther().getId());
-            comparisonJson.put("winner", winnerJson);
-            comparisonJson.put("loser", loserJson);
-            jsonComparisons.add(comparisonJson);
-        }
-        json.put("comparison_data", jsonComparisons);
-        System.out.println(json.toString());
-        return json;
     }
 
     private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody)
