@@ -1,9 +1,11 @@
 package no.digipat.compare.servlets;
 
 import com.mongodb.MongoClient;
+
 import no.digipat.compare.models.image.ImageChoice;
 import no.digipat.compare.models.image.ImageComparison;
 import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

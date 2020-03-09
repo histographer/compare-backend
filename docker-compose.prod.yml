@@ -4,12 +4,12 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: patornatmongo
+    container_name: compare_mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${COMPARE_MONGODB_ROOT_USERNAME} # root username
       MONGO_INITDB_ROOT_PASSWORD: ${COMPARE_MONGODB_ROOT_PASSWORD} # root password
-      MONGO_INITDB_DATABASE: ${COMPARE_MONGODB_INITDB_DATABASE} # in this case it is patornat
+      MONGO_INITDB_DATABASE: ${COMPARE_MONGODB_INITDB_DATABASE}
       COMPARE_MONGODB_USERNAME: ${COMPARE_MONGODB_USERNAME} # For creation of r/w user
       COMPARE_MONGODB_PASSWORD: ${COMPARE_MONGODB_PASSWORD} # password for r/w user
       COMPARE_MONGODB_DATABASE: ${COMPARE_MONGODB_DATABASE} # database the user will have r/w access to
@@ -26,15 +26,15 @@ services:
     expose:
       - 8000
   
-  patornatbackend:
+  compare_backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: patornatbackend
+    container_name: compare_backend
     ports:
       - 9292:8080
     environment:
-      COMPARE_MONGODB_HOST: patornatmongo
+      COMPARE_MONGODB_HOST: compare_mongo
       COMPARE_MONGODB_PORT: 27017
       COMPARE_MONGODB_USERNAME: ${COMPARE_MONGODB_ROOT_USERNAME}
       COMPARE_MONGODB_PASSWORD: ${COMPARE_MONGODB_ROOT_PASSWORD}

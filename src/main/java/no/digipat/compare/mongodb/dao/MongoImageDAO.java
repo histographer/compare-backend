@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.digipat.compare.models.image.Image;
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
+
+import no.digipat.compare.models.image.Image;
 
 /**
  * A data access object (DAO) for images.

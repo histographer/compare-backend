@@ -1,8 +1,9 @@
-package no.digipat.patornat.models.image;
+package no.digipat.compare.models.image;
 import static org.junit.Assert.*;
 
-import no.digipat.compare.models.session.Session;
 import org.junit.Test;
+
+import no.digipat.compare.models.session.Session;
 
 public class SessionTest {
     @Test

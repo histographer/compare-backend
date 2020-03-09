@@ -6,8 +6,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import no.digipat.compare.models.image.Image;
-import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -16,6 +14,8 @@ import com.mongodb.MongoClient;
 import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
 import be.cytomine.client.CytomineException;
+import no.digipat.compare.models.image.Image;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 /**
  * A context listener that retrieves information about all the images
@@ -102,7 +102,6 @@ public class ImageRetrievalContextListener implements ServletContextListener {
                 try {
                     imageDao.createImage(image);
                 } catch (IllegalStateException e) {
-                    System.out.println("Image with ID " + image.getId() + " already exists and was not added to the database");
                     context.log("Image with ID " + image.getId() + " already exists and was not added to the database");
                 }
             }

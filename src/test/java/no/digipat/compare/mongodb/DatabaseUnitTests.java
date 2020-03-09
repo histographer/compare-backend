@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb;
+package no.digipat.compare.mongodb;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -10,8 +10,8 @@ import com.mongodb.MongoClient;
 
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
-import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAOTest;
-import no.digipat.patornat.mongodb.dao.MongoImageDAOTest;
+import no.digipat.compare.mongodb.dao.MongoImageComparisonDAOTest;
+import no.digipat.compare.mongodb.dao.MongoImageDAOTest;
 
 /**
  * A suite of unit tests that require database connectivity.

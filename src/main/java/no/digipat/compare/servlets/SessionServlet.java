@@ -1,8 +1,10 @@
 package no.digipat.compare.servlets;
 
 import com.mongodb.MongoClient;
-import no.digipat.compare.mongodb.dao.MongoSessionDAO;
+
 import no.digipat.compare.models.session.Session;
+import no.digipat.compare.mongodb.dao.MongoSessionDAO;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet(name = "no.digipat.patornat.servlets.UserServlet", urlPatterns = {"/session"})
+@WebServlet(name = "no.digipat.compare.servlets.UserServlet", urlPatterns = {"/session"})
 public class SessionServlet extends HttpServlet {
 
 

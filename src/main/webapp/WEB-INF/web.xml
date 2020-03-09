@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Pat or Nat Backend</display-name>
+  <display-name>Compare Backend</display-name>
   
   <!-- In order to ensure that listeners are notified in a certain order, they need to be specified in this file -->
   <listener>

@@ -1,4 +1,4 @@
-package no.digipat.patornat.servlets;
+package no.digipat.compare.servlets;
 
 import static org.junit.Assert.*;
 
@@ -21,11 +21,11 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.mongodb.MongoClient;
 
-import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
-import no.digipat.compare.mongodb.dao.MongoImageDAO;
-import no.digipat.compare.models.image.ImageComparison;
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageChoice;
+import no.digipat.compare.models.image.ImageComparison;
+import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 public class NextImagePairTest {
     

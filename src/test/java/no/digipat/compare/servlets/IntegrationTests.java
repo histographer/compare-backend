@@ -1,4 +1,4 @@
-package no.digipat.patornat.servlets;
+package no.digipat.compare.servlets;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -26,18 +26,18 @@ public class IntegrationTests {
     
     @BeforeClass
     public static void setUpClass() throws UnsupportedEncodingException, MalformedURLException {
-        String databaseHost = System.getenv("PATORNAT_TEST_MONGODB_HOST");
-        String databasePort = System.getenv("PATORNAT_TEST_MONGODB_PORT");
-        String databaseUsername = URLEncoder.encode(System.getenv("PATORNAT_TEST_MONGODB_USERNAME"), "UTF-8");
-        String databasePassword = URLEncoder.encode(System.getenv("PATORNAT_TEST_MONGODB_PASSWORD"), "UTF-8");
-        String databaseName = System.getenv("PATORNAT_TEST_MONGODB_DATABASE");
+        String databaseHost = System.getenv("COMPARE_TEST_MONGODB_HOST");
+        String databasePort = System.getenv("COMPARE_TEST_MONGODB_PORT");
+        String databaseUsername = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_USERNAME"), "UTF-8");
+        String databasePassword = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_PASSWORD"), "UTF-8");
+        String databaseName = System.getenv("COMPARE_TEST_MONGODB_DATABASE");
         IntegrationTests.databaseName = databaseName;
         MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://" + databaseUsername + ":" + databasePassword
                 + "@" + databaseHost + ":" + databasePort);
         client = new MongoClient(MONGO_URI);
-        String tomcatProtocol = System.getenv("PATORNAT_TEST_TOMCAT_PROTOCOL"); // http or https
-        String tomcatHost = System.getenv("PATORNAT_TEST_TOMCAT_HOST");
-        String tomcatPort = System.getenv("PATORNAT_TEST_TOMCAT_PORT");
+        String tomcatProtocol = System.getenv("COMPARE_TEST_TOMCAT_PROTOCOL"); // http or https
+        String tomcatHost = System.getenv("COMPARE_TEST_TOMCAT_HOST");
+        String tomcatPort = System.getenv("COMPARE_TEST_TOMCAT_PORT");
         baseUrl = new URL(tomcatProtocol + "://" + tomcatHost + ":" + tomcatPort);
     }
     

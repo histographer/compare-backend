@@ -1,4 +1,4 @@
-echo "db.createUser({ user:  '$PATORNAT_MONGODB_USERNAME', pwd: '$PATORNAT_MONGODB_PASSWORD', roles: [{ role: 'userAdminAnyDatabase', db: 'admin'}] })" | mongo admin
+echo "db.createUser({ user:  '$COMPARE_MONGODB_USERNAME', pwd: '$COMPARE_MONGODB_PASSWORD', roles: [{ role: 'userAdminAnyDatabase', db: 'admin'}] })" | mongo admin
 
 
 

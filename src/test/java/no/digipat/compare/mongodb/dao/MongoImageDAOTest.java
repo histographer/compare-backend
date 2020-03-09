@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb.dao;
+package no.digipat.compare.mongodb.dao;
 
 import static org.junit.Assert.*;
 
@@ -6,15 +6,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.mongodb.MongoClient;
 
-import no.digipat.patornat.mongodb.DatabaseUnitTests;
 import no.digipat.compare.models.image.Image;
+import no.digipat.compare.mongodb.DatabaseUnitTests;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 public class MongoImageDAOTest {
 

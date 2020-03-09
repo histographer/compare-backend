@@ -1,6 +1,7 @@
 package no.digipat.compare.filters;
 
 import com.mongodb.MongoClient;
+
 import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 
 import javax.servlet.*;
