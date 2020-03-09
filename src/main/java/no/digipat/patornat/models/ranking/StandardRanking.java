@@ -2,8 +2,8 @@ package no.digipat.patornat.models.ranking;
 
 public class StandardRanking {
     private Long id;
-    private float score;
-    private int numberOfRankings;
+    private Float score;
+    private Integer numberOfRankings;
 
     public Long getId() {
         return id;
@@ -14,7 +14,7 @@ public class StandardRanking {
         return this;
     }
 
-    public float getScore() {
+    public Float getScore() {
         return score;
     }
 
@@ -23,7 +23,7 @@ public class StandardRanking {
         return this;
     }
 
-    public int getNumberOfRankings() {
+    public Integer getNumberOfRankings() {
         return numberOfRankings;
     }
 

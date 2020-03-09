@@ -12,9 +12,6 @@ import org.bson.Document;
 
 public class MongoImageComparisonDAO {
     private MongoCollection<Document> collection;
-    private String DB;
-
-
 
     public MongoImageComparisonDAO(MongoClient mongo, String DB) {
         this.collection = mongo.getDatabase(DB).getCollection("ImageComparison");
