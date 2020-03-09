@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,9 +16,9 @@ import org.junit.Test;
 import com.mongodb.MongoClient;
 
 import no.digipat.patornat.mongodb.DatabaseUnitTests;
-import no.digipat.patornat.models.image.ImageComparison;
-import no.digipat.patornat.models.image.Image;
-import no.digipat.patornat.models.image.ImageChoice;
+import no.digipat.compare.models.image.ImageComparison;
+import no.digipat.compare.models.image.Image;
+import no.digipat.compare.models.image.ImageChoice;
 
 public class MongoImageComparisonDAOTest {
     

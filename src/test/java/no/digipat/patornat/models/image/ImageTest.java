@@ -2,6 +2,7 @@ package no.digipat.patornat.models.image;
 
 import static org.junit.Assert.*;
 
+import no.digipat.compare.models.image.Image;
 import org.junit.Test;
 
 public class ImageTest {

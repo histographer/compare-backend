@@ -1,4 +1,4 @@
-package no.digipat.patornat.models.session;
+package no.digipat.compare.models.session;
 
 public class Session {
     private String id;

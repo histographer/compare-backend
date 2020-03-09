@@ -1,4 +1,4 @@
-package no.digipat.patornat.models.image;
+package no.digipat.compare.models.image;
 
 import java.util.Arrays;
 import java.util.Objects;

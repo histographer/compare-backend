@@ -1,4 +1,4 @@
-package no.digipat.patornat.listeners;
+package no.digipat.compare.listeners;
 
 import java.util.List;
 
@@ -6,6 +6,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import no.digipat.compare.models.image.Image;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -14,8 +16,6 @@ import com.mongodb.MongoClient;
 import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
 import be.cytomine.client.CytomineException;
-import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.models.image.Image;
 
 /**
  * A context listener that retrieves information about all the images

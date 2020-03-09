@@ -1,9 +1,9 @@
-package no.digipat.patornat.mongodb.dao;
+package no.digipat.compare.mongodb.dao;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
-import no.digipat.patornat.models.session.Session;
+import no.digipat.compare.models.session.Session;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;

@@ -1,4 +1,4 @@
-package no.digipat.patornat.listeners;
+package no.digipat.compare.listeners;
 
 import be.cytomine.client.*;
 import be.cytomine.client.models.*;

@@ -1,7 +1,7 @@
-package no.digipat.patornat.servlets.utils;
+package no.digipat.compare.servlets.utils;
 
-import no.digipat.patornat.models.image.Image;
-import no.digipat.patornat.models.image.ImageComparison;
+import no.digipat.compare.models.image.Image;
+import no.digipat.compare.models.image.ImageComparison;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;

@@ -1,11 +1,11 @@
-package no.digipat.patornat.servlets;
+package no.digipat.compare.servlets;
 
 import com.mongodb.MongoClient;
-import no.digipat.patornat.models.image.Image;
-import no.digipat.patornat.models.image.ImageComparison;
-import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
-import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.servlets.utils.Analysis;
+import no.digipat.compare.models.image.Image;
+import no.digipat.compare.models.image.ImageComparison;
+import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
+import no.digipat.compare.servlets.utils.Analysis;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

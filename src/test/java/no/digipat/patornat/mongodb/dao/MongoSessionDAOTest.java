@@ -1,8 +1,9 @@
 package no.digipat.patornat.mongodb.dao;
 
 import com.mongodb.MongoClient;
+import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 import no.digipat.patornat.mongodb.DatabaseUnitTests;
-import no.digipat.patornat.models.session.Session;
+import no.digipat.compare.models.session.Session;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;

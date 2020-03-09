@@ -1,4 +1,4 @@
-package no.digipat.patornat.models.image;
+package no.digipat.compare.models.image;
 
 public class ImageChoice {
     private long id;

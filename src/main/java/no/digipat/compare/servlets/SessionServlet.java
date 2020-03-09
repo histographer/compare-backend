@@ -1,8 +1,8 @@
-package no.digipat.patornat.servlets;
+package no.digipat.compare.servlets;
 
 import com.mongodb.MongoClient;
-import no.digipat.patornat.mongodb.dao.MongoSessionDAO;
-import no.digipat.patornat.models.session.Session;
+import no.digipat.compare.mongodb.dao.MongoSessionDAO;
+import no.digipat.compare.models.session.Session;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

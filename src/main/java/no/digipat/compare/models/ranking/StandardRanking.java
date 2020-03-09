@@ -1,6 +1,4 @@
-package no.digipat.patornat.models.ranking;
-
-import org.json.JSONObject;
+package no.digipat.compare.models.ranking;
 
 public class StandardRanking {
     private Long id;

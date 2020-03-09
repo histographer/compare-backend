@@ -1,7 +1,7 @@
-package no.digipat.patornat.filters;
+package no.digipat.compare.filters;
 
 import com.mongodb.MongoClient;
-import no.digipat.patornat.mongodb.dao.MongoSessionDAO;
+import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
