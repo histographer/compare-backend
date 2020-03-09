@@ -54,12 +54,12 @@ public class MongoImageComparisonDAO {
         return new Document().
                 append("chosen", imageChoiceToDBDocument(imageComparison.getChosen()))
                 .append("other", imageChoiceToDBDocument(imageComparison.getOther()))
-                .append("user", imageComparison.getUser());
+                .append("id", imageComparison.getUser());
     }
     
     private static ImageComparison dbDocumentToImageComparison(Document document) {
         try {
-            String user = document.getString("user");
+            String user = document.getString("id");
             Document chosenDoc = (Document) document.get("chosen");
             long chosenId = (Long) chosenDoc.get("id");
             String chosenComment = chosenDoc.getString("comment");

@@ -29,18 +29,18 @@ import no.digipat.patornat.mongodb.models.image.ImageComparison;
 import no.digipat.patornat.mongodb.models.image.Image;
 
 /**
- * A servlet for retrieving the pair of images that should be
- * compared by a user.
+ * A servlet for retrieving the pair of images that should be compared by a
+ * user.
  * 
  * @author Jon Wallem Anundsen
  *
  */
-@WebServlet(urlPatterns="/imagePair")
+@WebServlet(urlPatterns = "/imagePair")
 public class NextImagePairServlet extends HttpServlet {
-    
+
     /**
-     * Gets a pair of images for comparison. The response body will contain
-     * a JSON array whose elements are two JSON objects of the form
+     * Gets a pair of images for comparison. The response body will contain a JSON
+     * array whose elements are two JSON objects of the form
      * 
      * <pre>
      * {
@@ -56,20 +56,22 @@ public class NextImagePairServlet extends HttpServlet {
      * </pre>
      * 
      * where {@code id}, {@code width}, {@code height}, {@code depth}, and
-     * {@code magnification} are longs, {@code resolution} is a double,
-     * {@code mime} is a string, and {@code url1, url2, ..., urlN} are strings.
+     * {@code magnification} are longs, {@code resolution} is a double, {@code mime}
+     * is a string, and {@code url1, url2, ..., urlN} are strings.
      * 
-     * @param request the HTTP request
+     * @param request  the HTTP request
      * @param response the HTTP response
      * 
      * @throws ServletException if there are not at least two images in the database
-     * @throws IOException if an I/O error occurs. In particular, if an I/O error
-     * occurs when connecting to the analysis backend.
+     * @throws IOException      if an I/O error occurs. In particular, if an I/O
+     *                          error occurs when connecting to the analysis
+     *                          backend.
      * 
      * @see Image
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         ServletContext context = getServletContext();
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
@@ -96,7 +98,7 @@ public class NextImagePairServlet extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().print(responseForUser);
     }
-    
+
     private static JSONObject createRequestJson(List<Image> images, List<ImageComparison> comparisons) {
         JSONObject json = new JSONObject();
         List<Long> imageIds = new ArrayList<>();
@@ -116,12 +118,16 @@ public class NextImagePairServlet extends HttpServlet {
             jsonComparisons.add(comparisonJson);
         }
         json.put("comparison_data", jsonComparisons);
+        System.out.println(json.toString());
         return json;
     }
-    
-    private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody) throws IOException, JSONException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair").openConnection();
+
+    private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody)
+            throws IOException, JSONException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair/").openConnection();
         connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
         try (PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
             writer.print(requestBody);
@@ -136,10 +142,10 @@ public class NextImagePairServlet extends HttpServlet {
             return new JSONObject(new JSONTokener(inputStream));
         }
     }
-    
+
     private static JSONArray createResponseJson(Image image1, Image image2) {
         JSONArray returnJson = new JSONArray();
-        for (Image image : new Image[] {image1, image2}) {
+        for (Image image : new Image[] { image1, image2 }) {
             JSONObject imageJson = new JSONObject();
             imageJson.put("id", image.getId());
             imageJson.put("width", image.getWidth());
@@ -153,5 +159,5 @@ public class NextImagePairServlet extends HttpServlet {
         }
         return returnJson;
     }
-    
+
 }

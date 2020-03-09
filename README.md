@@ -4,7 +4,7 @@
 ## Database setup
 You need to have docker and docker-compose installed. 
 
-Navigate to the folder "database" and execute the script `initialize_database.sh` and the database will build, setup and run. 
+`docker-compose -f docker-compose.dev.yml up -d`
 
 The database will by default be available at port localhost:27017 and mongo-express GUI is available in dev mode on localhost:8081.
 
@@ -41,24 +41,33 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 ### Post - /scoring
 ```json 
 {
+  "user": "string",
   "chosen": {
     "id": 1,
-    "comment": "testcomment",
-    "kjernestruktur": 1,
-    "cellegrenser": 1,
-    "kontrastKollagen": 1,
-    "kontrastBindevev": 1
+    "comment": "testcomment"
   },
   "other": {
     "id": 2,
-    "comment": "testcomment2",
-    "kjernestruktur": 2,
-    "cellegrenser": 3,
-    "kontrastKollagen": 2,
-    "kontrastBindevev": 3
+    "comment": "testcomment2"
   }
 }
 
+```
+
+### Post - /user
+#### Request
+```json
+{ 
+    "monitorType": "IPS laptop",
+    "hospital": "St. Olavs"
+}
+```
+
+#### Response
+```json
+{
+   "user": "8acfd1d6-cd86-4356-bf6a-38c85d56ed92"
+}
 ```
 
 ## Testing
