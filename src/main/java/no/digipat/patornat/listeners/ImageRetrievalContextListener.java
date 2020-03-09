@@ -38,9 +38,9 @@ public class ImageRetrievalContextListener implements ServletContextListener {
      * not be updated.
      * <p>
      * In order to connect to the Cytomine instance, this method requires that
-     * the environment variables {@code PATORNAT_CYTOMINE_URL},
-     * {@code PATORNAT_CYTOMINE_PUBLIC_KEY}, {@code PATORNAT_CYTOMINE_PRIVATE_KEY},
-     * and {@code PATORNAT_CYTOMINE_PROJECT_ID} be set to the base URL of the
+     * the environment variables {@code COMPARE_CYTOMINE_URL},
+     * {@code COMPARE_CYTOMINE_PUBLIC_KEY}, {@code COMPARE_CYTOMINE_PRIVATE_KEY},
+     * and {@code COMPARE_CYTOMINE_PROJECT_ID} be set to the base URL of the
      * Cytomine instance, the public key used to connect to Cytomine, the corresponding
      * private key, and the ID of the project containing the images, respectively.
      * Additionally, in order to add the information to the database, the servlet
@@ -57,10 +57,10 @@ public class ImageRetrievalContextListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        String cytomineUrl = System.getenv("PATORNAT_CYTOMINE_URL");
-        String cytominePublicKey = System.getenv("PATORNAT_CYTOMINE_PUBLIC_KEY");
-        String cytominePrivateKey = System.getenv("PATORNAT_CYTOMINE_PRIVATE_KEY");
-        String cytomineProjectIdString = System.getenv("PATORNAT_CYTOMINE_PROJECT_ID");
+        String cytomineUrl = System.getenv("COMPARE_CYTOMINE_URL");
+        String cytominePublicKey = System.getenv("COMPARE_CYTOMINE_PUBLIC_KEY");
+        String cytominePrivateKey = System.getenv("COMPARE_CYTOMINE_PRIVATE_KEY");
+        String cytomineProjectIdString = System.getenv("COMPARE_CYTOMINE_PROJECT_ID");
         if (cytomineUrl == null || cytominePublicKey == null || cytominePrivateKey == null
                 || cytomineProjectIdString == null) {
             throw new IllegalStateException("One or more required environment variables have not been set");

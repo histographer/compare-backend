@@ -26,13 +26,13 @@ public class MongoDBContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
             ServletContext context = servletContextEvent.getServletContext();
-            String host = System.getenv("PATORNAT_MONGODB_HOST");
-            String portString = System.getenv("PATORNAT_MONGODB_PORT");
+            String host = System.getenv("COMPARE_MONGODB_HOST");
+            String portString = System.getenv("COMPARE_MONGODB_PORT");
             int port = Integer.parseInt(portString);
             // Username and password need to be percent encoded in case they contain special characters such as '@' or ':'
-            String username = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_USERNAME"), "utf8");
-            String password = URLEncoder.encode(System.getenv("PATORNAT_MONGODB_PASSWORD"), "utf8");
-            String database = System.getenv("PATORNAT_MONGODB_DATABASE");
+            String username = URLEncoder.encode(System.getenv("COMPARE_MONGODB_USERNAME"), "utf8");
+            String password = URLEncoder.encode(System.getenv("COMPARE_MONGODB_PASSWORD"), "utf8");
+            String database = System.getenv("COMPARE_MONGODB_DATABASE");
             MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port);
 
 

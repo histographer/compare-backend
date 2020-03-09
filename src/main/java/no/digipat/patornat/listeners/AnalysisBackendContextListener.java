@@ -23,8 +23,8 @@ public class AnalysisBackendContextListener implements ServletContextListener {
      * attribute will have been set to an instance of {@link URL} containing the
      * base URL of the analysis backend.
      * <p>
-     * The base URL is constructed from the environment variables {@code PATORNAT_ANALYSIS_BACKEND_PROTOCOL},
-     * {@code PATORNAT_ANALYSIS_BACKEND_HOST}, and {@code PATORNAT_ANALYSIS_BACKEND_PORT}.
+     * The base URL is constructed from the environment variables {@code COMPARE_ANALYSIS_BACKEND_PROTOCOL},
+     * {@code COMPARE_ANALYSIS_BACKEND_HOST}, and {@code COMPARE_ANALYSIS_BACKEND_PORT}.
      * </p>
      * 
      * @param servletContextEvent the context event whose context will have its
@@ -36,9 +36,9 @@ public class AnalysisBackendContextListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        String protocol = System.getenv("PATORNAT_ANALYSIS_BACKEND_PROTOCOL");
-        String host = System.getenv("PATORNAT_ANALYSIS_BACKEND_HOST");
-        String port = System.getenv("PATORNAT_ANALYSIS_BACKEND_PORT");
+        String protocol = System.getenv("COMPARE_ANALYSIS_BACKEND_PROTOCOL");
+        String host = System.getenv("COMPARE_ANALYSIS_BACKEND_HOST");
+        String port = System.getenv("COMPARE_ANALYSIS_BACKEND_PORT");
         try {
             URL url = new URL(protocol, host, Integer.parseInt(port), "");
             servletContextEvent.getServletContext().setAttribute("ANALYSIS_BASE_URL", url);
