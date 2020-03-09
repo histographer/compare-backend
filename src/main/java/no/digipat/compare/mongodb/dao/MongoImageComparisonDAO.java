@@ -61,6 +61,7 @@ public class MongoImageComparisonDAO {
         for (Image image : imageDao.getAllImages()) {
             Long id = image.getId();
             long count = collection.countDocuments(or(eq("chosen.id", id), eq("other.id", id)));
+            System.out.println(count);
             numbers.add(new Map.Entry<Long, Long>() {
                 @Override
                 public Long getKey() {

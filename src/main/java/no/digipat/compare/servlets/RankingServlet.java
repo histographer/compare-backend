@@ -78,20 +78,13 @@ public class RankingServlet extends HttpServlet {
         try {
             analysisResponse = Analysis.getAnalysisResponse(baseUrl, "ranking/ranking/", jsonForAnalysisBackend);
             List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage();
-
             score = analysisResponse.getJSONArray("scores");
-            score.getJSONObject(1).put("test", "test");
             for (int i=0; i < score.length(); i++) {
                 JSONObject tempObject = score.getJSONObject(i);
                 Long id = tempObject.getLong("id");
-
-                //Long rank = rankings.stream().filter(ranking -> ranking.getKey() == id).findFirst().get().getValue();
-
-                tempObject.put("ranking", new JSONArray(rankings));
+                Long ranking = rankings.stream().filter(rank -> rank.getKey().equals(id)).findFirst().get().getValue();
+                tempObject.put("ranking", ranking);
             }
-                //long id1 = pair.getLong(0), id2 = pair.getLong(1);
-            //Image image1 = images.stream().filter(image -> image.getId() == id1).findFirst().get();
-            //Image image2 = images.stream().filter(image -> image.getId() == id2).findFirst().get();
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
         }
