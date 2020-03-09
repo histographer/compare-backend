@@ -4,20 +4,20 @@ services:
 
   mongo:
     image: mongo:latest
-    container_name: patornatmongo
+    container_name: compare_mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME} # root username
-      MONGO_INITDB_ROOT_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD} # root password
-      MONGO_INITDB_DATABASE: ${PATORNAT_MONGODB_INITDB_DATABASE} # in this case it is patornat
-      PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_USERNAME} # For creation of r/w user
-      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_PASSWORD} # password for r/w user
-      PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE} # database the user will have r/w access to
+      MONGO_INITDB_ROOT_USERNAME: ${COMPARE_MONGODB_ROOT_USERNAME} # root username
+      MONGO_INITDB_ROOT_PASSWORD: ${COMPARE_MONGODB_ROOT_PASSWORD} # root password
+      MONGO_INITDB_DATABASE: ${COMPARE_MONGODB_INITDB_DATABASE}
+      COMPARE_MONGODB_USERNAME: ${COMPARE_MONGODB_USERNAME} # For creation of r/w user
+      COMPARE_MONGODB_PASSWORD: ${COMPARE_MONGODB_PASSWORD} # password for r/w user
+      COMPARE_MONGODB_DATABASE: ${COMPARE_MONGODB_DATABASE} # database the user will have r/w access to
     volumes:
       - mongodata:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
     ports:
-      - ${PATORNAT_MONGODB_PORT}:27017
+      - ${COMPARE_MONGODB_PORT}:27017
   
   analysis_backend:
     image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
@@ -26,26 +26,26 @@ services:
     expose:
       - 8000
   
-  patornatbackend:
+  compare_backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: patornatbackend
+    container_name: compare_backend
     ports:
       - 9292:8080
     environment:
-      PATORNAT_MONGODB_HOST: patornatmongo
-      PATORNAT_MONGODB_PORT: 27017
-      PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME}
-      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD}
-      PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE}
-      PATORNAT_ANALYSIS_BACKEND_PROTOCOL: http
-      PATORNAT_ANALYSIS_BACKEND_HOST: analysis_backend_test
-      PATORNAT_ANALYSIS_BACKEND_PORT: 8000
-      PATORNAT_CYTOMINE_URL: ${PATORNAT_CYTOMINE_URL}
-      PATORNAT_CYTOMINE_PUBLIC_KEY: ${PATORNAT_CYTOMINE_PUBLIC_KEY}
-      PATORNAT_CYTOMINE_PRIVATE_KEY: ${PATORNAT_CYTOMINE_PRIVATE_KEY}
-      PATORNAT_CYTOMINE_PROJECT_ID: ${PATORNAT_CYTOMINE_PROJECT_ID}
+      COMPARE_MONGODB_HOST: compare_mongo
+      COMPARE_MONGODB_PORT: 27017
+      COMPARE_MONGODB_USERNAME: ${COMPARE_MONGODB_ROOT_USERNAME}
+      COMPARE_MONGODB_PASSWORD: ${COMPARE_MONGODB_ROOT_PASSWORD}
+      COMPARE_MONGODB_DATABASE: ${COMPARE_MONGODB_DATABASE}
+      COMPARE_ANALYSIS_BACKEND_PROTOCOL: http
+      COMPARE_ANALYSIS_BACKEND_HOST: analysis_backend_test
+      COMPARE_ANALYSIS_BACKEND_PORT: 8000
+      COMPARE_CYTOMINE_URL: ${COMPARE_CYTOMINE_URL}
+      COMPARE_CYTOMINE_PUBLIC_KEY: ${COMPARE_CYTOMINE_PUBLIC_KEY}
+      COMPARE_CYTOMINE_PRIVATE_KEY: ${COMPARE_CYTOMINE_PRIVATE_KEY}
+      COMPARE_CYTOMINE_PROJECT_ID: ${COMPARE_CYTOMINE_PROJECT_ID}
 
 volumes:
   mongodata:
