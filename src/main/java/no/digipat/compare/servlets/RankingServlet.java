@@ -83,7 +83,7 @@ public class RankingServlet extends HttpServlet {
                 JSONObject tempObject = score.getJSONObject(i);
                 Long id = tempObject.getLong("id");
                 Long ranking = rankings.stream().filter(rank -> rank.getKey().equals(id)).findFirst().get().getValue();
-                tempObject.put("ranking", ranking);
+                tempObject.put("rankings", ranking);
             }
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
