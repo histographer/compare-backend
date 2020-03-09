@@ -35,4 +35,5 @@ public class Session {
         this.monitorType = monitorType;
         return this;
     }
+
 }

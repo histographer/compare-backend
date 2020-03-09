@@ -1,5 +1,7 @@
 package no.digipat.patornat.models.ranking;
 
+import org.json.JSONObject;
+
 public class StandardRanking {
     private Long id;
     private Float score;

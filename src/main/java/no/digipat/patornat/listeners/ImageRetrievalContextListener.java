@@ -102,6 +102,7 @@ public class ImageRetrievalContextListener implements ServletContextListener {
                 try {
                     imageDao.createImage(image);
                 } catch (IllegalStateException e) {
+                    System.out.println("Image with ID " + image.getId() + " already exists and was not added to the database");
                     context.log("Image with ID " + image.getId() + " already exists and was not added to the database");
                 }
             }

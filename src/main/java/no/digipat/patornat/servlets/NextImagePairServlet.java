@@ -87,7 +87,7 @@ public class NextImagePairServlet extends HttpServlet {
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
         try {
-            JSONObject analysisResponse = getAnalysisResponse(baseUrl, jsonForAnalysisBackend);
+            JSONObject analysisResponse = Analysis.getAnalysisResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
             JSONArray pair = analysisResponse.getJSONArray("pair");
             long id1 = pair.getLong(0), id2 = pair.getLong(1);
             Image image1 = images.stream().filter(image -> image.getId() == id1).findFirst().get();
@@ -100,26 +100,6 @@ public class NextImagePairServlet extends HttpServlet {
         response.getWriter().print(responseForUser);
     }
 
-    private static JSONObject getAnalysisResponse(URL baseUrl, JSONObject requestBody)
-            throws IOException, JSONException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "ranking/suggestpair/").openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setDoOutput(true);
-        try (PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
-            writer.print(requestBody);
-            writer.flush();
-        }
-        connection.connect();
-        int responseCode = connection.getResponseCode();
-        if (responseCode != 200) {
-            throw new IOException("Expected response code 200 from analysis backend, but got " + responseCode);
-        }
-        try (InputStream inputStream = connection.getInputStream()) {
-            return new JSONObject(new JSONTokener(inputStream));
-        }
-    }
 
     private static JSONArray createResponseJson(Image image1, Image image2) {
         JSONArray returnJson = new JSONArray();
