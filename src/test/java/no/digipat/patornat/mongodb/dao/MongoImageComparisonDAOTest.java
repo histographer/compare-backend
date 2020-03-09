@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -14,6 +15,7 @@ import com.mongodb.MongoClient;
 
 import no.digipat.patornat.mongodb.DatabaseUnitTests;
 import no.digipat.patornat.models.image.ImageComparison;
+import no.digipat.patornat.models.image.Image;
 import no.digipat.patornat.models.image.ImageChoice;
 
 public class MongoImageComparisonDAOTest {
@@ -59,6 +61,22 @@ public class MongoImageComparisonDAOTest {
         assertEquals(comparison2.getChosen().getComment(), retrievedComparison2.getChosen().getComment());
         assertEquals(comparison2.getOther().getId(), retrievedComparison2.getOther().getId());
         assertEquals(comparison2.getOther().getComment(), retrievedComparison2.getOther().getComment());
+    }
+    
+    @Test
+    public void testGetNumberOfComparisonsForEachImage() {
+        MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
+        MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
+        assertEquals(0, comparisonDao.getNumberOfComparisonsForEachImage().size());
+        imageDao.createImage(new Image().setId(1L).setMimeType("image/png"));
+        imageDao.createImage(new Image().setId(2L).setMagnification(123L));
+        imageDao.createImage(new Image().setId(42L).setHeight(100L));
+        comparisonDao.createImageComparison(new ImageComparison("blah-blah", new ImageChoice(1L, ""), new ImageChoice(2L, "")));
+        comparisonDao.createImageComparison(new ImageComparison("blah-2", new ImageChoice(2L, ""), new ImageChoice(42L, "")));
+        List<Map.Entry<Long, Integer>> comparisonNumbers = comparisonDao.getNumberOfComparisonsForEachImage();
+        Collections.sort(comparisonNumbers, (entry1, entry2) -> (int) (entry1.getKey() - entry2.getKey()));
+        int[] numbers = comparisonNumbers.stream().mapToInt(entry -> entry.getValue()).toArray();
+        assertArrayEquals(new int[] {1, 2, 1}, numbers); // Image 1 is in 1 comparison, image 2 in 2 comparisons, 42 is in 1 comparison
     }
     
     @After

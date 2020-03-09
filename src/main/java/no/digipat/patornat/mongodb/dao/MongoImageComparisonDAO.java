@@ -7,14 +7,12 @@ import no.digipat.patornat.models.image.ImageComparison;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 
 public class MongoImageComparisonDAO {
     private MongoCollection<Document> collection;
-    private String DB;
-
-
 
     public MongoImageComparisonDAO(MongoClient mongo, String DB) {
         this.collection = mongo.getDatabase(DB).getCollection("ImageComparison");
@@ -42,6 +40,18 @@ public class MongoImageComparisonDAO {
             comparisons.add(dbDocumentToImageComparison(document));
         }
         return comparisons;
+    }
+    
+    /**
+     * Retrieves the number of times each image in the database has been compared.
+     * 
+     * @return a list of map entries, each of whose key is an image ID and value
+     * is the number of times that image has been compared
+     */
+    public List<Map.Entry<Long, Integer>> getNumberOfComparisonsForEachImage() {
+        // TODO
+        
+        return null;
     }
     
     private static Document imageChoiceToDBDocument(ImageChoice imageChoice) {
