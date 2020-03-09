@@ -73,10 +73,10 @@ public class MongoImageComparisonDAOTest {
         imageDao.createImage(new Image().setId(42L).setHeight(100L));
         comparisonDao.createImageComparison(new ImageComparison("blah-blah", new ImageChoice(1L, ""), new ImageChoice(2L, "")));
         comparisonDao.createImageComparison(new ImageComparison("blah-2", new ImageChoice(2L, ""), new ImageChoice(42L, "")));
-        List<Map.Entry<Long, Integer>> comparisonNumbers = comparisonDao.getNumberOfComparisonsForEachImage();
+        List<Map.Entry<Long, Long>> comparisonNumbers = comparisonDao.getNumberOfComparisonsForEachImage();
         Collections.sort(comparisonNumbers, (entry1, entry2) -> (int) (entry1.getKey() - entry2.getKey()));
-        int[] numbers = comparisonNumbers.stream().mapToInt(entry -> entry.getValue()).toArray();
-        assertArrayEquals(new int[] {1, 2, 1}, numbers); // Image 1 is in 1 comparison, image 2 in 2 comparisons, 42 is in 1 comparison
+        long[] numbers = comparisonNumbers.stream().mapToLong(entry -> entry.getValue()).toArray();
+        assertArrayEquals(new long[] {1, 2, 1}, numbers); // Image 1 is in 1 comparison, image 2 in 2 comparisons, 42 is in 1 comparison
     }
     
     @After

@@ -2,6 +2,7 @@ package no.digipat.patornat.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import no.digipat.patornat.models.image.Image;
 import no.digipat.patornat.models.image.ImageChoice;
 import no.digipat.patornat.models.image.ImageComparison;
 
@@ -10,12 +11,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.or;
 
 public class MongoImageComparisonDAO {
     private MongoCollection<Document> collection;
+    private String databaseName;
+    private MongoClient client;
 
     public MongoImageComparisonDAO(MongoClient mongo, String DB) {
         this.collection = mongo.getDatabase(DB).getCollection("ImageComparison");
+        this.databaseName = DB;
+        this.client = mongo;
     }
 
     /**
@@ -48,10 +55,26 @@ public class MongoImageComparisonDAO {
      * @return a list of map entries, each of whose key is an image ID and value
      * is the number of times that image has been compared
      */
-    public List<Map.Entry<Long, Integer>> getNumberOfComparisonsForEachImage() {
-        // TODO
-        
-        return null;
+    public List<Map.Entry<Long, Long>> getNumberOfComparisonsForEachImage() {
+        final List<Map.Entry<Long, Long>> numbers = new ArrayList<>();
+        MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
+        for (Image image : imageDao.getAllImages()) {
+            Long id = image.getId();
+            long count = collection.countDocuments(or(eq("chosen.id", id), eq("other.id", id)));
+            numbers.add(new Map.Entry<Long, Long>() {
+                @Override
+                public Long getKey() {
+                    return id;
+                }
+                @Override
+                public Long getValue() {
+                    return count;
+                }
+                @Override
+                public Long setValue(Long value) {return null;}
+            });
+        }
+        return numbers;
     }
     
     private static Document imageChoiceToDBDocument(ImageChoice imageChoice) {
