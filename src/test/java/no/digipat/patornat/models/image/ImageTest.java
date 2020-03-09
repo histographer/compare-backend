@@ -1,10 +1,8 @@
-package no.digipat.patornat.mongodb.models.image;
+package no.digipat.patornat.models.image;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import no.digipat.patornat.mongodb.models.image.Image;
 
 public class ImageTest {
     

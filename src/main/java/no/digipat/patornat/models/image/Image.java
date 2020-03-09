@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb.models.image;
+package no.digipat.patornat.models.image;
 
 import java.util.Arrays;
 import java.util.Objects;

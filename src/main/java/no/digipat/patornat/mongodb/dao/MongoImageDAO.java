@@ -10,7 +10,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 
-import no.digipat.patornat.mongodb.models.image.Image;
+import no.digipat.patornat.models.image.Image;
 
 /**
  * A data access object (DAO) for images.

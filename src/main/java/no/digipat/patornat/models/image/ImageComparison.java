@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb.models.image;
+package no.digipat.patornat.models.image;
 
 public class ImageComparison {
     private ImageChoice chosen;

@@ -2,8 +2,8 @@ package no.digipat.patornat.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
-import no.digipat.patornat.mongodb.models.image.ImageChoice;
-import no.digipat.patornat.mongodb.models.image.ImageComparison;
+import no.digipat.patornat.models.image.ImageChoice;
+import no.digipat.patornat.models.image.ImageComparison;
 
 import java.util.ArrayList;
 import java.util.List;

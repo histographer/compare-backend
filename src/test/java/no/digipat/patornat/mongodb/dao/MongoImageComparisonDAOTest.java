@@ -13,8 +13,8 @@ import org.junit.Test;
 import com.mongodb.MongoClient;
 
 import no.digipat.patornat.mongodb.DatabaseUnitTests;
-import no.digipat.patornat.mongodb.models.image.ImageComparison;
-import no.digipat.patornat.mongodb.models.image.ImageChoice;
+import no.digipat.patornat.models.image.ImageComparison;
+import no.digipat.patornat.models.image.ImageChoice;
 
 public class MongoImageComparisonDAOTest {
     

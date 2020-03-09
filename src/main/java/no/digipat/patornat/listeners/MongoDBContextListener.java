@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb.listener;
+package no.digipat.patornat.listeners;
 
 import be.cytomine.client.*;
 import be.cytomine.client.models.*;

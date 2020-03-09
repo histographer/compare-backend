@@ -3,7 +3,7 @@ package no.digipat.patornat.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
-import no.digipat.patornat.mongodb.models.session.Session;
+import no.digipat.patornat.models.session.Session;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;

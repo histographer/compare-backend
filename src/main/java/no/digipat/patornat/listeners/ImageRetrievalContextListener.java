@@ -1,4 +1,4 @@
-package no.digipat.patornat;
+package no.digipat.patornat.listeners;
 
 import java.util.List;
 
@@ -15,8 +15,7 @@ import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
 import be.cytomine.client.CytomineException;
 import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.mongodb.listener.MongoDBContextListener;
-import no.digipat.patornat.mongodb.models.image.Image;
+import no.digipat.patornat.models.image.Image;
 
 /**
  * A context listener that retrieves information about all the images

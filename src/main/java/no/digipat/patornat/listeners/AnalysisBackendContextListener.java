@@ -1,4 +1,4 @@
-package no.digipat.patornat;
+package no.digipat.patornat.listeners;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -1,6 +1,4 @@
-package no.digipat.patornat.mongodb.models.session;
-
-import java.util.UUID;
+package no.digipat.patornat.models.session;
 
 public class Session {
     private String id;

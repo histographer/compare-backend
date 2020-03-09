@@ -25,8 +25,8 @@ import com.mongodb.MongoClient;
 
 import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.mongodb.models.image.ImageComparison;
-import no.digipat.patornat.mongodb.models.image.Image;
+import no.digipat.patornat.models.image.ImageComparison;
+import no.digipat.patornat.models.image.Image;
 
 /**
  * A servlet for retrieving the pair of images that should be compared by a

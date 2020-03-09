@@ -2,7 +2,7 @@ package no.digipat.patornat.mongodb.dao;
 
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.DatabaseUnitTests;
-import no.digipat.patornat.mongodb.models.session.Session;
+import no.digipat.patornat.models.session.Session;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;

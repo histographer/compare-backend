@@ -2,7 +2,7 @@ package no.digipat.patornat.servlets;
 
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.MongoSessionDAO;
-import no.digipat.patornat.mongodb.models.session.Session;
+import no.digipat.patornat.models.session.Session;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 

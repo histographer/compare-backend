@@ -2,8 +2,8 @@ package no.digipat.patornat.servlets;
 
 import com.mongodb.MongoClient;
 import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
-import no.digipat.patornat.mongodb.models.image.ImageChoice;
-import no.digipat.patornat.mongodb.models.image.ImageComparison;
+import no.digipat.patornat.models.image.ImageChoice;
+import no.digipat.patornat.models.image.ImageComparison;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

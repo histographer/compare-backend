@@ -1,4 +1,4 @@
-package no.digipat.patornat.mongodb.models.ranking;
+package no.digipat.patornat.models.ranking;
 
 public class StandardRanking {
     private Long id;

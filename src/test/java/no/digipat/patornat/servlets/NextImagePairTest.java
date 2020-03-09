@@ -23,9 +23,9 @@ import com.mongodb.MongoClient;
 
 import no.digipat.patornat.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.patornat.mongodb.dao.MongoImageDAO;
-import no.digipat.patornat.mongodb.models.image.ImageComparison;
-import no.digipat.patornat.mongodb.models.image.Image;
-import no.digipat.patornat.mongodb.models.image.ImageChoice;
+import no.digipat.patornat.models.image.ImageComparison;
+import no.digipat.patornat.models.image.Image;
+import no.digipat.patornat.models.image.ImageChoice;
 
 public class NextImagePairTest {
     
