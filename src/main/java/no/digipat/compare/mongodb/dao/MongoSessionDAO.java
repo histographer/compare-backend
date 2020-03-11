@@ -36,7 +36,7 @@ public class MongoSessionDAO {
      *
      * @param session the session that has to be inserted
      *
-     * @throws IllegalStateException if an session with the given ID already exists
+     * @throws IllegalStateException if a session with the given ID already exists
      * @throws NullPointerException if {@code session} or {@code session.getId()} is {@code null}
      */
     public void createSession (Session session) throws IllegalStateException {
@@ -50,8 +50,8 @@ public class MongoSessionDAO {
             } else {
                 throw e;
             }
+        }
     }
-}
 
     /**
      * Checks if a session exists in the database.
@@ -85,7 +85,11 @@ public class MongoSessionDAO {
 
     private static Document sessionToDocument(Session session) {
         Document document = new Document();
-        document.put("_id", session.getId());
+        String id = session.getId();
+        if (id == null) {
+            throw new NullPointerException();
+        }
+        document.put("_id", id);
         document.put("hospital", session.getHospital());
         document.put("monitorType", session.getMonitorType());
         return document;
