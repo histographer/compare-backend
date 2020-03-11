@@ -97,7 +97,7 @@ public class MongoSessionDAO {
 
     private static Session documentToSession(Document document) {
         Session session = new Session().setId(document.getString("_id"))
-                .setHospital(document.getString("hosital"))
+                .setHospital(document.getString("hospital"))
                 .setMonitorType(document.getString("monitorType"));
         return session;
     }
