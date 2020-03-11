@@ -57,10 +57,11 @@ public class ImageRetrievalContextListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        System.out.println("Image Retrieval listener");
         String cytomineUrl = System.getenv("COMPARE_CYTOMINE_URL");
-        String cytominePublicKey = System.getenv("COMPARE_CYTOMINE_PUBLIC_KEY");
-        String cytominePrivateKey = System.getenv("COMPARE_CYTOMINE_PRIVATE_KEY");
-        String cytomineProjectIdString = System.getenv("COMPARE_CYTOMINE_PROJECT_ID");
+        String cytominePublicKey = System.getenv("COMPARE_ADMIN_PUB_KEY");
+        String cytominePrivateKey = System.getenv("COMPARE_ADMIN_PRIV_KEY");
+        String cytomineProjectIdString = System.getenv("COMPARE_PROJECT_ID");
         if (cytomineUrl == null || cytominePublicKey == null || cytominePrivateKey == null
                 || cytomineProjectIdString == null) {
             throw new IllegalStateException("One or more required environment variables have not been set");
