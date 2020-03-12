@@ -47,6 +47,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+	  <groupId>pl.pragmatists</groupId>
+	  <artifactId>JUnitParams</artifactId>
+	  <version>1.1.1</version>
+	  <scope>test</scope>
+	</dependency>
+    <dependency>
       <!-- Servlet API dependency -->
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -91,7 +97,7 @@
           <includes>
             <include>DatabaseUnitTests.java</include>
             <include>ImageTest.java</include>
-            <include>SessionTest</include>
+            <include>SessionTest.java</include>
           </includes>
           <skipTests>${skip.unit.tests}</skipTests>
         </configuration>
