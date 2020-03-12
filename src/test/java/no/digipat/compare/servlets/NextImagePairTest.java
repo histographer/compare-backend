@@ -2,6 +2,9 @@ package no.digipat.compare.servlets;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,9 +19,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.MessageBodyWebRequest;
+import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import com.meterware.httpunit.protocol.MessageBody;
+import com.meterware.httpunit.protocol.ParameterCollection;
 import com.mongodb.MongoClient;
 
 import no.digipat.compare.models.image.Image;
@@ -48,9 +55,31 @@ public class NextImagePairTest {
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
     }
     
+    private static void login(WebConversation conversation) throws Exception {
+        WebRequest loginRequest = new PostMethodWebRequest(new URL(baseUrl, "session").toString()) {
+            @Override
+            protected MessageBody getMessageBody() {
+                return new MessageBody("UTF8") {
+                    @Override
+                    public void writeTo(OutputStream outputStream, ParameterCollection parameters) throws IOException {
+                        PrintWriter writer = new PrintWriter(outputStream);
+                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\"}");
+                        writer.flush();
+                    }
+                    @Override
+                    public String getContentType() {
+                        return "application/json";
+                    }
+                };
+            }
+        };
+        conversation.sendRequest(loginRequest);
+    }
+    
     @Test
     public void testNotEnoughImages() throws Exception {
         WebConversation conversation = new WebConversation();
+        login(conversation);
         conversation.setExceptionsThrownOnErrorStatus(false);
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
         // Zero images in database
@@ -76,6 +105,7 @@ public class NextImagePairTest {
         imageDao.createImage(image2);
         comparisonDao.createImageComparison(new ImageComparison("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
         WebConversation conversation = new WebConversation();
+        login(conversation);
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
         WebResponse response = conversation.getResponse(request);
         // Test status code
