@@ -6,12 +6,12 @@ import no.digipat.compare.models.image.Image;
 import org.junit.Test;
 
 public class ImageTest {
-    // TODO test file name and project ID
     
     @Test
     public void testEquality() {
-        Image image1 = new Image(), image2 = new Image(), image3 = new Image();
-        for (Image image : new Image[] {image1, image2, image3}) {
+        Image image1 = new Image(), image2 = new Image(), image3 = new Image(),
+                image4 = new Image(), image5 = new Image();
+        for (Image image : new Image[] {image1, image2, image3, image4, image5}) {
             image.setImageId(1L).setWidth(100L).setHeight(50L)
             .setDepth(10L).setMagnification(4L).setResolution(100.1)
             .setMimeType("image/png")
@@ -19,8 +19,12 @@ public class ImageTest {
         }
         image3.setImageServerURLs(new String[] {"https://facebook.com"});
         image3.setHeight(150L);
+        image4.setFileName("image.png");
+        image5.setProjectId(123L);
         assertEquals(image1, image2);
         assertNotEquals(image2, image3);
+        assertNotEquals(image1, image4);
+        assertNotEquals(image1, image5);
     }
     
     @Test
