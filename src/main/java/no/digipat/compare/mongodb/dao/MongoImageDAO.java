@@ -6,9 +6,12 @@ import java.util.List;
 
 import org.bson.Document;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 
 import no.digipat.compare.models.image.Image;
 
@@ -19,7 +22,6 @@ import no.digipat.compare.models.image.Image;
  *
  */
 public class MongoImageDAO {
-    // TODO file name and project ID
     
     private final MongoCollection<Document> collection;
     
@@ -38,8 +40,10 @@ public class MongoImageDAO {
      * 
      * @param image the image to be inserted
      * 
-     * @throws IllegalStateException if an image with the given ID already exists
-     * @throws NullPointerException if {@code image} or {@code image.getId()} is {@code null}
+     * @throws IllegalStateException if an image with the given combination of
+     * image ID and project ID already exists
+     * @throws NullPointerException if {@code image}, {@code image.getImageId()},
+     * or {@code image.getProjectId()} is {@code null}
      * 
      */
     public void createImage(Image image) throws IllegalStateException {
@@ -47,7 +51,7 @@ public class MongoImageDAO {
             collection.insertOne(imageToDocument(image));
         } catch (MongoWriteException e) {
             if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
-                throw new IllegalStateException("Duplicate image ID", e);
+                throw new IllegalStateException("Duplicate combination of image ID and project ID", e);
             } else {
                 throw e;
             }
@@ -63,14 +67,17 @@ public class MongoImageDAO {
      */
     public List<Image> getAllImages(long projectId) {
         final List<Image> images = new ArrayList<>();
-        for (Document document : collection.find()) {
+        for (Document document : collection.find(Filters.eq("_id.projectId", projectId))) {
             images.add(documentToImage(document));
         }
         return images;
     }
     
     private static Image documentToImage(Document document) {
-        Image image =  new Image().setImageId(document.getLong("_id"))
+        Document compositeKey = (Document) document.get("_id");
+        Image image =  new Image().setImageId(compositeKey.getLong("imageId"))
+                .setProjectId(compositeKey.getLong("projectId"))
+                .setFileName(document.getString("fileName"))
                 .setWidth(document.getLong("width"))
                 .setHeight(document.getLong("height"))
                 .setDepth(document.getLong("depth"))
@@ -86,7 +93,11 @@ public class MongoImageDAO {
     
     private static Document imageToDocument(Image image) {
         Document document = new Document();
-        document.put("_id", (long) image.getImageId());
+        DBObject compositeKey = new BasicDBObject();
+        compositeKey.put("imageId", (long) image.getImageId());
+        compositeKey.put("projectId", (long) image.getProjectId());
+        document.put("_id", compositeKey);
+        document.put("fileName", image.getFileName());
         document.put("width", image.getWidth());
         document.put("height", image.getHeight());
         document.put("depth", image.getDepth());
