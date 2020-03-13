@@ -62,7 +62,9 @@ public class RankingServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        List<Image> images = imageDao.getAllImages();
+        List<Image> images = imageDao.getAllImages(1);
+        // TODO project ID
+        // The project ID is currently hard coded to allow compilation
         if (images.size() < 2) {
             throw new ServletException("Not enough images in the database");
         }
@@ -74,7 +76,9 @@ public class RankingServlet extends HttpServlet {
         JSONArray score;
         try {
             analysisResponse = Analysis.getAnalysisResponse(baseUrl, "ranking/ranking/", jsonForAnalysisBackend);
-            List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage();
+            List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage(1L);
+            // TODO project ID
+            // The project ID is currently hard coded to allow compilation
             score = analysisResponse.getJSONArray("scores");
             for (int i=0; i < score.length(); i++) {
                 JSONObject tempObject = score.getJSONObject(i);

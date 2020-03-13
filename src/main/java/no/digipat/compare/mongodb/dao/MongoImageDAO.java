@@ -55,11 +55,13 @@ public class MongoImageDAO {
     }
     
     /**
-     * Retrieves every image in the database.
+     * Retrieves every image in a given project.
      * 
-     * @return a list of every image in the database
+     * @param projectId the ID of the project
+     * 
+     * @return a list of every image in the project
      */
-    public List<Image> getAllImages() {
+    public List<Image> getAllImages(long projectId) {
         final List<Image> images = new ArrayList<>();
         for (Document document : collection.find()) {
             images.add(documentToImage(document));

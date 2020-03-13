@@ -50,15 +50,17 @@ public class MongoImageComparisonDAO {
     }
     
     /**
-     * Retrieves the number of times each image in the database has been compared.
+     * Retrieves the number of times each image in a project has been compared.
+     * 
+     * @param projectId the ID of the project
      * 
      * @return a list of map entries, in which every entry's key is an image ID
      * and the entry's value is the number of times that image has been compared
      */
-    public List<Map.Entry<Long, Long>> getNumberOfComparisonsForEachImage() {
+    public List<Map.Entry<Long, Long>> getNumberOfComparisonsForEachImage(long projectId) {
         final List<Map.Entry<Long, Long>> numbers = new ArrayList<>();
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        for (Image image : imageDao.getAllImages()) {
+        for (Image image : imageDao.getAllImages(projectId)) {
             Long id = image.getImageId();
             long count = collection.countDocuments(or(eq("chosen.id", id), eq("other.id", id)));
             numbers.add(new Map.Entry<Long, Long>() {

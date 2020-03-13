@@ -72,7 +72,8 @@ public class MongoImageComparisonDAOTest {
     public void testGetNumberOfComparisonsForEachImage() {
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        assertEquals(0, comparisonDao.getNumberOfComparisonsForEachImage().size());
+        assertEquals(0, comparisonDao.getNumberOfComparisonsForEachImage(1).size());
+        // TODO project ID
         imageDao.createImage(new Image().setImageId(1L).setMimeType("image/png"));
         imageDao.createImage(new Image().setImageId(2L).setMagnification(123L));
         imageDao.createImage(new Image().setImageId(42L).setHeight(100L));
@@ -80,7 +81,8 @@ public class MongoImageComparisonDAOTest {
                 .setWinner(new ImageChoice(1L, "")).setLoser(new ImageChoice(2L, "")));
         comparisonDao.createImageComparison(new ImageComparison().setSessionID("blah-2").setWinner(new ImageChoice(2L, ""))
                 .setLoser(new ImageChoice(42L, "")));
-        List<Map.Entry<Long, Long>> comparisonNumbers = comparisonDao.getNumberOfComparisonsForEachImage();
+        List<Map.Entry<Long, Long>> comparisonNumbers = comparisonDao.getNumberOfComparisonsForEachImage(1);
+        // TODO project ID
         Collections.sort(comparisonNumbers, (entry1, entry2) -> (int) (entry1.getKey() - entry2.getKey()));
         long[] numbers = comparisonNumbers.stream().mapToLong(entry -> entry.getValue()).toArray();
         assertArrayEquals(new long[] {1, 2, 1}, numbers); // Image 1 is in 1 comparison, image 2 in 2 comparisons, 42 is in 1 comparison

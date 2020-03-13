@@ -77,7 +77,8 @@ public class NextImagePairServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        List<Image> images = imageDao.getAllImages();
+        List<Image> images = imageDao.getAllImages(1L); // TODO project ID
+        // The project ID is currently hard coded to allow compilation
         if (images.size() < 2) {
             throw new ServletException("Not enough images in the database");
         }

@@ -35,28 +35,47 @@ public class MongoImageDAOTest {
     }
     
     @Test(expected=NullPointerException.class)
-    public void testCreateImageWithNullId() {
-        dao.createImage(new Image());
+    public void testCreateImageWithNullImageId() {
+        dao.createImage(new Image().setProjectId(123L));
+    }
+    
+    @Test(expected=NullPointerException.class)
+    public void testCreateImageWithNullProjectId() {
+        dao.createImage(new Image().setImageId(42L));
+    }
+    
+    @Test
+    public void testCreateImageWithDuplicateImageId() {
+        // We don't expect an exception here because duplicate image
+        // IDs are allowed as long as the project IDs are different
+        dao.createImage(new Image().setImageId(1L).setProjectId(123L));
+        dao.createImage(new Image().setImageId(1L).setProjectId(456L));
     }
     
     @Test(expected=IllegalStateException.class)
-    public void testCreateImageWithDuplicateId() {
-        dao.createImage(new Image().setImageId(1L).setDepth(2L));
-        dao.createImage(new Image().setImageId(1L).setWidth(100L));
+    public void testCreateImageWithDuplicateCompositeId() {
+        dao.createImage(new Image().setImageId(1L).setProjectId(123L).setDepth(2L));
+        dao.createImage(new Image().setImageId(1L).setProjectId(123L).setWidth(100L));
     }
     
     @Test
     public void testGetAllImages() {
         // Test with no data
-        assertEquals(0, dao.getAllImages().size());
+        assertEquals(0, dao.getAllImages(1L).size());
         // Test with data
-        Image image1 = new Image().setImageId(1L).setDepth(12L).setHeight(150L).setWidth(200L),
-                image2 = new Image().setImageId(69L).setMagnification(4L).setResolution(100.1).setMimeType("image/png"),
-                image3 = new Image().setImageId(1337L).setImageServerURLs(new String[] {"http://www.example.com"});
+        final long projectId1 = 1, projectId2 = 2;
+        Image image1 = new Image().setImageId(1L).setProjectId(projectId1).setDepth(12L).setHeight(150L)
+                    .setWidth(200L).setFileName("image 1.jpeg"),
+                image2 = new Image().setImageId(69L).setProjectId(projectId1).setMagnification(4L)
+                    .setResolution(100.1).setMimeType("image/png"),
+                image3 = new Image().setImageId(1337L).setProjectId(projectId1)
+                    .setImageServerURLs(new String[] {"http://www.example.com"}),
+                image4 = new Image().setImageId(10L).setProjectId(projectId2); // Image 4 belongs to a different project
         dao.createImage(image1);
         dao.createImage(image2);
         dao.createImage(image3);
-        List<Image> images = dao.getAllImages();
+        dao.createImage(image4);
+        List<Image> images = dao.getAllImages(projectId1);
         Collections.sort(images, new Comparator<Image>() {
             @Override
             public int compare(Image img1, Image img2) {
