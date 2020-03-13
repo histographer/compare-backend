@@ -90,12 +90,14 @@ public class ImageRetrievalContextListener implements ServletContextListener {
                 JSONObject abstractImageJson = (JSONObject) object;
                 Image image = new Image()
                         .setImageId((Long) abstractImageJson.get("id"))
+                        .setProjectId(projectId)
                         .setMimeType((String) abstractImageJson.get("mime"))
                         .setWidth((Long) abstractImageJson.get("width"))
                         .setHeight((Long) abstractImageJson.get("height"))
                         .setDepth((Long) abstractImageJson.get("depth"))
                         .setResolution((Double) abstractImageJson.get("resolution"))
                         .setMagnification((Long) abstractImageJson.get("magnification"));
+                // TODO file name
                 @SuppressWarnings("unchecked")
                 List<String> serverUrls = (List<String>) connection.doGet("/api/abstractimage/"
                         + image.getImageId() + "/imageservers.json").get("imageServersURLs");
