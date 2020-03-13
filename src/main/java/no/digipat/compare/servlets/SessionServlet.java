@@ -22,18 +22,24 @@ public class SessionServlet extends HttpServlet {
 
 
     /**
-     * @param request
+     * Creates a new session for the user. The request body must contain
+     * a JSON object with the following format:
+     * 
+     * <pre>
      * {
-     *     monitorType, string
-     *     hospital, string
+     *   "projectId": &lt;long&gt;,
+     *   "monitorType": &lt;String&gt;,
+     *   "hospital": &lt;String&gt;
      * }
-     * @param response
-     *
-     * StatusCode: 200
-     *
+     * </pre>
+     * 
+     * @param request the request
+     * @param response the response
+     * 
+     * @throws IOException if an I/O error occurs
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        ServletContext context = request.getServletContext();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ServletContext context = getServletContext();
         String servletSessionID = request.getSession().getId();
 
         JSONParser parser = new JSONParser();
@@ -46,17 +52,18 @@ public class SessionServlet extends HttpServlet {
                 sessionDAO.createSession(jsonToSession(sessionJson, servletSessionID));
             }
 
-        } catch (ParseException |  IOException e) {
+        } catch (ParseException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
-
-
+    
     private static Session jsonToSession(JSONObject json, String id) {
         try {
             String hospital= (String) json.get("hospital");
             String monitorType = (String) json.getOrDefault("monitorType", null);
-            return new Session().setHospital(hospital).setMonitorType(monitorType).setId(id);
+            long projectId = (Long) json.get("projectId");
+            return new Session().setHospital(hospital).setMonitorType(monitorType)
+                    .setId(id).setProjectId(projectId);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("JSON is not valid, hospital is missing");
         }

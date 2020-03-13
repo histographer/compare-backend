@@ -63,7 +63,7 @@ public class NextImagePairTest {
                     @Override
                     public void writeTo(OutputStream outputStream, ParameterCollection parameters) throws IOException {
                         PrintWriter writer = new PrintWriter(outputStream);
-                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\"}");
+                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\", \"projectId\": 123}");
                         writer.flush();
                     }
                     @Override
