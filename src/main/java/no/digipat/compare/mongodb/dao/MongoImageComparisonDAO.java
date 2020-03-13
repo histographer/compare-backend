@@ -1,6 +1,7 @@
 package no.digipat.compare.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageChoice;
@@ -45,7 +46,7 @@ public class MongoImageComparisonDAO {
      */
     public List<ImageComparison> getAllImageComparisons(long projectId) {
         final List<ImageComparison> comparisons = new ArrayList<>();
-        for (Document document : this.collection.find()) {
+        for (Document document : this.collection.find(Filters.eq("projectId", projectId))) {
             comparisons.add(dbDocumentToImageComparison(document));
         }
         return comparisons;
@@ -64,7 +65,7 @@ public class MongoImageComparisonDAO {
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
         for (Image image : imageDao.getAllImages(projectId)) {
             Long id = image.getImageId();
-            long count = collection.countDocuments(or(eq("chosen.id", id), eq("other.id", id)));
+            long count = collection.countDocuments(or(eq("winner.id", id), eq("loser.id", id)));
             numbers.add(new Map.Entry<Long, Long>() {
                 @Override
                 public Long getKey() {
@@ -91,27 +92,26 @@ public class MongoImageComparisonDAO {
     
     private static Document imageComparisonToDBDocument(ImageComparison imageComparison) {
         return new Document().
-                append("chosen", imageChoiceToDBDocument(imageComparison.getWinner()))
-                .append("other", imageChoiceToDBDocument(imageComparison.getLoser()))
-                .append("id", imageComparison.getSessionID());
-        // TODO project ID
-        // TODO replace chosen and other
+                append("winner", imageChoiceToDBDocument(imageComparison.getWinner()))
+                .append("loser", imageChoiceToDBDocument(imageComparison.getLoser()))
+                .append("sessionId", imageComparison.getSessionID())
+                .append("projectId", imageComparison.getProjectId());
     }
     
     private static ImageComparison dbDocumentToImageComparison(Document document) {
         try {
-            String user = document.getString("id");
-            Document chosenDoc = (Document) document.get("chosen");
-            long chosenId = (Long) chosenDoc.get("id");
-            String chosenComment = chosenDoc.getString("comment");
-            ImageChoice chosen = new ImageChoice(chosenId, chosenComment);
-            Document otherDoc = (Document) document.get("other");
-            long otherId = (Long) otherDoc.get("id");
-            String otherComment = otherDoc.getString("comment");
-            ImageChoice other = new ImageChoice(otherId, otherComment);
-            ImageComparison imageComparison = new ImageComparison().setSessionID(user)
-                    .setWinner(chosen).setLoser(other); // TODO project ID
-            // TODO replace chosen and other
+            String sessionId = document.getString("sessionId");
+            long projectId = document.getLong("projectId");
+            Document winnerDoc = (Document) document.get("winner");
+            long winnerId = (Long) winnerDoc.get("id");
+            String winnerComment = winnerDoc.getString("comment");
+            ImageChoice winner = new ImageChoice(winnerId, winnerComment);
+            Document loserDoc = (Document) document.get("loser");
+            long loserId = (Long) loserDoc.get("id");
+            String loserComment = loserDoc.getString("comment");
+            ImageChoice loser = new ImageChoice(loserId, loserComment);
+            ImageComparison imageComparison = new ImageComparison().setSessionID(sessionId)
+                    .setWinner(winner).setLoser(loser).setProjectId(projectId);
             return imageComparison;
         } catch (NullPointerException | ClassCastException e) {
             throw new IllegalArgumentException("Invalid document", e);
