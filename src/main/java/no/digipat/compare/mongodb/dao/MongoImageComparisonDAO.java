@@ -37,11 +37,13 @@ public class MongoImageComparisonDAO {
     }
     
     /**
-     * Retrieves every image comparison from the database.
+     * Retrieves every image comparison from a given project.
      * 
-     * @return a list of every image comparison
+     * @param projectId the ID of the project
+     * 
+     * @return a list of every image comparison in the project
      */
-    public List<ImageComparison> getAllImageComparisons() {
+    public List<ImageComparison> getAllImageComparisons(long projectId) {
         final List<ImageComparison> comparisons = new ArrayList<>();
         for (Document document : this.collection.find()) {
             comparisons.add(dbDocumentToImageComparison(document));

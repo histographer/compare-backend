@@ -83,7 +83,7 @@ public class NextImagePairServlet extends HttpServlet {
             throw new ServletException("Not enough images in the database");
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons();
+        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(-1); // TODO project ID
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
