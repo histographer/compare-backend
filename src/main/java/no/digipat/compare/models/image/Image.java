@@ -137,10 +137,11 @@ public class Image {
      */
     @Override
     public boolean equals(Object obj) {
-        // TODO update
         if (obj instanceof Image) {
             Image img = (Image) obj;
             return Objects.equals(imageId, img.getImageId())
+                    && Objects.equals(projectId, img.getProjectId())
+                    && Objects.equals(fileName, img.getFileName())
                     && Objects.equals(width, img.getWidth())
                     && Objects.equals(height, img.getHeight())
                     && Objects.equals(depth, img.getDepth())
@@ -155,9 +156,9 @@ public class Image {
     
     @Override
     public int hashCode() {
-        // TODO update
         // We need to override hashCode since we're overriding equals
-        int code = Objects.hash(imageId, width, height, depth, magnification, resolution, mimeType);
+        int code = Objects.hash(imageId, projectId, fileName, width, height, depth,
+                magnification, resolution, mimeType);
         code += 31 * Arrays.hashCode(imageServerURLs);
         return code;
     }
