@@ -89,7 +89,7 @@ public class ImageRetrievalContextListener implements ServletContextListener {
             for (Object object : (JSONArray) abstractImageListJson.get("collection")) {
                 JSONObject abstractImageJson = (JSONObject) object;
                 Image image = new Image()
-                        .setId((Long) abstractImageJson.get("id"))
+                        .setImageId((Long) abstractImageJson.get("id"))
                         .setMimeType((String) abstractImageJson.get("mime"))
                         .setWidth((Long) abstractImageJson.get("width"))
                         .setHeight((Long) abstractImageJson.get("height"))
@@ -98,12 +98,12 @@ public class ImageRetrievalContextListener implements ServletContextListener {
                         .setMagnification((Long) abstractImageJson.get("magnification"));
                 @SuppressWarnings("unchecked")
                 List<String> serverUrls = (List<String>) connection.doGet("/api/abstractimage/"
-                        + image.getId() + "/imageservers.json").get("imageServersURLs");
+                        + image.getImageId() + "/imageservers.json").get("imageServersURLs");
                 image.setImageServerURLs(serverUrls.toArray(new String[] {}));
                 try {
                     imageDao.createImage(image);
                 } catch (IllegalStateException e) {
-                    context.log("Image with ID " + image.getId() + " already exists and was not added to the database");
+                    context.log("Image with ID " + image.getImageId() + " already exists and was not added to the database");
                 }
             }
         } catch (CytomineException e) {

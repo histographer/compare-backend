@@ -2,11 +2,10 @@ package no.digipat.compare.models.session;
 
 public class Session {
     private String id;
+    private Long projectId;
     private String hospital;
     private String monitorType;
-
-
-
+    
     public Session(){}
 
     public String getId() {
@@ -17,7 +16,16 @@ public class Session {
         this.id = id;
         return this;
     }
-
+    
+    public Long getProjectId() {
+        return projectId;
+    }
+    
+    public Session setProjectId(Long projectId) {
+        this.projectId = projectId;
+        return this;
+    }
+    
     public String getHospital() {
         return hospital;
     }
@@ -35,5 +43,5 @@ public class Session {
         this.monitorType = monitorType;
         return this;
     }
-
+    
 }

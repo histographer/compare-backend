@@ -41,8 +41,8 @@ public class MongoImageDAOTest {
     
     @Test(expected=IllegalStateException.class)
     public void testCreateImageWithDuplicateId() {
-        dao.createImage(new Image().setId(1L).setDepth(2L));
-        dao.createImage(new Image().setId(1L).setWidth(100L));
+        dao.createImage(new Image().setImageId(1L).setDepth(2L));
+        dao.createImage(new Image().setImageId(1L).setWidth(100L));
     }
     
     @Test
@@ -50,9 +50,9 @@ public class MongoImageDAOTest {
         // Test with no data
         assertEquals(0, dao.getAllImages().size());
         // Test with data
-        Image image1 = new Image().setId(1L).setDepth(12L).setHeight(150L).setWidth(200L),
-                image2 = new Image().setId(69L).setMagnification(4L).setResolution(100.1).setMimeType("image/png"),
-                image3 = new Image().setId(1337L).setImageServerURLs(new String[] {"http://www.example.com"});
+        Image image1 = new Image().setImageId(1L).setDepth(12L).setHeight(150L).setWidth(200L),
+                image2 = new Image().setImageId(69L).setMagnification(4L).setResolution(100.1).setMimeType("image/png"),
+                image3 = new Image().setImageId(1337L).setImageServerURLs(new String[] {"http://www.example.com"});
         dao.createImage(image1);
         dao.createImage(image2);
         dao.createImage(image3);
@@ -60,7 +60,7 @@ public class MongoImageDAOTest {
         Collections.sort(images, new Comparator<Image>() {
             @Override
             public int compare(Image img1, Image img2) {
-                return (int) (img1.getId() - img2.getId());
+                return (int) (img1.getImageId() - img2.getImageId());
             }
         });
         assertArrayEquals(new Image[] {image1, image2, image3}, images.toArray());

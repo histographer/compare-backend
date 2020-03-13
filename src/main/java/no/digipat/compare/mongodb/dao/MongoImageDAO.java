@@ -19,6 +19,7 @@ import no.digipat.compare.models.image.Image;
  *
  */
 public class MongoImageDAO {
+    // TODO file name and project ID
     
     private final MongoCollection<Document> collection;
     
@@ -67,7 +68,7 @@ public class MongoImageDAO {
     }
     
     private static Image documentToImage(Document document) {
-        Image image =  new Image().setId(document.getLong("_id"))
+        Image image =  new Image().setImageId(document.getLong("_id"))
                 .setWidth(document.getLong("width"))
                 .setHeight(document.getLong("height"))
                 .setDepth(document.getLong("depth"))
@@ -83,7 +84,7 @@ public class MongoImageDAO {
     
     private static Document imageToDocument(Image image) {
         Document document = new Document();
-        document.put("_id", (long) image.getId());
+        document.put("_id", (long) image.getImageId());
         document.put("width", image.getWidth());
         document.put("height", image.getHeight());
         document.put("depth", image.getDepth());

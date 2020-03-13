@@ -21,7 +21,8 @@ import java.io.IOException;
 
 @WebServlet(name = "CompareImage",  urlPatterns = {"/scoring"})
 public class CompareImageServlet extends HttpServlet {
-
+    // TODO project ID
+    
     /**
      * The json request looks like this
      * {
@@ -55,9 +56,9 @@ public class CompareImageServlet extends HttpServlet {
     }
     
     private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) {
-        ImageChoice chosen = jsonToImageChoice((JSONObject) json.get("chosen"));
-        ImageChoice other = jsonToImageChoice((JSONObject) json.get("other"));
-        return new ImageComparison(sessionID, chosen, other);
+        ImageChoice winner = jsonToImageChoice((JSONObject) json.get("chosen"));
+        ImageChoice loser = jsonToImageChoice((JSONObject) json.get("other"));
+        return new ImageComparison().setSessionID(sessionID).setWinner(winner).setLoser(loser);
     }
     
     private static ImageChoice jsonToImageChoice(JSONObject json) {

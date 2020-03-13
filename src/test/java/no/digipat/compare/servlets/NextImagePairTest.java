@@ -86,24 +86,25 @@ public class NextImagePairTest {
         WebResponse response1 = conversation.getResponse(request);
         assertEquals(500, response1.getResponseCode());
         // One image in database
-        imageDao.createImage(new Image().setId(1L));
+        imageDao.createImage(new Image().setImageId(1L));
         WebResponse response2 = conversation.getResponse(request);
         assertEquals(500, response2.getResponseCode());
     }
     
     @Test
     public void testWithValidServerState() throws Exception {
-        Image image1 = new Image().setId(42L).setWidth(150L).setHeight(200L)
+        Image image1 = new Image().setImageId(42L).setWidth(150L).setHeight(200L)
                 .setDepth(10L).setMagnification(4L).setResolution(50.67)
                 .setMimeType("image/png")
                 .setImageServerURLs(new String[] {"https://example.com"});
         imageDao.createImage(image1);
-        Image image2 = new Image().setId(1337L).setWidth(100L).setHeight(50L)
+        Image image2 = new Image().setImageId(1337L).setWidth(100L).setHeight(50L)
                 .setDepth(5L).setMagnification(3L).setResolution(123.45)
                 .setMimeType("image/jpeg")
                 .setImageServerURLs(new String[] {"http://digipat.no"});
         imageDao.createImage(image2);
-        comparisonDao.createImageComparison(new ImageComparison("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
+        comparisonDao.createImageComparison(new ImageComparison().setSessionID("some_user")
+                .setWinner(new ImageChoice(1L, "good")).setLoser(new ImageChoice(2L, "really bad")));
         WebConversation conversation = new WebConversation();
         login(conversation);
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
@@ -119,7 +120,7 @@ public class NextImagePairTest {
             @Override
             public Image apply(Object object) {
                 Map<String, Object> map = (Map<String, Object>) object;
-                return new Image().setId((long) (int) map.get("id"))
+                return new Image().setImageId((long) (int) map.get("id"))
                         .setWidth((long) (int) map.get("width"))
                         .setHeight((long) (int) map.get("height"))
                         .setDepth((long) (int) map.get("depth"))
@@ -132,7 +133,7 @@ public class NextImagePairTest {
         Arrays.sort(receivedImages, new Comparator<Image>() {
             @Override
             public int compare(Image img1, Image img2) {
-                return (int) (img1.getId() - img2.getId());
+                return (int) (img1.getImageId() - img2.getImageId());
             }
         });
         assertArrayEquals(new Image[] {image1, image2}, receivedImages);

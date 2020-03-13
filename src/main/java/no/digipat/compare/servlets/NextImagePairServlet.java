@@ -90,8 +90,8 @@ public class NextImagePairServlet extends HttpServlet {
             JSONObject analysisResponse = Analysis.getAnalysisResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
             JSONArray pair = analysisResponse.getJSONArray("pair");
             long id1 = pair.getLong(0), id2 = pair.getLong(1);
-            Image image1 = images.stream().filter(image -> image.getId() == id1).findFirst().get();
-            Image image2 = images.stream().filter(image -> image.getId() == id2).findFirst().get();
+            Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
+            Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
             responseForUser = createResponseJson(image1, image2);
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
@@ -105,7 +105,7 @@ public class NextImagePairServlet extends HttpServlet {
         JSONArray returnJson = new JSONArray();
         for (Image image : new Image[] { image1, image2 }) {
             JSONObject imageJson = new JSONObject();
-            imageJson.put("id", image.getId());
+            imageJson.put("id", image.getImageId());
             imageJson.put("width", image.getWidth());
             imageJson.put("height", image.getHeight());
             imageJson.put("depth", image.getDepth());

@@ -1,34 +1,45 @@
 package no.digipat.compare.models.image;
 
 public class ImageComparison {
-    private ImageChoice chosen;
-    private ImageChoice other;
-    private String user;
+    private ImageChoice winner;
+    private ImageChoice loser;
+    private String sessionId;
+    private Long projectId;
 
-
-    public ImageComparison(String user, ImageChoice chosen, ImageChoice other) {
-        this.user = user;
-        this.chosen = chosen;
-        this.other = other;
+    public ImageChoice getWinner() {
+        return winner;
     }
 
-    public ImageChoice getChosen() {
-        return chosen;
+    public ImageComparison setWinner(ImageChoice winner) {
+        this.winner = winner;
+        return this;
     }
 
-    public void setChosen(ImageChoice chosen) {
-        this.chosen = chosen;
+    public ImageChoice getLoser() {
+        return loser;
     }
 
-    public ImageChoice getOther() {
-        return other;
+    public ImageComparison setLoser(ImageChoice loser) {
+        this.loser = loser;
+        return this;
     }
 
-    public void setOther(ImageChoice other) {
-        this.other = other;
+    public String getSessionID() {
+        return sessionId;
     }
-
-    public String getUser() {
-        return user;
+    
+    public ImageComparison setSessionID(String sessionId) {
+        this.sessionId = sessionId;
+        return this;
     }
+    
+    public Long getProjectId() {
+        return projectId;
+    }
+    
+    public ImageComparison setProjectId(Long projectId) {
+        this.projectId = projectId;
+        return this;
+    }
+    
 }
