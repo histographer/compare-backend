@@ -11,11 +11,14 @@ public class SessionTest {
         String ID = "TESTID";
         String HOSPITAL = "TESTHOSPITAL";
         String MONITOR_TYPE = "TESTMONITOR";
-        Session session = new Session().setId(ID).setHospital(HOSPITAL).setMonitorType(MONITOR_TYPE);
+        Long PROJECT_ID = 123L;
+        Session session = new Session().setId(ID).setHospital(HOSPITAL).setMonitorType(MONITOR_TYPE)
+                .setProjectId(PROJECT_ID);
 
         assertEquals(session.getId(), ID);
         assertEquals(session.getHospital(), HOSPITAL);
         assertEquals(session.getMonitorType(), MONITOR_TYPE);
+        assertEquals(PROJECT_ID, session.getProjectId());
         assertNotEquals(session.getId(), HOSPITAL);
 
     }

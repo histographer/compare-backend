@@ -4,15 +4,17 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * A representation of a single image. All the setters of this
- * class return the instance on which they are called.
+ * A representation of a single image in a project. All the setters
+ * of this class return the instance on which they are called.
  * 
  * @author Jon Wallem Anundsen
  *
  */
 public class Image {
     
-    private Long id;
+    private Long imageId;
+    private Long projectId;
+    private String fileName;
     private Long width;
     private Long height;
     private Long depth;
@@ -21,12 +23,40 @@ public class Image {
     private String mimeType;
     private String[] imageServerURLs;
     
-    public Long getId() {
-        return id;
+    /**
+     * Gets the ID of this image.
+     * 
+     * @return the ID of a Cytomine abstract image
+     */
+    public Long getImageId() {
+        return imageId;
     }
     
-    public Image setId(Long id) {
-        this.id = id;
+    public Image setImageId(Long id) {
+        this.imageId = id;
+        return this;
+    }
+    
+    /**
+     * Gets the ID of the project that this image belongs to.
+     * 
+     * @return the ID of a Cytomine project
+     */
+    public Long getProjectId() {
+        return projectId;
+    }
+    
+    public Image setProjectId(Long projectId) {
+        this.projectId = projectId;
+        return this;
+    }
+    
+    public String getFileName() {
+        return fileName;
+    }
+    
+    public Image setFileName(String fileName) {
+        this.fileName = fileName;
         return this;
     }
     
@@ -109,7 +139,9 @@ public class Image {
     public boolean equals(Object obj) {
         if (obj instanceof Image) {
             Image img = (Image) obj;
-            return Objects.equals(id, img.getId())
+            return Objects.equals(imageId, img.getImageId())
+                    && Objects.equals(projectId, img.getProjectId())
+                    && Objects.equals(fileName, img.getFileName())
                     && Objects.equals(width, img.getWidth())
                     && Objects.equals(height, img.getHeight())
                     && Objects.equals(depth, img.getDepth())
@@ -125,7 +157,8 @@ public class Image {
     @Override
     public int hashCode() {
         // We need to override hashCode since we're overriding equals
-        int code = Objects.hash(id, width, height, depth, magnification, resolution, mimeType);
+        int code = Objects.hash(imageId, projectId, fileName, width, height, depth,
+                magnification, resolution, mimeType);
         code += 31 * Arrays.hashCode(imageServerURLs);
         return code;
     }

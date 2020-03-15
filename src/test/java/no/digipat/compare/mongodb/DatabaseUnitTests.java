@@ -1,5 +1,6 @@
 package no.digipat.compare.mongodb;
 
+import no.digipat.compare.mongodb.dao.MongoProjectDAOTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -26,7 +27,8 @@ import no.digipat.compare.mongodb.dao.MongoSessionDAOTest;
 @SuiteClasses({
     MongoImageComparisonDAOTest.class,
     MongoImageDAOTest.class,
-    MongoSessionDAOTest.class
+    MongoSessionDAOTest.class,
+        MongoProjectDAOTest.class
 })
 public class DatabaseUnitTests {
     

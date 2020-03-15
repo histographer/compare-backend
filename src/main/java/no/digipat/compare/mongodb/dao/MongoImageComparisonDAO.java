@@ -1,6 +1,7 @@
 package no.digipat.compare.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageChoice;
@@ -37,30 +38,34 @@ public class MongoImageComparisonDAO {
     }
     
     /**
-     * Retrieves every image comparison from the database.
+     * Retrieves every image comparison from a given project.
      * 
-     * @return a list of every image comparison
+     * @param projectId the ID of the project
+     * 
+     * @return a list of every image comparison in the project
      */
-    public List<ImageComparison> getAllImageComparisons() {
+    public List<ImageComparison> getAllImageComparisons(long projectId) {
         final List<ImageComparison> comparisons = new ArrayList<>();
-        for (Document document : this.collection.find()) {
+        for (Document document : this.collection.find(Filters.eq("projectId", projectId))) {
             comparisons.add(dbDocumentToImageComparison(document));
         }
         return comparisons;
     }
     
     /**
-     * Retrieves the number of times each image in the database has been compared.
+     * Retrieves the number of times each image in a project has been compared.
+     * 
+     * @param projectId the ID of the project
      * 
      * @return a list of map entries, in which every entry's key is an image ID
      * and the entry's value is the number of times that image has been compared
      */
-    public List<Map.Entry<Long, Long>> getNumberOfComparisonsForEachImage() {
+    public List<Map.Entry<Long, Long>> getNumberOfComparisonsForEachImage(long projectId) {
         final List<Map.Entry<Long, Long>> numbers = new ArrayList<>();
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        for (Image image : imageDao.getAllImages()) {
-            Long id = image.getId();
-            long count = collection.countDocuments(or(eq("chosen.id", id), eq("other.id", id)));
+        for (Image image : imageDao.getAllImages(projectId)) {
+            Long id = image.getImageId();
+            long count = collection.countDocuments(or(eq("winner.id", id), eq("loser.id", id)));
             numbers.add(new Map.Entry<Long, Long>() {
                 @Override
                 public Long getKey() {
@@ -81,29 +86,32 @@ public class MongoImageComparisonDAO {
     
     private static Document imageChoiceToDBDocument(ImageChoice imageChoice) {
        return new Document()
-               .append("id", imageChoice.getId())
+               .append("id", imageChoice.getImageId())
                .append("comment", imageChoice.getComment());
     }
     
     private static Document imageComparisonToDBDocument(ImageComparison imageComparison) {
         return new Document().
-                append("chosen", imageChoiceToDBDocument(imageComparison.getChosen()))
-                .append("other", imageChoiceToDBDocument(imageComparison.getOther()))
-                .append("id", imageComparison.getUser());
+                append("winner", imageChoiceToDBDocument(imageComparison.getWinner()))
+                .append("loser", imageChoiceToDBDocument(imageComparison.getLoser()))
+                .append("sessionId", imageComparison.getSessionID())
+                .append("projectId", imageComparison.getProjectId());
     }
     
     private static ImageComparison dbDocumentToImageComparison(Document document) {
         try {
-            String user = document.getString("id");
-            Document chosenDoc = (Document) document.get("chosen");
-            long chosenId = (Long) chosenDoc.get("id");
-            String chosenComment = chosenDoc.getString("comment");
-            ImageChoice chosen = new ImageChoice(chosenId, chosenComment);
-            Document otherDoc = (Document) document.get("other");
-            long otherId = (Long) otherDoc.get("id");
-            String otherComment = otherDoc.getString("comment");
-            ImageChoice other = new ImageChoice(otherId, otherComment);
-            ImageComparison imageComparison = new ImageComparison(user, chosen, other);
+            String sessionId = document.getString("sessionId");
+            long projectId = document.getLong("projectId");
+            Document winnerDoc = (Document) document.get("winner");
+            long winnerId = (Long) winnerDoc.get("id");
+            String winnerComment = winnerDoc.getString("comment");
+            ImageChoice winner = new ImageChoice(winnerId, winnerComment);
+            Document loserDoc = (Document) document.get("loser");
+            long loserId = (Long) loserDoc.get("id");
+            String loserComment = loserDoc.getString("comment");
+            ImageChoice loser = new ImageChoice(loserId, loserComment);
+            ImageComparison imageComparison = new ImageComparison().setSessionID(sessionId)
+                    .setWinner(winner).setLoser(loser).setProjectId(projectId);
             return imageComparison;
         } catch (NullPointerException | ClassCastException e) {
             throw new IllegalArgumentException("Invalid document", e);

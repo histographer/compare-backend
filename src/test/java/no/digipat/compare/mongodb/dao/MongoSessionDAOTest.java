@@ -61,7 +61,9 @@ public class MongoSessionDAOTest {
         String ID = "getSession";
         String HOSPITAL1 = "hospitalz";
         String MONITOR_TYPE1 = "hospitalz1";
-        Session session1 = new Session().setId(ID).setHospital(HOSPITAL1).setMonitorType(MONITOR_TYPE1);
+        long PROJECT_ID = 123;
+        Session session1 = new Session().setId(ID).setHospital(HOSPITAL1).setMonitorType(MONITOR_TYPE1)
+                .setProjectId(PROJECT_ID);
         dao.createSession(session1);
 
         Session fetchedSession = dao.getSession(ID);
@@ -69,7 +71,9 @@ public class MongoSessionDAOTest {
         assertEquals(session1.getId(), fetchedSession.getId());
         assertEquals(session1.getHospital(), fetchedSession.getHospital());
         assertEquals(session1.getMonitorType(), fetchedSession.getMonitorType());
+        assertEquals(session1.getProjectId(), fetchedSession.getProjectId());
     }
+    
     @Test
     public void testSessionExists() {
         String ID = "getSession";

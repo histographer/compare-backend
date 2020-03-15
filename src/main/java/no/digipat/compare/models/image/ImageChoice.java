@@ -1,21 +1,21 @@
 package no.digipat.compare.models.image;
 
 public class ImageChoice {
-    private long id;
+    private long imageId;
     private String comment;
 
-    public ImageChoice(long id, String comment) {
-        this.id = id;
+    public ImageChoice(long imageId, String comment) {
+        this.imageId = imageId;
         this.comment = comment;
     }
 
 
-    public long getId() {
-        return id;
+    public long getImageId() {
+        return imageId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 
     public String getComment() {

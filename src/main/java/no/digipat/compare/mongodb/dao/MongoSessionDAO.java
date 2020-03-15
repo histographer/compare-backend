@@ -18,8 +18,7 @@ import static com.mongodb.client.model.Filters.eq;
  */
 public class MongoSessionDAO {
     private MongoCollection<Document> collection;
-
-
+    
     /**
      * Creates a DAO.
      *
@@ -92,13 +91,15 @@ public class MongoSessionDAO {
         document.put("_id", id);
         document.put("hospital", session.getHospital());
         document.put("monitorType", session.getMonitorType());
+        document.put("projectId", session.getProjectId());
         return document;
     }
 
     private static Session documentToSession(Document document) {
         Session session = new Session().setId(document.getString("_id"))
                 .setHospital(document.getString("hospital"))
-                .setMonitorType(document.getString("monitorType"));
+                .setMonitorType(document.getString("monitorType"))
+                .setProjectId(document.getLong("projectId"));
         return session;
     }
 

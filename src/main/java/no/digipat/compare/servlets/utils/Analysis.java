@@ -21,16 +21,16 @@ public class Analysis {
         JSONObject json = new JSONObject();
         List<Long> imageIds = new ArrayList<>();
         for (Image image : images) {
-            imageIds.add(image.getId());
+            imageIds.add(image.getImageId());
         }
         json.put("image_ids", imageIds);
         List<JSONObject> jsonComparisons = new ArrayList<>();
         for (ImageComparison comparison : comparisons) {
             JSONObject comparisonJson = new JSONObject();
             JSONObject winnerJson = new JSONObject();
-            winnerJson.put("id", comparison.getChosen().getId());
+            winnerJson.put("id", comparison.getWinner().getImageId());
             JSONObject loserJson = new JSONObject();
-            loserJson.put("id", comparison.getOther().getId());
+            loserJson.put("id", comparison.getLoser().getImageId());
             comparisonJson.put("winner", winnerJson);
             comparisonJson.put("loser", loserJson);
             jsonComparisons.add(comparisonJson);

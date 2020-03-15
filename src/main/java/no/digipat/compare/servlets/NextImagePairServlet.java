@@ -77,12 +77,24 @@ public class NextImagePairServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        List<Image> images = imageDao.getAllImages();
+        long projectId;
+        try {
+            projectId = Long.parseLong(request.getParameter("projectId"));
+        } catch(NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Project ID is not set");
+            return;
+        }
+        context.log("Fecthing images from projectId: " + projectId);
+        List<Image> images = imageDao.getAllImages(projectId);
+        context.log("Found: " + images.size() + " images" );
         if (images.size() < 2) {
-            throw new ServletException("Not enough images in the database");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Not enough images in the database");
+            return;
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons();
+        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
@@ -90,8 +102,8 @@ public class NextImagePairServlet extends HttpServlet {
             JSONObject analysisResponse = Analysis.getAnalysisResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
             JSONArray pair = analysisResponse.getJSONArray("pair");
             long id1 = pair.getLong(0), id2 = pair.getLong(1);
-            Image image1 = images.stream().filter(image -> image.getId() == id1).findFirst().get();
-            Image image2 = images.stream().filter(image -> image.getId() == id2).findFirst().get();
+            Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
+            Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
             responseForUser = createResponseJson(image1, image2);
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
@@ -105,7 +117,8 @@ public class NextImagePairServlet extends HttpServlet {
         JSONArray returnJson = new JSONArray();
         for (Image image : new Image[] { image1, image2 }) {
             JSONObject imageJson = new JSONObject();
-            imageJson.put("id", image.getId());
+            imageJson.put("projectId", image.getProjectId());
+            imageJson.put("id", image.getImageId());
             imageJson.put("width", image.getWidth());
             imageJson.put("height", image.getHeight());
             imageJson.put("depth", image.getDepth());

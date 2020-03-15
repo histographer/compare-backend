@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import no.digipat.compare.models.project.Project;
+import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +43,7 @@ public class NextImagePairTest {
     private static String databaseName;
     private MongoImageDAO imageDao;
     private MongoImageComparisonDAO comparisonDao;
+    public MongoProjectDAO projectDao;
     
     @BeforeClass
     public static void setUpClass() {
@@ -53,9 +56,17 @@ public class NextImagePairTest {
     public void setUp() {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
+        try{
+            projectDao = new MongoProjectDAO(client, databaseName);
+            Project project = new Project().setId(20l).setName("testname");
+            projectDao.createProject(project);
+        } catch(Exception e){
+            //this is to handle duplicate _id, not sure how to fix this
+        }
     }
     
     private static void login(WebConversation conversation) throws Exception {
+
         WebRequest loginRequest = new PostMethodWebRequest(new URL(baseUrl, "session").toString()) {
             @Override
             protected MessageBody getMessageBody() {
@@ -63,7 +74,7 @@ public class NextImagePairTest {
                     @Override
                     public void writeTo(OutputStream outputStream, ParameterCollection parameters) throws IOException {
                         PrintWriter writer = new PrintWriter(outputStream);
-                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\"}");
+                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\", \"projectId\": 20}");
                         writer.flush();
                     }
                     @Override
@@ -81,32 +92,36 @@ public class NextImagePairTest {
         WebConversation conversation = new WebConversation();
         login(conversation);
         conversation.setExceptionsThrownOnErrorStatus(false);
-        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
+        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair?projectId=20");
         // Zero images in database
         WebResponse response1 = conversation.getResponse(request);
-        assertEquals(500, response1.getResponseCode());
+        assertEquals(400, response1.getResponseCode());
         // One image in database
-        imageDao.createImage(new Image().setId(1L));
+        imageDao.createImage(new Image().setImageId(30L).setProjectId(20L));
         WebResponse response2 = conversation.getResponse(request);
-        assertEquals(500, response2.getResponseCode());
+        assertEquals(400, response2.getResponseCode());
     }
     
     @Test
     public void testWithValidServerState() throws Exception {
-        Image image1 = new Image().setId(42L).setWidth(150L).setHeight(200L)
+        Image image1 = new Image().setImageId(42L).setWidth(150L).setHeight(200L)
                 .setDepth(10L).setMagnification(4L).setResolution(50.67)
-                .setMimeType("image/png")
+                .setMimeType("image/png").setProjectId(20l)
                 .setImageServerURLs(new String[] {"https://example.com"});
+
         imageDao.createImage(image1);
-        Image image2 = new Image().setId(1337L).setWidth(100L).setHeight(50L)
+        Image image2 = new Image().setImageId(1337L).setWidth(100L).setHeight(50L)
                 .setDepth(5L).setMagnification(3L).setResolution(123.45)
-                .setMimeType("image/jpeg")
-                .setImageServerURLs(new String[] {"http://digipat.no"});
+                .setMimeType("image/jpeg").setProjectId(20l)
+                .setImageServerURLs(new String[] {"https://example.com"});
         imageDao.createImage(image2);
-        comparisonDao.createImageComparison(new ImageComparison("some_user", new ImageChoice(1L, "good"), new ImageChoice(2L, "really bad")));
+        comparisonDao.createImageComparison(new ImageComparison().setProjectId(20L).setSessionID("some_user")
+                .setWinner(new ImageChoice(1337L, "good")).setLoser(new ImageChoice(42L, "really bad")));
+        System.out.println("found this many images in testDB: "+imageDao.getAllImages(20l).size());
+
         WebConversation conversation = new WebConversation();
         login(conversation);
-        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
+        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair?projectId=20");
         WebResponse response = conversation.getResponse(request);
         // Test status code
         assertEquals(200, response.getResponseCode());
@@ -119,7 +134,8 @@ public class NextImagePairTest {
             @Override
             public Image apply(Object object) {
                 Map<String, Object> map = (Map<String, Object>) object;
-                return new Image().setId((long) (int) map.get("id"))
+                return new Image().setImageId((long) (int) map.get("id"))
+                        .setProjectId((long) (int) map.get("projectId"))
                         .setWidth((long) (int) map.get("width"))
                         .setHeight((long) (int) map.get("height"))
                         .setDepth((long) (int) map.get("depth"))
@@ -132,9 +148,14 @@ public class NextImagePairTest {
         Arrays.sort(receivedImages, new Comparator<Image>() {
             @Override
             public int compare(Image img1, Image img2) {
-                return (int) (img1.getId() - img2.getId());
+                return (int) (img1.getImageId() - img2.getImageId());
             }
         });
+        System.out.println(receivedImages[0].getImageId());
+        System.out.println(image1.getImageId());
+        System.out.println(receivedImages[1].getImageId());
+        System.out.println(image2.getImageId());
+        System.out.println(receivedImages.length);
         assertArrayEquals(new Image[] {image1, image2}, receivedImages);
     }
     
