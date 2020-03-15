@@ -21,7 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "no.digipat.compare.servlets.UserServlet", urlPatterns = {"/session"})
+@WebServlet(name = "no.digipat.compare.servlets.UserServlet", urlPatterns = {"/project"})
 public class ProjectServlet extends HttpServlet {
 
 
