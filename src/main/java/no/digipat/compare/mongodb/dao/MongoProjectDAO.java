@@ -3,6 +3,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import no.digipat.compare.models.project.Project;
+import no.digipat.compare.models.session.Session;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -69,6 +70,16 @@ public class MongoProjectDAO {
         return projects;
     }
 
+    public boolean ProjectExist(Long id) {
+        try {
+            Project session = getProject(id);
+            return true;
+        } catch(IllegalArgumentException e) {
+            return false;
+        }
+
+    }
+
     private Document projectToDocument(Project project) {
         Document document = new Document();
         Long id = project.getId();
@@ -86,4 +97,5 @@ public class MongoProjectDAO {
                 .setName(document.getString("name"));
         return project;
     }
+
 }
