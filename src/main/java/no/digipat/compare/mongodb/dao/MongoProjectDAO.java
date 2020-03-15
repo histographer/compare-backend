@@ -61,9 +61,9 @@ public class MongoProjectDAO {
         return documentToProject(project);
     }
 
-    public List<Project> getAllProjects(Long id) {
+    public List<Project> getAllProjects() {
         final List<Project> projects = new ArrayList<>();
-        for(Document document : this.collection.find(eq("_id", id))){
+        for(Document document : this.collection.find()){
            projects.add(documentToProject(document));
         };
         return projects;

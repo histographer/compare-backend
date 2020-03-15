@@ -98,6 +98,7 @@
             <include>DatabaseUnitTests.java</include>
             <include>ImageTest.java</include>
             <include>SessionTest.java</include>
+            <include>ProjectTest.java</include>
           </includes>
           <skipTests>${skip.unit.tests}</skipTests>
         </configuration>
