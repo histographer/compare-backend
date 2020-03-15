@@ -41,6 +41,7 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 ### Post - /scoring
 ```json 
 {
+  "projectId": 9999,
   "user": "string",
   "chosen": {
     "id": 1,
@@ -51,24 +52,106 @@ All connections to the DB will go through Database Access Objects (DAO) while th
     "comment": "testcomment2"
   }
 }
-
 ```
 
-### Post - /user
+### Post - /session
 #### Request
 ```json
 { 
+    "projectId": 35549999,
     "monitorType": "IPS laptop",
     "hospital": "St. Olavs"
 }
 ```
 
+### Post - /project
+This will add a project and insert images into the database
+#### Request
+```json
+{
+  "projectId": 994994
+}
+```
+
+### Get - /project
+This will get all projects available if no query string is attached
+#### Response
+```json
+[
+    {
+        "name": "IT2901 Rutinefarge  2019-Q4 ranking",
+        "id": 983488
+    },
+    {
+        "name": "IT2901 eksempelprosjekt",
+        "id": 8485899
+    }
+]
+```
+#### Get single project with query string
+To get a single project use query string `/project?projectId=99349`
 #### Response
 ```json
 {
-   "user": "8acfd1d6-cd86-4356-bf6a-38c85d56ed92"
+    "name": "IT2901 eksempelprosjekt",
+    "id": 58003
 }
 ```
+
+### Get - /imagePair
+Gets a new pair for comparison with querystring `/imagePair?projectId=99999` 
+
+#### Response
+```json
+[
+    {
+        "imageServerURLs": [
+            "url2",
+            "url2"
+        ],
+        "depth": 9,
+        "magnification": 40,
+        "mime": "openslide/ndpi",
+        "width": 78848,
+        "id": 385624,
+        "projectId": 99999,
+        "resolution": 0.22059471905231476,
+        "height": 37632
+    },
+    {
+        "imageServerURLs": [
+            "url1"
+        ],
+        "depth": 9,
+        "magnification": 40,
+        "mime": "openslide/ndpi",
+        "width": 89600,
+        "id": 385831,
+        "projectId": 99999,
+        "resolution": 0.22059471905231476,
+        "height": 59136
+    }
+]
+```
+
+### Get - /ranking 
+Returns an array of rankings. Needs a query string `/ranking?projectId=99999`
+
+#### Returns
+´´´json
+[
+    {
+        "score": 1000,
+        "rankings": 0,
+        "id": 4011
+    },
+    {
+        "score": 1000,
+        "rankings": 0,
+        "id": 78860
+    }
+]
+´´´
 
 ## Testing
 Before you can run the integration tests for the first time, you have to set some environment variables:
