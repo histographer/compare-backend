@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import no.digipat.compare.models.project.Project;
+import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +43,7 @@ public class NextImagePairTest {
     private static String databaseName;
     private MongoImageDAO imageDao;
     private MongoImageComparisonDAO comparisonDao;
+    public MongoProjectDAO projectDao;
     
     @BeforeClass
     public static void setUpClass() {
@@ -53,9 +56,17 @@ public class NextImagePairTest {
     public void setUp() {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
+        try{
+            projectDao = new MongoProjectDAO(client, databaseName);
+            Project project = new Project().setId(20l).setName("testname");
+            projectDao.createProject(project);
+        } catch(Exception e){
+            //this is to handle duplicate _id, not sure how to fix this
+        }
     }
     
     private static void login(WebConversation conversation) throws Exception {
+
         WebRequest loginRequest = new PostMethodWebRequest(new URL(baseUrl, "session").toString()) {
             @Override
             protected MessageBody getMessageBody() {
@@ -84,16 +95,15 @@ public class NextImagePairTest {
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair?projectId=20");
         // Zero images in database
         WebResponse response1 = conversation.getResponse(request);
-        assertEquals(500, response1.getResponseCode());
+        assertEquals(400, response1.getResponseCode());
         // One image in database
         imageDao.createImage(new Image().setImageId(30L).setProjectId(20L));
         WebResponse response2 = conversation.getResponse(request);
-        assertEquals(500, response2.getResponseCode());
+        assertEquals(400, response2.getResponseCode());
     }
     
     @Test
     public void testWithValidServerState() throws Exception {
-        Thread.sleep(2000);
         Image image1 = new Image().setImageId(42L).setWidth(150L).setHeight(200L)
                 .setDepth(10L).setMagnification(4L).setResolution(50.67)
                 .setMimeType("image/png").setProjectId(20l)

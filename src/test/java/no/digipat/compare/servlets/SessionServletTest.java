@@ -7,7 +7,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 
+import no.digipat.compare.models.project.Project;
+import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,6 +32,7 @@ public class SessionServletTest {
     private static MongoClient client;
     private static String databaseName;
     private MongoSessionDAO sessionDao;
+    private MongoProjectDAO projectDao;
     
     @BeforeClass
     public static void setUpClass() {
@@ -39,14 +43,17 @@ public class SessionServletTest {
     
     @Before
     public void setUp() {
+        projectDao = new MongoProjectDAO(client, databaseName);
+        Project project = new Project().setId(30l).setName("testname");
+        projectDao.createProject(project);
         sessionDao = new MongoSessionDAO(client, databaseName);
     }
-    
+
     @Test
     public void test() throws Exception {
         JSONObject json = new JSONObject();
         final String hospital = "St. Olavs";
-        final Long projectId = 123L;
+        final Long projectId = 30l;
         final String monitorType = "normal";
         json.put("hospital", hospital);
         json.put("projectId", projectId);
@@ -77,4 +84,8 @@ public class SessionServletTest {
         assertEquals(projectId, session.getProjectId());
     }
 
+    @After
+    public void tearDown() {
+        client.getDatabase(databaseName).drop();
+    }
 }
