@@ -70,6 +70,7 @@ public class ProjectServlet extends HttpServlet {
 
         } catch (ParseException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print(e);
         }
     }
 
@@ -96,6 +97,7 @@ public class ProjectServlet extends HttpServlet {
             projectId = Long.parseLong(request.getParameter("projectId"));
             if(!projectDao.ProjectExist(projectId)) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                response.getWriter().print("Project does not exist in database");
             } else {
                 Project project = projectDao.getProject(projectId);
                 response.getWriter().print(getProjectResponse(project));
@@ -174,16 +176,17 @@ public class ProjectServlet extends HttpServlet {
         try {
             org.json.simple.JSONObject abstractImageListJsonSimple = connection.doGet("/api/project/" + projectId + "/image.json");
             JSONObject abstractImageListJson = new JSONObject(abstractImageListJsonSimple);
+            JSONArray arr = (JSONArray) abstractImageListJson.get("collection");
+            System.out.println("collection length: "+arr.length());
 
-            for (Object object : (JSONArray) abstractImageListJson.get("collection")) {
+            for (Object object : arr) {
                 JSONObject abstractImageJson = (JSONObject) object;
                 try {
-                   abstractImageJson.get("width");
-                   abstractImageJson.get("height");
+                   Long getWith = (Long) abstractImageJson.get("width");
                 } catch (org.json.JSONException e) {
                     // this means that these values are null, and we will not use this object
                     // some images have this value as null, and are therefore unusable
-                    return;
+                    continue;
                 }
                 Image image = new Image()
                         .setImageId((Long) abstractImageJson.get("id"))
@@ -199,13 +202,14 @@ public class ProjectServlet extends HttpServlet {
                 List<String> serverUrls = (List<String>) connection.doGet("/api/abstractimage/"
                         + image.getImageId() + "/imageservers.json").get("imageServersURLs");
                 image.setImageServerURLs(serverUrls.toArray(new String[] {}));
+                Thread.sleep(50);
                 try {
                     imageDao.createImage(image);
                 } catch (IllegalStateException e) {
                     context.log("Image with ID " + image.getImageId() + " already exists and was not added to the database");
                 }
             }
-        } catch (CytomineException e) {
+        } catch (CytomineException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
