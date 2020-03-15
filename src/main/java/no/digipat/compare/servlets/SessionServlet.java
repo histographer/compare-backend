@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet(name = "no.digipat.compare.servlets.UserServlet", urlPatterns = {"/session"})
+@WebServlet(name = "no.digipat.compare.servlets.SessionServlet", urlPatterns = {"/session"})
 public class SessionServlet extends HttpServlet {
 
 

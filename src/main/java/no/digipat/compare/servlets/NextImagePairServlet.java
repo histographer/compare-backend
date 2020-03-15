@@ -78,13 +78,14 @@ public class NextImagePairServlet extends HttpServlet {
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
         Long projectId = Long.parseLong(request.getParameter("projectId"));
-        List<Image> images = imageDao.getAllImages(projectId); // TODO project ID
-        // The project ID is currently hard coded to allow compilation
+        context.log("Fecthing images from projectId: " + projectId);
+        List<Image> images = imageDao.getAllImages(projectId);
+        context.log("Found: " + images.size() + " images" );
         if (images.size() < 2) {
             throw new ServletException("Not enough images in the database");
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(-1); // TODO project ID
+        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
@@ -107,6 +108,7 @@ public class NextImagePairServlet extends HttpServlet {
         JSONArray returnJson = new JSONArray();
         for (Image image : new Image[] { image1, image2 }) {
             JSONObject imageJson = new JSONObject();
+            imageJson.put("projectId", image.getProjectId());
             imageJson.put("id", image.getImageId());
             imageJson.put("width", image.getWidth());
             imageJson.put("height", image.getHeight());
