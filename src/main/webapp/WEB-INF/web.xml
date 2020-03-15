@@ -38,7 +38,7 @@
     <listener-class>no.digipat.compare.listeners.MongoDBContextListener</listener-class>
   </listener>
   <listener>
-    <listener-class>no.digipat.compare.listeners.ImageRetrievalContextListener</listener-class>
+    <listener-class>no.digipat.compare.listeners.CytomineContextListener</listener-class>
   </listener>
 </web-app>
 

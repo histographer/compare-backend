@@ -28,7 +28,7 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
  * @author Jon Wallem Anundsen
  * 
  */
-public class ImageRetrievalContextListener implements ServletContextListener {
+public class CytomineContextListener implements ServletContextListener {
     
     /**
      * Connects to a Cytomine instance, retrieves information about all the
@@ -61,58 +61,17 @@ public class ImageRetrievalContextListener implements ServletContextListener {
         String cytomineUrl = System.getenv("COMPARE_CYTOMINE_URL");
         String cytominePublicKey = System.getenv("COMPARE_ADMIN_PUB_KEY");
         String cytominePrivateKey = System.getenv("COMPARE_ADMIN_PRIV_KEY");
-        String cytomineProjectIdString = System.getenv("COMPARE_PROJECT_ID");
         if (cytomineUrl == null || cytominePublicKey == null || cytominePrivateKey == null
-                || cytomineProjectIdString == null) {
+                ) {
             throw new IllegalStateException("One or more required environment variables have not been set");
         }
-        long cytomineProjectId;
-        try {
-            cytomineProjectId = Long.parseLong(cytomineProjectIdString);
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("The Cytomine project ID must be a long integer", e);
-        }
         ServletContext context = servletContextEvent.getServletContext();
-        MongoClient mongoClient = (MongoClient) context.getAttribute("MONGO_CLIENT");
-        String databaseName = (String) context.getAttribute("MONGO_DATABASE");
-        if (mongoClient == null || databaseName == null) {
-            throw new IllegalStateException("The context attributes required to connect to the database have not been set");
-        }
-        CytomineConnection connection = Cytomine.connection(cytomineUrl, cytominePublicKey, cytominePrivateKey);
-        MongoImageDAO imageDao = new MongoImageDAO(mongoClient, databaseName);
-        retrieveAndAddImages(connection, cytomineProjectId, imageDao, context);
+        context.setAttribute("CYTOMINE_URL", cytomineUrl);
+        context.setAttribute("CYTOMINE_PUBLIC_KEY", cytominePublicKey);
+        context.setAttribute("CYTOMINE_PRIVATE_KEY", cytominePrivateKey);
     }
     
-    private static void retrieveAndAddImages(CytomineConnection connection, long projectId, MongoImageDAO imageDao, ServletContext context) {
-        try {
-            JSONObject abstractImageListJson = connection.doGet("/api/project/" + projectId + "/image.json");
-            for (Object object : (JSONArray) abstractImageListJson.get("collection")) {
-                JSONObject abstractImageJson = (JSONObject) object;
-                Image image = new Image()
-                        .setImageId((Long) abstractImageJson.get("id"))
-                        .setProjectId(projectId)
-                        .setMimeType((String) abstractImageJson.get("mime"))
-                        .setWidth((Long) abstractImageJson.get("width"))
-                        .setHeight((Long) abstractImageJson.get("height"))
-                        .setDepth((Long) abstractImageJson.get("depth"))
-                        .setResolution((Double) abstractImageJson.get("resolution"))
-                        .setMagnification((Long) abstractImageJson.get("magnification"));
-                // TODO file name
-                @SuppressWarnings("unchecked")
-                List<String> serverUrls = (List<String>) connection.doGet("/api/abstractimage/"
-                        + image.getImageId() + "/imageservers.json").get("imageServersURLs");
-                image.setImageServerURLs(serverUrls.toArray(new String[] {}));
-                try {
-                    imageDao.createImage(image);
-                } catch (IllegalStateException e) {
-                    context.log("Image with ID " + image.getImageId() + " already exists and was not added to the database");
-                }
-            }
-        } catch (CytomineException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
+
     /**
      * Does nothing.
      */
