@@ -18,9 +18,8 @@ import no.digipat.compare.models.image.Image;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 /**
- * A context listener that retrieves information about all the images
- * in a given Cytomine project and adds them to the database.
- * 
+ * A context listener that add a Cytomine instance to the context
+ *
  * @see Image
  * @see MongoImageDAO
  * @see MongoDBContextListener
@@ -31,22 +30,14 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
 public class CytomineContextListener implements ServletContextListener {
     
     /**
-     * Connects to a Cytomine instance, retrieves information about all the
-     * images in a given project, and adds the information to the database.
-     * If the project contains any images that have already been registered in
-     * the database, then the database's information about these images will
-     * not be updated.
+     * Connects to a Cytomine instance and stores it in context
      * <p>
      * In order to connect to the Cytomine instance, this method requires that
      * the environment variables {@code COMPARE_CYTOMINE_URL},
-     * {@code COMPARE_CYTOMINE_PUBLIC_KEY}, {@code COMPARE_CYTOMINE_PRIVATE_KEY},
-     * and {@code COMPARE_CYTOMINE_PROJECT_ID} be set to the base URL of the
-     * Cytomine instance, the public key used to connect to Cytomine, the corresponding
-     * private key, and the ID of the project containing the images, respectively.
-     * Additionally, in order to add the information to the database, the servlet
-     * context associated with {@code servletContextEvent} must have the
-     * {@code MONGO_CLIENT} and {@code MONGO_DATABASE} context attributes set to
-     * a {@link MongoClient} instance and the name of the database, respectively.
+     * {@code COMPARE_CYTOMINE_PUBLIC_KEY}, {@code COMPARE_CYTOMINE_PRIVATE_KEY}
+     * be set to the base URL of the
+     * Cytomine instance, the public key used to connect to Cytomine, and the corresponding
+     * private key, respectively.
      * </p>
      * 
      * @param servletContextEvent the context event whose context will
@@ -66,9 +57,9 @@ public class CytomineContextListener implements ServletContextListener {
             throw new IllegalStateException("One or more required environment variables have not been set");
         }
         ServletContext context = servletContextEvent.getServletContext();
-        context.setAttribute("CYTOMINE_URL", cytomineUrl);
-        context.setAttribute("CYTOMINE_PUBLIC_KEY", cytominePublicKey);
-        context.setAttribute("CYTOMINE_PRIVATE_KEY", cytominePrivateKey);
+        CytomineConnection connection = Cytomine.connection(cytomineUrl, cytominePublicKey, cytominePrivateKey);
+        context.setAttribute("CYTOMINE_CONNECTION", connection);
+
     }
     
 
