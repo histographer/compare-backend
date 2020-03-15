@@ -62,23 +62,30 @@ public class RankingServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        List<Image> images = imageDao.getAllImages(1);
-        // TODO project ID
-        // The project ID is currently hard coded to allow compilation
-        if (images.size() < 2) {
-            throw new ServletException("Not enough images in the database");
+        long projectId;
+        try {
+            projectId = Long.parseLong(request.getParameter("projectId"));
+        } catch(NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Project ID is not set");
+            return;
         }
+        List<Image> images = imageDao.getAllImages(projectId);
+        if (images.size() < 2) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Not enough images in the database");
+            return;
+        }
+
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(-1); // TODO project ID
+        List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONObject analysisResponse;
         JSONArray score;
         try {
             analysisResponse = Analysis.getAnalysisResponse(baseUrl, "ranking/ranking/", jsonForAnalysisBackend);
-            List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage(1L);
-            // TODO project ID
-            // The project ID is currently hard coded to allow compilation
+            List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage(projectId);
             score = analysisResponse.getJSONArray("scores");
             for (int i=0; i < score.length(); i++) {
                 JSONObject tempObject = score.getJSONObject(i);

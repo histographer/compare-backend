@@ -77,12 +77,21 @@ public class NextImagePairServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        Long projectId = Long.parseLong(request.getParameter("projectId"));
+        long projectId;
+        try {
+            projectId = Long.parseLong(request.getParameter("projectId"));
+        } catch(NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Project ID is not set");
+            return;
+        }
         context.log("Fecthing images from projectId: " + projectId);
         List<Image> images = imageDao.getAllImages(projectId);
         context.log("Found: " + images.size() + " images" );
         if (images.size() < 2) {
-            throw new ServletException("Not enough images in the database");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Not enough images in the database");
+            return;
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
