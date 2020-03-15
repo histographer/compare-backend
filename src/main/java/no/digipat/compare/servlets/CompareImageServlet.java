@@ -26,6 +26,7 @@ public class CompareImageServlet extends HttpServlet {
     /**
      * The json request looks like this
      * {
+     *   projectId: 3,
      *   "chosen": {
      *     "id": 1,
      *     "comment": "testcomment",
@@ -58,7 +59,8 @@ public class CompareImageServlet extends HttpServlet {
     private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) {
         ImageChoice winner = jsonToImageChoice((JSONObject) json.get("chosen"));
         ImageChoice loser = jsonToImageChoice((JSONObject) json.get("other"));
-        return new ImageComparison().setSessionID(sessionID).setWinner(winner).setLoser(loser);
+        long projectId = (long) json.get("projectId");
+        return new ImageComparison().setSessionID(sessionID).setWinner(winner).setLoser(loser).setProjectId(projectId);
     }
     
     private static ImageChoice jsonToImageChoice(JSONObject json) {

@@ -2,12 +2,16 @@ package no.digipat.compare.servlets;
 
 import com.mongodb.MongoClient;
 
+import javassist.NotFoundException;
 import no.digipat.compare.models.session.Session;
+import no.digipat.compare.mongodb.dao.MongoImageDAO;
+import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
@@ -47,26 +51,37 @@ public class SessionServlet extends HttpServlet {
             BufferedReader reader = request.getReader();
             JSONObject sessionJson = (JSONObject) parser.parse(reader);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
-            MongoSessionDAO sessionDAO = new MongoSessionDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
+            String database = (String) context.getAttribute("MONGO_DATABASE");
+            MongoSessionDAO sessionDAO = new MongoSessionDAO(client, database);
+            MongoProjectDAO projectDAO = new MongoProjectDAO(client, database);
             if(!sessionDAO.sessionExists(servletSessionID)) {
-                sessionDAO.createSession(jsonToSession(sessionJson, servletSessionID));
+                sessionDAO.createSession(jsonToSession(sessionJson, projectDAO, servletSessionID));
             }
 
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException | NotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print(e);
         }
     }
     
-    private static Session jsonToSession(JSONObject json, String id) {
-        try {
-            String hospital= (String) json.get("hospital");
+    private static Session jsonToSession(JSONObject json, MongoProjectDAO projectDAO, String id) throws NotFoundException {
+            String hospital= (String) json.getOrDefault("hospital", null);
             String monitorType = (String) json.getOrDefault("monitorType", null);
-            long projectId = (Long) json.get("projectId");
+            Long projectId = (Long) json.getOrDefault("projectId", null);
+            if(hospital == null) {
+                throw new NullPointerException("hospital field has to be set");
+            }
+            if(monitorType == null) {
+                throw new NullPointerException("monitorType field has to be set");
+            }
+            if(projectId == null) {
+                throw new NullPointerException("projectId field has to be set");
+            }
+            if(!projectDAO.ProjectExist(projectId)){
+                throw new NotFoundException("A project with this id does not exist");
+            }
             return new Session().setHospital(hospital).setMonitorType(monitorType)
                     .setId(id).setProjectId(projectId);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("JSON is not valid, hospital is missing");
-        }
     }
 
 }
