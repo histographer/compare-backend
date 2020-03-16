@@ -1,4 +1,4 @@
-package no.digipat.compare.servlets;
+package no.digipat.compare.servlets.project;
 
 import be.cytomine.client.CytomineConnection;
 import be.cytomine.client.CytomineException;
@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "no.digipat.compare.servlets.ProjectServlet", urlPatterns = {"/project"})
+@WebServlet(name = "no.digipat.compare.servlets.project.ProjectServlet", urlPatterns = {"/project"})
 public class ProjectServlet extends HttpServlet {
 
 
@@ -118,6 +118,7 @@ public class ProjectServlet extends HttpServlet {
         JSONObject json = new JSONObject();
         json.put("id", project.getId());
         json.put("name", project.getName());
+        json.put("active", project.getActive());
         return json;
     }
 
@@ -128,6 +129,7 @@ public class ProjectServlet extends HttpServlet {
            JSONObject json = new JSONObject();
             json.put("id", project.getId());
             json.put("name", project.getName());
+            json.put("active", project.getActive());
             jsonArray.put(json);
         }
         return jsonArray;
@@ -155,7 +157,7 @@ public class ProjectServlet extends HttpServlet {
         try {
             org.json.simple.JSONObject simpleJsonProjectInformation = connection.doGet("/api/project/" + projectId + ".json");
             JSONObject projectInformation = new JSONObject(simpleJsonProjectInformation);
-            project = new Project().setId((projectId)).setName((String) projectInformation.get("name"));
+            project = new Project().setId((projectId)).setName((String) projectInformation.get("name")).setActive(false);
         } catch (CytomineException e) {
             throw new RuntimeException("Trouble fetching the project information from cytomine: "+ e);
         }
