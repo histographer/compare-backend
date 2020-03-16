@@ -2,14 +2,17 @@ package no.digipat.compare.mongodb.dao;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.UpdateResult;
 import no.digipat.compare.models.project.Project;
 import no.digipat.compare.models.session.Session;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
 
 /**
  * A data access object (DAO) for projects.
@@ -62,6 +65,23 @@ public class MongoProjectDAO {
         return documentToProject(project);
     }
 
+    public Project updateProjectActive(Long id, Boolean active) throws Exception {
+        Bson filter = eq("_id", id);
+        Bson updateOperation = set("active", active);
+        UpdateResult updateResult = this.collection.updateOne(filter, updateOperation);
+        Document projectFromDb = this.collection.find(filter).first();
+
+        if(projectFromDb == null) {
+            throw new IllegalArgumentException("There is no session with this id that exists in the database");
+        }
+        Project project = documentToProject(projectFromDb);
+        if(project.getActive() != active) {
+            throw new Exception("Something went wrong with the update in the database. Active should be: "+active+" but was: "+project.getActive());
+        }
+        return project;
+    }
+
+
     public List<Project> getAllProjects() {
         final List<Project> projects = new ArrayList<>();
         for(Document document : this.collection.find()){
@@ -84,17 +104,19 @@ public class MongoProjectDAO {
         Document document = new Document();
         Long id = project.getId();
         String name = project.getName();
-        if (id == null || name == null) {
-            throw new NullPointerException();
+        Boolean active = project.getActive();
+        if (id == null || name == null || active == null) {
+            throw new NullPointerException("One or more value is null. id="+id+". name="+name+". active="+active);
         }
         document.put("_id", id);
         document.put("name", name);
+        document.put("active", active);
         return document;
     }
 
     private Project documentToProject(Document document) {
         Project project = new Project().setId(document.getLong("_id"))
-                .setName(document.getString("name"));
+                .setName(document.getString("name")).setActive(document.getBoolean("active"));
         return project;
     }
 
