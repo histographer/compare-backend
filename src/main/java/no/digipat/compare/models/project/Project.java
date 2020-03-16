@@ -4,6 +4,17 @@ public class Project {
     private Long id;
     private String name;
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public Project setActive(Boolean active) {
+        this.active = active;
+        return this;
+    }
+
+    private Boolean active;
+
     public Long getId() {
         return id;
     }
