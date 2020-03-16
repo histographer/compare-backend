@@ -63,6 +63,8 @@ All connections to the DB will go through Database Access Objects (DAO) while th
     "hospital": "St. Olavs"
 }
 ```
+### Get - /session
+Invalidates / logs out a session. Has to have query parameter `/session?logout=true`
 
 ### Post - /project
 This will add a project and insert images into the database
