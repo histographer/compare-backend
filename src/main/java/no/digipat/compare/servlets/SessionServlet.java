@@ -3,6 +3,7 @@ package no.digipat.compare.servlets;
 import com.mongodb.MongoClient;
 
 import javassist.NotFoundException;
+import no.digipat.compare.models.project.Project;
 import no.digipat.compare.models.session.Session;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import no.digipat.compare.mongodb.dao.MongoProjectDAO;
@@ -14,12 +15,15 @@ import org.json.simple.parser.ParseException;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "no.digipat.compare.servlets.SessionServlet", urlPatterns = {"/session"})
 public class SessionServlet extends HttpServlet {
@@ -63,7 +67,41 @@ public class SessionServlet extends HttpServlet {
             response.getWriter().print(e);
         }
     }
-    
+
+    /**
+     * Invalidates a session
+     * @param request the request
+     * @param response the response
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ServletContext context = getServletContext();
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().print("No active session to invalidate");
+            return;
+        }
+        try {
+            boolean logout = Boolean.parseBoolean(request.getParameter("logout"));
+            if(logout == true) {
+                request.getSession().invalidate();
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().print("session logged out");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().print("something went wrong when logging out. The logout paramater value is: "+logout+". It should be true");
+
+            }
+        } catch(NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().print("something went wrong when logging out");
+        }
+
+    }
+
     private static Session jsonToSession(JSONObject json, MongoProjectDAO projectDAO, String id) throws NotFoundException {
             String hospital= (String) json.getOrDefault("hospital", null);
             String monitorType = (String) json.getOrDefault("monitorType", null);
