@@ -42,7 +42,6 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 ```json 
 {
   "projectId": 9999,
-  "user": "string",
   "chosen": {
     "id": 1,
     "comment": "testcomment"
