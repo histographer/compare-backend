@@ -35,12 +35,15 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
 public class NextImagePairServlet extends HttpServlet {
 
     /**
-     * Gets a pair of images for comparison. The response body will contain a JSON
-     * array whose elements are two JSON objects of the form
+     * Gets a pair of images for comparison. The images will be retrieved from
+     * a project whose ID must be given by the {@code projectId} query string
+     * parameter. The response body will contain a JSON array whose elements
+     * are two JSON objects of the form
      * 
      * <pre>
      * {
      *   "id": id,
+     *   "projectId": projectId,
      *   "width": width,
      *   "height": height,
      *   "depth": depth,
@@ -51,7 +54,7 @@ public class NextImagePairServlet extends HttpServlet {
      * },
      * </pre>
      * 
-     * where {@code id}, {@code width}, {@code height}, {@code depth}, and
+     * where {@code id}, {@code projectId}, {@code width}, {@code height}, {@code depth}, and
      * {@code magnification} are longs, {@code resolution} is a double, {@code mime}
      * is a string, and {@code url1, url2, ..., urlN} are strings.
      * 
