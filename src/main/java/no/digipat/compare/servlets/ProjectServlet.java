@@ -11,7 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import no.digipat.compare.servlets.utils.Analysis;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

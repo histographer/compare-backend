@@ -1,8 +1,5 @@
 package no.digipat.compare.listeners;
 
-import be.cytomine.client.*;
-import be.cytomine.client.models.*;
-import be.cytomine.client.collections.*;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 

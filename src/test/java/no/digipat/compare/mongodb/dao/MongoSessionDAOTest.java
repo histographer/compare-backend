@@ -53,7 +53,7 @@ public class MongoSessionDAOTest {
     }
     @Test(expected=IllegalArgumentException.class)
     public void testGetSessionWithNoInserts() {
-        Session fetchedSession = dao.getSession("NOID");
+        dao.getSession("NOID");
     }
 
     @Test

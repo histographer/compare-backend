@@ -21,7 +21,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.MessageBodyWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;

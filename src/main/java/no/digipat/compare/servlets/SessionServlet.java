@@ -3,19 +3,15 @@ package no.digipat.compare.servlets;
 import com.mongodb.MongoClient;
 
 import javassist.NotFoundException;
-import no.digipat.compare.models.project.Project;
 import no.digipat.compare.models.session.Session;
-import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet(name = "no.digipat.compare.servlets.SessionServlet", urlPatterns = {"/session"})
 public class SessionServlet extends HttpServlet {
@@ -77,7 +72,6 @@ public class SessionServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ServletContext context = getServletContext();
         HttpSession session = request.getSession(false);
         if(session == null) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

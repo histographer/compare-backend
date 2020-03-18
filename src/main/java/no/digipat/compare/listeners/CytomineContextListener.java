@@ -1,19 +1,11 @@
 package no.digipat.compare.listeners;
 
-import java.util.List;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import com.mongodb.MongoClient;
-
 import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
-import be.cytomine.client.CytomineException;
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 

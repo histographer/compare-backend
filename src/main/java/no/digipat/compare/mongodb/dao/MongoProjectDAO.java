@@ -3,7 +3,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import no.digipat.compare.models.project.Project;
-import no.digipat.compare.models.session.Session;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class MongoProjectDAO {
 
     public boolean ProjectExist(Long id) {
         try {
-            Project session = getProject(id);
+            getProject(id);
             return true;
         } catch(IllegalArgumentException e) {
             return false;
