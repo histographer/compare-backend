@@ -196,7 +196,6 @@ public class ProjectServlet extends HttpServlet {
                 List<String> serverUrls = (List<String>) connection.doGet("/api/abstractimage/"
                         + image.getImageId() + "/imageservers.json").get("imageServersURLs");
                 image.setImageServerURLs(serverUrls.toArray(new String[] {}));
-                Thread.sleep(50);
                 try {
                     imageDao.createImage(image);
                 } catch (IllegalStateException e) {

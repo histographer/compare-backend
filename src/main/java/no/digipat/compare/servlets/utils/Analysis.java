@@ -36,7 +36,6 @@ public class Analysis {
             jsonComparisons.add(comparisonJson);
         }
         json.put("comparison_data", jsonComparisons);
-        System.out.println(json.toString());
         return json;
     }
 

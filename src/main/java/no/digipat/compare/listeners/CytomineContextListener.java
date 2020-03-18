@@ -40,7 +40,6 @@ public class CytomineContextListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("Image Retrieval listener");
         String cytomineUrl = System.getenv("COMPARE_CYTOMINE_URL");
         String cytominePublicKey = System.getenv("COMPARE_ADMIN_PUB_KEY");
         String cytominePrivateKey = System.getenv("COMPARE_ADMIN_PRIV_KEY");
