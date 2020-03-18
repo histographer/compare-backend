@@ -51,7 +51,7 @@ public class NextImagePairTest {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         projectDao = new MongoProjectDAO(client, databaseName);
-        Project project = new Project().setId(20l).setName("testname");
+        Project project = new Project().setId(20l).setName("testname").setActive(true);
         projectDao.createProject(project);
     }
     

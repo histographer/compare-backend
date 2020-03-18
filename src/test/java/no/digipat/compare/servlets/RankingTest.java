@@ -59,7 +59,7 @@ public class RankingTest {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         projectDao = new MongoProjectDAO(client, databaseName);
-        projectDao.createProject(new Project().setId(20l).setName("testname"));
+        projectDao.createProject(new Project().setId(20l).setName("testname").setActive(true));
     }
     
     private static void login(WebConversation conversation) throws Exception {

@@ -3,6 +3,17 @@ package no.digipat.compare.models.project;
 public class Project {
     private Long id;
     private String name;
+    private Boolean active;
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public Project setActive(Boolean active) {
+        this.active = active;
+        return this;
+    }
+
 
     public Long getId() {
         return id;

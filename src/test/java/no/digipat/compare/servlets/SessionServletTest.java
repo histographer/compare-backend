@@ -44,7 +44,7 @@ public class SessionServletTest {
     @Before
     public void setUp() {
         projectDao = new MongoProjectDAO(client, databaseName);
-        Project project = new Project().setId(30l).setName("testname");
+        Project project = new Project().setId(30l).setName("testname").setActive(true);
         projectDao.createProject(project);
         sessionDao = new MongoSessionDAO(client, databaseName);
     }

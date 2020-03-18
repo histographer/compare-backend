@@ -41,8 +41,8 @@ public class ProjectServletTest {
         client = IntegrationTests.getMongoClient();
         databaseName = IntegrationTests.getDatabaseName();
         dao = new MongoProjectDAO(client, databaseName);
-        dao.createProject(new Project().setId(42L).setName("a project"));
-        dao.createProject(new Project().setId(1337L).setName("leet project"));
+        dao.createProject(new Project().setId(42L).setName("a project").setActive(true));
+        dao.createProject(new Project().setId(1337L).setName("leet project").setActive(true));
     }
     
     @Test

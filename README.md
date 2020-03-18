@@ -42,7 +42,6 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 ```json 
 {
   "projectId": 9999,
-  "user": "string",
   "chosen": {
     "id": 1,
     "comment": "testcomment"
@@ -67,13 +66,28 @@ All connections to the DB will go through Database Access Objects (DAO) while th
 Invalidates / logs out a session. Has to have query parameter `/session?logout=true`
 
 ### Post - /project
-This will add a project and insert images into the database
+This will add a project and insert images into the database. The active status defaults to false
 #### Request
 ```json
 {
   "projectId": 994994
 }
 ```
+
+### Get - /project/update
+This will update a project and return the new values. 
+
+Uses query string: `/project/update?projectId=99999&active=true`
+
+#### Response
+```json
+{
+    "name": "IT2901 eksempelprosjekt",
+    "id": 58003,
+    "active": true
+}
+```
+
 
 ### Get - /project
 This will get all projects available if no query string is attached
@@ -82,11 +96,13 @@ This will get all projects available if no query string is attached
 [
     {
         "name": "IT2901 Rutinefarge  2019-Q4 ranking",
-        "id": 983488
+        "id": 983488,
+        "active": false
     },
     {
         "name": "IT2901 eksempelprosjekt",
-        "id": 8485899
+        "id": 8485899,
+        "active": true
     }
 ]
 ```
@@ -96,7 +112,8 @@ To get a single project use query string `/project?projectId=99349`
 ```json
 {
     "name": "IT2901 eksempelprosjekt",
-    "id": 58003
+    "id": 58003,
+    "active": true
 }
 ```
 
