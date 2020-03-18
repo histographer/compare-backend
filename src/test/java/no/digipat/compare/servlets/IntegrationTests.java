@@ -18,7 +18,8 @@ import com.mongodb.MongoClientURI;
 @SuiteClasses({
     NextImagePairTest.class,
     AuthenticationAndAuthorizationTest.class,
-    SessionServletTest.class
+    SessionServletTest.class,
+    ProjectServletTest.class
 })
 public class IntegrationTests {
     
