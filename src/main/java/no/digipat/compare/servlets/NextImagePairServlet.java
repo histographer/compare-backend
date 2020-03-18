@@ -1,11 +1,7 @@
 package no.digipat.compare.servlets;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -20,7 +16,6 @@ import no.digipat.compare.servlets.utils.Analysis;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import com.mongodb.MongoClient;
 
@@ -40,12 +35,15 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
 public class NextImagePairServlet extends HttpServlet {
 
     /**
-     * Gets a pair of images for comparison. The response body will contain a JSON
-     * array whose elements are two JSON objects of the form
+     * Gets a pair of images for comparison. The images will be retrieved from
+     * a project whose ID must be given by the {@code projectId} query string
+     * parameter. The response body will contain a JSON array whose elements
+     * are two JSON objects of the form
      * 
      * <pre>
      * {
      *   "id": id,
+     *   "projectId": projectId,
      *   "width": width,
      *   "height": height,
      *   "depth": depth,
@@ -56,7 +54,7 @@ public class NextImagePairServlet extends HttpServlet {
      * },
      * </pre>
      * 
-     * where {@code id}, {@code width}, {@code height}, {@code depth}, and
+     * where {@code id}, {@code projectId}, {@code width}, {@code height}, {@code depth}, and
      * {@code magnification} are longs, {@code resolution} is a double, {@code mime}
      * is a string, and {@code url1, url2, ..., urlN} are strings.
      * 
@@ -85,13 +83,9 @@ public class NextImagePairServlet extends HttpServlet {
             response.getWriter().print("Project ID is not set");
             return;
         }
-        context.log("Fecthing images from projectId: " + projectId);
         List<Image> images = imageDao.getAllImages(projectId);
-        context.log("Found: " + images.size() + " images" );
         if (images.size() < 2) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print("Not enough images in the database");
-            return;
+            throw new ServletException("Not enough images in project " + projectId);
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
@@ -111,8 +105,7 @@ public class NextImagePairServlet extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().print(responseForUser);
     }
-
-
+    
     private static JSONArray createResponseJson(Image image1, Image image2) {
         JSONArray returnJson = new JSONArray();
         for (Image image : new Image[] { image1, image2 }) {

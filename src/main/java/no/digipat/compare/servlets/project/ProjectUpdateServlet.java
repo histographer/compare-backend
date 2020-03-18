@@ -49,7 +49,7 @@ public class ProjectUpdateServlet extends HttpServlet {
         try {
             projectId = Long.parseLong(request.getParameter("projectId"));
             active = Boolean.parseBoolean(request.getParameter("active"));
-            if(!projectDao.ProjectExist(projectId)) {
+            if(!projectDao.projectExists(projectId)) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 response.getWriter().print("Project does not exist in database");
             }

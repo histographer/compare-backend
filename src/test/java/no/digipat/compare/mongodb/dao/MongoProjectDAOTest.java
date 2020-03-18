@@ -1,8 +1,6 @@
 package no.digipat.compare.mongodb.dao;
 import com.mongodb.MongoClient;
-import no.digipat.compare.models.image.ImageComparison;
 import no.digipat.compare.models.project.Project;
-import no.digipat.compare.models.session.Session;
 import no.digipat.compare.mongodb.DatabaseUnitTests;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -58,7 +56,7 @@ public class MongoProjectDAOTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testGetProjectWithNoInserts() {
-        Project fetchedProject = dao.getProject(999l);
+        dao.getProject(999l);
     }
 
 

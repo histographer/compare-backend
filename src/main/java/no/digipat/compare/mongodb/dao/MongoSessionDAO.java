@@ -60,7 +60,7 @@ public class MongoSessionDAO {
      */
     public boolean sessionExists(String id) {
         try {
-            Session session = getSession(id);
+            getSession(id);
             return true;
         } catch(IllegalArgumentException e) {
             return false;

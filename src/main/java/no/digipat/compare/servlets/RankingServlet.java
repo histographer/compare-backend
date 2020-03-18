@@ -5,6 +5,7 @@ import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageComparison;
 import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
+import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import no.digipat.compare.servlets.utils.Analysis;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,8 +34,9 @@ import java.util.NoSuchElementException;
 public class RankingServlet extends HttpServlet {
 
     /**
-     * Gets a ranking of the images that are stored in the database. The response
-     * body will contain a JSON array whose elements are JSON objects of the form
+     * Gets a ranking of the images in a project given by the query string parameter
+     * {@code projectId}. The response body will contain a JSON array whose elements
+     * are JSON objects of the form
      *
      * <pre>
      * {
@@ -62,21 +64,29 @@ public class RankingServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
+        MongoProjectDAO projectDao = new MongoProjectDAO(client, databaseName);
+        String projectIdString = request.getParameter("projectId");
+        if (projectIdString == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("Project ID is not set");
+            return;
+        }
         long projectId;
         try {
             projectId = Long.parseLong(request.getParameter("projectId"));
         } catch(NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print("Project ID is not set");
+            response.getWriter().print("Project ID is invalid");
+            return;
+        }
+        if (!projectDao.projectExists(projectId)) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         List<Image> images = imageDao.getAllImages(projectId);
         if (images.size() < 2) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print("Not enough images in the database");
-            return;
+            throw new ServletException("Not enough images in project " + projectId);
         }
-
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
@@ -99,9 +109,5 @@ public class RankingServlet extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().print(score);
     }
-
-
-
-
 
 }

@@ -1,19 +1,11 @@
 package no.digipat.compare.listeners;
 
-import java.util.List;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import com.mongodb.MongoClient;
-
 import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
-import be.cytomine.client.CytomineException;
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
@@ -30,36 +22,32 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
 public class CytomineContextListener implements ServletContextListener {
     
     /**
-     * Connects to a Cytomine instance and stores it in context
+     * Stores a connection to a Cytomine instance in the servlet context.
+     * The connection will be stored as the context parameter {@code CYTOMINE_CONNECTION}.
      * <p>
      * In order to connect to the Cytomine instance, this method requires that
      * the environment variables {@code COMPARE_CYTOMINE_URL},
      * {@code COMPARE_CYTOMINE_PUBLIC_KEY}, {@code COMPARE_CYTOMINE_PRIVATE_KEY}
-     * be set to the base URL of the
-     * Cytomine instance, the public key used to connect to Cytomine, and the corresponding
-     * private key, respectively.
+     * be set to the base URL of the Cytomine instance, the public key used to
+     * connect to Cytomine, and the corresponding private key, respectively.
      * </p>
      * 
-     * @param servletContextEvent the context event whose context will
-     * provide a database connection
+     * @param servletContextEvent the context event whose context will store the
+     * Cytomine connection
      * 
-     * @throws IllegalStateException if any of the required environment variables
-     * and context attributes are missing or have invalid values
+     * @throws IllegalStateException if any of the required environment variables are missing
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("Image Retrieval listener");
         String cytomineUrl = System.getenv("COMPARE_CYTOMINE_URL");
         String cytominePublicKey = System.getenv("COMPARE_ADMIN_PUB_KEY");
         String cytominePrivateKey = System.getenv("COMPARE_ADMIN_PRIV_KEY");
-        if (cytomineUrl == null || cytominePublicKey == null || cytominePrivateKey == null
-                ) {
+        if (cytomineUrl == null || cytominePublicKey == null || cytominePrivateKey == null) {
             throw new IllegalStateException("One or more required environment variables have not been set");
         }
         ServletContext context = servletContextEvent.getServletContext();
         CytomineConnection connection = Cytomine.connection(cytomineUrl, cytominePublicKey, cytominePrivateKey);
         context.setAttribute("CYTOMINE_CONNECTION", connection);
-
     }
     
 

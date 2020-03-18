@@ -4,7 +4,6 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;
 import no.digipat.compare.models.project.Project;
-import no.digipat.compare.models.session.Session;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -47,10 +46,9 @@ public class MongoProjectDAO {
         try {
             this.collection.insertOne(projectToDocument(project));
         }
-        catch (
-                MongoWriteException e) {
+        catch (MongoWriteException e) {
             if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
-                throw new IllegalStateException("Duplicate duplicate ID", e);
+                throw new IllegalStateException("Duplicate ID", e);
             } else {
                 throw e;
             }
@@ -60,7 +58,7 @@ public class MongoProjectDAO {
     public Project getProject(Long id) {
         Document project = this.collection.find(eq("_id", id)).first();
         if(project == null) {
-            throw new IllegalArgumentException("There is no session with this id that exists in the database");
+            throw new IllegalArgumentException("There is no project with this id that exists in the database");
         }
         return documentToProject(project);
     }
@@ -90,9 +88,9 @@ public class MongoProjectDAO {
         return projects;
     }
 
-    public boolean ProjectExist(Long id) {
+    public boolean projectExists(Long id) {
         try {
-            Project session = getProject(id);
+            getProject(id);
             return true;
         } catch(IllegalArgumentException e) {
             return false;

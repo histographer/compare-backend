@@ -1,4 +1,4 @@
-package no.digipat.compare.models.image;
+package no.digipat.compare.models.project;
 import no.digipat.compare.models.project.Project;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;

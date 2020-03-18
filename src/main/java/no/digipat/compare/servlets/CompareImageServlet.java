@@ -21,7 +21,6 @@ import java.io.IOException;
 
 @WebServlet(name = "CompareImage",  urlPatterns = {"/scoring"})
 public class CompareImageServlet extends HttpServlet {
-    // TODO project ID
     
     /**
      * The json request looks like this
@@ -51,26 +50,22 @@ public class CompareImageServlet extends HttpServlet {
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
             MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
             comparisonDAO.createImageComparison(imageComparison);
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException | ClassCastException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
     
-    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) {
+    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) throws NullPointerException {
         ImageChoice winner = jsonToImageChoice((JSONObject) json.get("chosen"));
         ImageChoice loser = jsonToImageChoice((JSONObject) json.get("other"));
         long projectId = (long) json.get("projectId");
         return new ImageComparison().setSessionID(sessionID).setWinner(winner).setLoser(loser).setProjectId(projectId);
     }
     
-    private static ImageChoice jsonToImageChoice(JSONObject json) {
-        try {
-            long id = (Long) json.get("id");
-            String comment = (String) json.getOrDefault("comment", "");
-            return new ImageChoice(id, comment);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("JSON is not valid, id is missing");
-        }
+    private static ImageChoice jsonToImageChoice(JSONObject json) throws NullPointerException {
+        long id = (Long) json.get("id");
+        String comment = (String) json.getOrDefault("comment", "");
+        return new ImageChoice(id, comment);
     }
     
 }

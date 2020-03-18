@@ -15,13 +15,11 @@ import java.util.function.Function;
 import no.digipat.compare.models.project.Project;
 import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import org.json.JSONArray;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.MessageBodyWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -41,28 +39,20 @@ public class NextImagePairTest {
     private static URL baseUrl;
     private static MongoClient client;
     private static String databaseName;
-    private MongoImageDAO imageDao;
-    private MongoImageComparisonDAO comparisonDao;
-    public MongoProjectDAO projectDao;
+    private static MongoImageDAO imageDao;
+    private static MongoImageComparisonDAO comparisonDao;
+    private static MongoProjectDAO projectDao;
     
     @BeforeClass
     public static void setUpClass() {
         baseUrl = IntegrationTests.getBaseUrl();
         client = IntegrationTests.getMongoClient();
         databaseName = IntegrationTests.getDatabaseName();
-    }
-    
-    @Before
-    public void setUp() {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
-        try{
-            projectDao = new MongoProjectDAO(client, databaseName);
-            Project project = new Project().setId(20l).setName("testname");
-            projectDao.createProject(project);
-        } catch(Exception e){
-            //this is to handle duplicate _id, not sure how to fix this
-        }
+        projectDao = new MongoProjectDAO(client, databaseName);
+        Project project = new Project().setId(20l).setName("testname").setActive(true);
+        projectDao.createProject(project);
     }
     
     private static void login(WebConversation conversation) throws Exception {
@@ -95,11 +85,11 @@ public class NextImagePairTest {
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair?projectId=20");
         // Zero images in database
         WebResponse response1 = conversation.getResponse(request);
-        assertEquals(400, response1.getResponseCode());
+        assertEquals(500, response1.getResponseCode());
         // One image in database
         imageDao.createImage(new Image().setImageId(30L).setProjectId(20L));
         WebResponse response2 = conversation.getResponse(request);
-        assertEquals(400, response2.getResponseCode());
+        assertEquals(500, response2.getResponseCode());
     }
     
     @Test
@@ -117,11 +107,10 @@ public class NextImagePairTest {
         imageDao.createImage(image2);
         comparisonDao.createImageComparison(new ImageComparison().setProjectId(20L).setSessionID("some_user")
                 .setWinner(new ImageChoice(1337L, "good")).setLoser(new ImageChoice(42L, "really bad")));
-        System.out.println("found this many images in testDB: "+imageDao.getAllImages(20l).size());
-
         WebConversation conversation = new WebConversation();
         login(conversation);
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair?projectId=20");
+        conversation.setExceptionsThrownOnErrorStatus(false);
         WebResponse response = conversation.getResponse(request);
         // Test status code
         assertEquals(200, response.getResponseCode());
@@ -151,16 +140,11 @@ public class NextImagePairTest {
                 return (int) (img1.getImageId() - img2.getImageId());
             }
         });
-        System.out.println(receivedImages[0].getImageId());
-        System.out.println(image1.getImageId());
-        System.out.println(receivedImages[1].getImageId());
-        System.out.println(image2.getImageId());
-        System.out.println(receivedImages.length);
         assertArrayEquals(new Image[] {image1, image2}, receivedImages);
     }
     
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
         client.getDatabase(databaseName).drop();
     }
     
