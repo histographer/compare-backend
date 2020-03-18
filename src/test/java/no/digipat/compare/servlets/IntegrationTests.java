@@ -11,15 +11,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.meterware.httpunit.HttpUnitOptions;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    NextImagePairTest.class,
     AuthenticationAndAuthorizationTest.class,
+    NextImagePairTest.class,
     SessionServletTest.class,
-    ProjectServletTest.class
+    ProjectServletTest.class,
+    CompareImageTest.class,
+    RankingTest.class
 })
 public class IntegrationTests {
     
@@ -42,6 +45,7 @@ public class IntegrationTests {
         String tomcatHost = System.getenv("COMPARE_TEST_TOMCAT_HOST");
         String tomcatPort = System.getenv("COMPARE_TEST_TOMCAT_PORT");
         baseUrl = new URL(tomcatProtocol + "://" + tomcatHost + ":" + tomcatPort);
+        HttpUnitOptions.setExceptionsThrownOnErrorStatus(false);
     }
     
     /**

@@ -56,26 +56,26 @@ public class ProjectServlet extends HttpServlet {
 
             if(projectDao.ProjectExist(projectId)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                throw new Error("A project with this id already exists");
+                response.getWriter().print("A project with this ID already exists");
+                // TODO is there a more appropriate response code?
+            } else {
+                CytomineConnection connection = (CytomineConnection) context.getAttribute("CYTOMINE_CONNECTION");
+                Project project = retrieveProjectInformation(connection, projectId);
+                
+                MongoImageDAO imageDao = new MongoImageDAO(mongoClient, databaseName);
+                retrieveAndAddImages(connection, projectId, imageDao, context);
+                // Placed last so if there is an exception with retrieve and add images it will not create a project
+                projectDao.createProject(project);
             }
-            CytomineConnection connection = (CytomineConnection) context.getAttribute("CYTOMINE_CONNECTION");
-            Project project = retrieveProjectInformation(connection, projectId);
-
-            MongoImageDAO imageDao = new MongoImageDAO(mongoClient, databaseName);
-            retrieveAndAddImages(connection, projectId, imageDao, context);
-            // Placed last so if there is an exception with retrieve and add images it will not create a project
-            projectDao.createProject(project);
-
-
-        } catch (ParseException e) {
+        } catch (ParseException | IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().print(e);
         }
     }
 
     /**
-     * Gets a project or all projects
-     * Get a single project with using query /project?projectId={@code id}
+     * Gets a project or all projects.
+     * Get a single project by using the query /project?projectId={@code id}.
      *
      * @param request the request
      * @param response the response
@@ -87,30 +87,30 @@ public class ProjectServlet extends HttpServlet {
             throws ServletException, IOException {
 
         ServletContext context = getServletContext();
-        Long projectId = null;
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoProjectDAO projectDao = new MongoProjectDAO(client, databaseName);
         response.setContentType("application/json");
-        try {
-            projectId = Long.parseLong(request.getParameter("projectId"));
-            if(!projectDao.ProjectExist(projectId)) {
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                response.getWriter().print("Project does not exist in database");
-            } else {
-                Project project = projectDao.getProject(projectId);
-                response.getWriter().print(getProjectResponse(project));
-
-            }
-        } catch(NumberFormatException e) {
-            //Do nothing, no parameter set, so return all projects
-        }
-
-        if(projectId == null) {
+        String projectIdString = request.getParameter("projectId");
+        if (projectIdString == null) {
+            // The projectId parameter is missing, so we return all projects
             List<Project> projects = projectDao.getAllProjects();
             response.getWriter().print(getAllProjectsResponse(projects));
+        } else {
+            // The user is requesting a specific project
+            try {
+                long projectId = Long.parseLong(request.getParameter("projectId"));
+                if(!projectDao.ProjectExist(projectId)) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    response.getWriter().print("Project does not exist in database}");
+                } else {
+                    Project project = projectDao.getProject(projectId);
+                    response.getWriter().print(getProjectResponse(project));
+                }
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         }
-
     }
 
     private static JSONObject getProjectResponse(Project project) {
@@ -133,7 +133,7 @@ public class ProjectServlet extends HttpServlet {
     }
 
 
-    private static Long jsonToProjectId(org.json.simple.JSONObject json) {
+    private static Long jsonToProjectId(org.json.simple.JSONObject json) throws IllegalArgumentException {
         try {
             long projectId = (Long) json.get("projectId");
             return projectId;
@@ -155,13 +155,10 @@ public class ProjectServlet extends HttpServlet {
             org.json.simple.JSONObject simpleJsonProjectInformation = connection.doGet("/api/project/" + projectId + ".json");
             JSONObject projectInformation = new JSONObject(simpleJsonProjectInformation);
             project = new Project().setId((projectId)).setName((String) projectInformation.get("name"));
+            return project;
         } catch (CytomineException e) {
-            throw new RuntimeException("Trouble fetching the project information from cytomine: "+ e);
+            throw new RuntimeException("Trouble fetching the project information from cytomine", e);
         }
-        if(project == null) {
-            throw new RuntimeException("Trouble fetching the project information from cytomine: ");
-        }
-        return project;
     }
 
 /**
@@ -176,8 +173,7 @@ public class ProjectServlet extends HttpServlet {
             org.json.simple.JSONObject abstractImageListJsonSimple = connection.doGet("/api/project/" + projectId + "/image.json");
             JSONObject abstractImageListJson = new JSONObject(abstractImageListJsonSimple);
             JSONArray arr = (JSONArray) abstractImageListJson.get("collection");
-            System.out.println("collection length: "+arr.length());
-
+            
             for (Object object : arr) {
                 JSONObject abstractImageJson = (JSONObject) object;
                 try {
@@ -197,7 +193,6 @@ public class ProjectServlet extends HttpServlet {
                         .setDepth((Long) abstractImageJson.get("depth"))
                         .setResolution((Double) abstractImageJson.get("resolution"))
                         .setMagnification((Long) abstractImageJson.get("magnification"));
-
                 List<String> serverUrls = (List<String>) connection.doGet("/api/abstractimage/"
                         + image.getImageId() + "/imageservers.json").get("imageServersURLs");
                 image.setImageServerURLs(serverUrls.toArray(new String[] {}));

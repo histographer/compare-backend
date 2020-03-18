@@ -2,6 +2,8 @@ package no.digipat.compare.servlets;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,6 +76,28 @@ public class ProjectServletTest {
         assertEquals("a project", projectList.get(0).getName());
         assertEquals((Long) 1337L, projectList.get(1).getId());
         assertEquals("leet project", projectList.get(1).getName());
+    }
+    
+    @Test
+    public void test404() throws Exception {
+        WebConversation conversation = new WebConversation();
+        conversation.setExceptionsThrownOnErrorStatus(false);
+        WebRequest request = new GetMethodWebRequest(baseUrl, "project?projectId=9999");
+        WebResponse response = conversation.sendRequest(request);
+        
+        assertEquals(404, response.getResponseCode());
+    }
+    
+    @Test
+    public void test400() throws Exception {
+        // Use HttpURLConnection to work around the fact that HttpUnit throws an exception
+        // on status code 400 even if setExceptionsThrownOnErrorStatus(false) has been called
+        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "project?projectId=notANumber").openConnection();
+        try {
+            connection.connect();
+        } catch (IOException e) {}
+        
+        assertEquals(400, connection.getResponseCode());
     }
     
     @AfterClass

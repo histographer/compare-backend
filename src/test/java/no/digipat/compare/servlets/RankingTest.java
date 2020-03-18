@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -26,6 +27,8 @@ import com.meterware.httpunit.protocol.MessageBody;
 import com.meterware.httpunit.protocol.ParameterCollection;
 import com.mongodb.MongoClient;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageChoice;
 import no.digipat.compare.models.image.ImageComparison;
@@ -34,6 +37,7 @@ import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 
+@RunWith(JUnitParamsRunner.class)
 public class RankingTest {
     
     private static URL baseUrl;
@@ -138,7 +142,7 @@ public class RankingTest {
         WebRequest request = new GetMethodWebRequest(baseUrl, "ranking?projectId=20");
         WebResponse response = conversation.getResponse(request);
         
-        assertEquals(400, response.getResponseCode());
+        assertEquals(500, response.getResponseCode());
     }
     
     @Test
@@ -146,12 +150,36 @@ public class RankingTest {
         imageDao.createImage(new Image().setImageId(1L).setProjectId(30L));
         imageDao.createImage(new Image().setImageId(2L).setProjectId(30L));
         imageDao.createImage(new Image().setImageId(10L).setProjectId(20L));
-        WebConversation conversation = new WebConversation();
         
+        WebConversation conversation = new WebConversation();
         login(conversation);
         conversation.setExceptionsThrownOnErrorStatus(false);
         WebRequest request = new GetMethodWebRequest(baseUrl, "ranking?projectId=20");
         WebResponse response = conversation.getResponse(request);
+        
+        assertEquals(500, response.getResponseCode());
+    }
+    
+    @Test
+    public void testStatusCode404() throws Exception {
+        WebConversation conversation = new WebConversation();
+        login(conversation);
+        WebRequest request = new GetMethodWebRequest(baseUrl, "ranking?projectId=9999");
+        WebResponse response = conversation.sendRequest(request);
+                
+        assertEquals(404, response.getResponseCode());
+    }
+    
+    @Test
+    @Parameters({
+        "ranking",
+        "ranking?projectId=notANumber"
+    })
+    public void testStatusCode400(String path) throws Exception {
+        WebConversation conversation = new WebConversation();
+        login(conversation);
+        WebRequest request = new GetMethodWebRequest(baseUrl, path);
+        WebResponse response = conversation.sendRequest(request);
         
         assertEquals(400, response.getResponseCode());
     }

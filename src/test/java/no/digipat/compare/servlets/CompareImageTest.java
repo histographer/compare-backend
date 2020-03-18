@@ -24,6 +24,7 @@ import com.meterware.httpunit.protocol.ParameterCollection;
 import com.mongodb.MongoClient;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import no.digipat.compare.models.image.ImageChoice;
 import no.digipat.compare.models.image.ImageComparison;
 import no.digipat.compare.models.project.Project;
@@ -101,6 +102,42 @@ public class CompareImageTest {
         assertEquals("a comment", winner.getComment());
         ImageChoice loser = comparison.getLoser();
         assertEquals(2L, loser.getImageId());
+    }
+    
+    @Test
+    @Parameters(method="getStatusCodeParameters")
+    public void testStatusCode400(String messageBody, String failureMessage) throws Exception {
+        // Use HttpURLConnection to work around the fact that HttpUnit throws an exception
+        // on status code 400 even if setExceptionsThrownOnErrorStatus(false) has been called
+        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "scoring").openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Cookie", "JSESSIONID=" + conversation.getCookieValue("JSESSIONID"));
+        try (PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
+            writer.print(messageBody);
+            writer.flush();
+        }
+        try {
+            connection.connect();
+        } catch (IOException e) {}
+        
+        assertEquals(failureMessage, 400, connection.getResponseCode());
+        
+//        PostMethodWebRequest request = createPostRequestWithMessageBody("scoring", messageBody, "application/json");
+//        WebResponse response = conversation.sendRequest(request);
+//        
+//        assertEquals(failureMessage, 400, response.getResponseCode());
+    }
+    
+    private String[][] getStatusCodeParameters() {
+        return new String[][] {
+                {"This is not JSON", "Testing invalid JSON"},
+                {"{\"chosen\": {\"id\": 1}, \"other\": {\"id\": 2}}", "Testing lack of project ID"},
+                {"{\"projectId\": 20, \"other\": {\"id\": 2}}", "Testing lack of chosen image"},
+                {"{\"projectId\": 20, \"chosen\": {\"id\": 2}}", "Testing lack of other image"},
+                {"{\"projectId\": 20, \"chosen\": {}, \"other\": {\"id\": 2}}", "Testing lack of chosen image ID"},
+                {"{\"projectId\": \"abc\", \"chosen\": {\"id\": 1}, \"other\": {\"id\": 2}}", "Testing invalid type for project ID"},
+                {"{\"projectId\": 20, \"chosen\": {\"id\": \"abc\"}, \"other\": {\"id\": 2}}", "Testing invalid type for chosen ID"}
+        };
     }
     
     @AfterClass
