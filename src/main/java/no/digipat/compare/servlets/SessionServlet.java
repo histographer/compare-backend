@@ -75,7 +75,7 @@ public class SessionServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         boolean logout = Boolean.parseBoolean(request.getParameter("logout"));
         if(session != null && logout) {
-            request.getSession().invalidate();
+            session.invalidate();
             response.getWriter().print("session logged out");
         }
     }
