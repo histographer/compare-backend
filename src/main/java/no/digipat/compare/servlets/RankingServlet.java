@@ -79,7 +79,7 @@ public class RankingServlet extends HttpServlet {
             response.getWriter().print("Project ID is invalid");
             return;
         }
-        if (!projectDao.ProjectExist(projectId)) {
+        if (!projectDao.projectExists(projectId)) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }

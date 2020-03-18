@@ -43,10 +43,9 @@ public class MongoProjectDAO {
         try {
             this.collection.insertOne(projectToDocument(project));
         }
-        catch (
-                MongoWriteException e) {
+        catch (MongoWriteException e) {
             if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
-                throw new IllegalStateException("Duplicate duplicate ID", e);
+                throw new IllegalStateException("Duplicate ID", e);
             } else {
                 throw e;
             }
@@ -56,7 +55,7 @@ public class MongoProjectDAO {
     public Project getProject(Long id) {
         Document project = this.collection.find(eq("_id", id)).first();
         if(project == null) {
-            throw new IllegalArgumentException("There is no session with this id that exists in the database");
+            throw new IllegalArgumentException("There is no project with this id that exists in the database");
         }
         return documentToProject(project);
     }
@@ -69,7 +68,7 @@ public class MongoProjectDAO {
         return projects;
     }
 
-    public boolean ProjectExist(Long id) {
+    public boolean projectExists(Long id) {
         try {
             getProject(id);
             return true;

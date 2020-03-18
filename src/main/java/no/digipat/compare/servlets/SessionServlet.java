@@ -80,7 +80,7 @@ public class SessionServlet extends HttpServlet {
         }
         try {
             boolean logout = Boolean.parseBoolean(request.getParameter("logout"));
-            if(logout == true) {
+            if(logout) {
                 request.getSession().invalidate();
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().print("session logged out");
@@ -109,7 +109,7 @@ public class SessionServlet extends HttpServlet {
             if(projectId == null) {
                 throw new NullPointerException("projectId field has to be set");
             }
-            if(!projectDAO.ProjectExist(projectId)){
+            if(!projectDAO.projectExists(projectId)){
                 throw new NotFoundException("A project with this id does not exist");
             }
             return new Session().setHospital(hospital).setMonitorType(monitorType)

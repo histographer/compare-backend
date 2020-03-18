@@ -28,7 +28,7 @@ import no.digipat.compare.mongodb.dao.MongoSessionDAOTest;
     MongoImageComparisonDAOTest.class,
     MongoImageDAOTest.class,
     MongoSessionDAOTest.class,
-        MongoProjectDAOTest.class
+    MongoProjectDAOTest.class
 })
 public class DatabaseUnitTests {
     

@@ -54,7 +54,7 @@ public class ProjectServlet extends HttpServlet {
             String databaseName = (String) context.getAttribute("MONGO_DATABASE");
             MongoProjectDAO projectDao = new MongoProjectDAO(mongoClient, databaseName);
 
-            if(projectDao.ProjectExist(projectId)) {
+            if(projectDao.projectExists(projectId)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().print("A project with this ID already exists");
                 // TODO is there a more appropriate response code?
@@ -100,7 +100,7 @@ public class ProjectServlet extends HttpServlet {
             // The user is requesting a specific project
             try {
                 long projectId = Long.parseLong(request.getParameter("projectId"));
-                if(!projectDao.ProjectExist(projectId)) {
+                if(!projectDao.projectExists(projectId)) {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     response.getWriter().print("Project does not exist in database}");
                 } else {
@@ -160,15 +160,15 @@ public class ProjectServlet extends HttpServlet {
             throw new RuntimeException("Trouble fetching the project information from cytomine", e);
         }
     }
-
-/**
- * Connects to a Cytomine instance, retrieves information about all the
- * images in a given project, and adds the information to the database.
- * If the project contains any images that have already been registered in
- * the database, then the database's information about these images will
- * not be updated.
- */
- private static void retrieveAndAddImages(CytomineConnection connection, long projectId, MongoImageDAO imageDao, ServletContext context) {
+    
+    /**
+     * Connects to a Cytomine instance, retrieves information about all the
+     * images in a given project, and adds the information to the database.
+     * If the project contains any images that have already been registered in
+     * the database, then the database's information about these images will
+     * not be updated.
+     */
+     private static void retrieveAndAddImages(CytomineConnection connection, long projectId, MongoImageDAO imageDao, ServletContext context) {
         try {
             org.json.simple.JSONObject abstractImageListJsonSimple = connection.doGet("/api/project/" + projectId + "/image.json");
             JSONObject abstractImageListJson = new JSONObject(abstractImageListJsonSimple);
