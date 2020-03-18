@@ -73,29 +73,13 @@ public class SessionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        if(session == null) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().print("No active session to invalidate");
-            return;
+        boolean logout = Boolean.parseBoolean(request.getParameter("logout"));
+        if(session != null && logout) {
+            request.getSession().invalidate();
+            response.getWriter().print("session logged out");
         }
-        try {
-            boolean logout = Boolean.parseBoolean(request.getParameter("logout"));
-            if(logout) {
-                request.getSession().invalidate();
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().print("session logged out");
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().print("something went wrong when logging out. The logout paramater value is: "+logout+". It should be true");
-
-            }
-        } catch(NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().print("something went wrong when logging out");
-        }
-
     }
-
+    
     private static Session jsonToSession(JSONObject json, MongoProjectDAO projectDAO, String id) throws NotFoundException {
             String hospital= (String) json.getOrDefault("hospital", null);
             String monitorType = (String) json.getOrDefault("monitorType", null);
