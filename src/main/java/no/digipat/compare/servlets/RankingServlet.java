@@ -33,8 +33,9 @@ import java.util.NoSuchElementException;
 public class RankingServlet extends HttpServlet {
 
     /**
-     * Gets a ranking of the images that are stored in the database. The response
-     * body will contain a JSON array whose elements are JSON objects of the form
+     * Gets a ranking of the images in a project given by the query string parameter
+     * {@code projectId}. The response body will contain a JSON array whose elements
+     * are JSON objects of the form
      *
      * <pre>
      * {
