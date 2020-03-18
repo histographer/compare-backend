@@ -140,7 +140,7 @@ Gets a new pair for comparison with querystring `/imagePair?projectId=99999`
 Returns an array of rankings. Needs a query string `/ranking?projectId=99999`
 
 #### Returns
-´´´json
+```json
 [
     {
         "score": 1000,
@@ -153,7 +153,7 @@ Returns an array of rankings. Needs a query string `/ranking?projectId=99999`
         "id": 78860
     }
 ]
-´´´
+```
 
 ## Testing
 Before you can run the integration tests for the first time, you have to set some environment variables:
