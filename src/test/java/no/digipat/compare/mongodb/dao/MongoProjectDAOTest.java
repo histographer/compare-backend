@@ -1,5 +1,6 @@
 package no.digipat.compare.mongodb.dao;
 import com.mongodb.MongoClient;
+
 import no.digipat.compare.models.project.Project;
 import no.digipat.compare.mongodb.DatabaseUnitTests;
 import org.junit.After;
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class MongoProjectDAOTest {
     private static MongoClient client;
@@ -25,8 +26,8 @@ public class MongoProjectDAOTest {
         client = DatabaseUnitTests.getMongoClient();
         databaseName = DatabaseUnitTests.getDatabaseName();
         dao = new MongoProjectDAO(client, databaseName);
-        SAMPLE_PROJECT1 = new Project().setId(42l).setName("Forty two");
-        SAMPLE_PROJECT2 = new Project().setId(1337l).setName("Leet");
+        SAMPLE_PROJECT1 = new Project().setId(42l).setName("Forty two").setActive(false);
+        SAMPLE_PROJECT2 = new Project().setId(1337l).setName("Leet").setActive(false);
     }
 
 
@@ -47,8 +48,8 @@ public class MongoProjectDAOTest {
         String NAME = "TEST NAME";
         String NAME2 = "TEST NAME 2";
 
-        Project project1 = new Project().setId(ID).setName(NAME);
-        Project project2 = new Project().setId(ID).setName(NAME2);
+        Project project1 = new Project().setId(ID).setName(NAME).setActive(false);
+        Project project2 = new Project().setId(ID).setName(NAME2).setActive(false);
         dao.createProject(project1);
         dao.createProject(project2);
     }
@@ -94,7 +95,19 @@ public class MongoProjectDAOTest {
         assertEquals(SAMPLE_PROJECT2.getId(), PROJECT2.getId());
         assertEquals(SAMPLE_PROJECT2.getName(), PROJECT2.getName());
     }
-
+    
+    @Test
+    public void testUpdateProjectActive() throws Exception {
+        dao.createProject(SAMPLE_PROJECT1);
+        dao.updateProjectActive(SAMPLE_PROJECT1.getId(), true);
+        
+        assertTrue(dao.getProject(SAMPLE_PROJECT1.getId()).getActive());
+        
+        dao.updateProjectActive(SAMPLE_PROJECT1.getId(), false);
+        
+        assertFalse(dao.getProject(SAMPLE_PROJECT1.getId()).getActive());
+    }
+    
     @After
     public void tearDown() {
         client.getDatabase(databaseName).drop();
