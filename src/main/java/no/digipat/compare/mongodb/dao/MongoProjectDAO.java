@@ -55,7 +55,7 @@ public class MongoProjectDAO {
         }
     }
 
-    public Project getProject(Long id) {
+    public Project getProject(long id) {
         Document project = this.collection.find(eq("_id", id)).first();
         if(project == null) {
             throw new IllegalArgumentException("There is no project with this id that exists in the database");
@@ -85,7 +85,7 @@ public class MongoProjectDAO {
         return projects;
     }
 
-    public boolean projectExists(Long id) {
+    public boolean projectExists(long id) {
         try {
             getProject(id);
             return true;
