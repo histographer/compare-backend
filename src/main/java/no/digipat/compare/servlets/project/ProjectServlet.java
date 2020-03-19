@@ -156,8 +156,7 @@ public class ProjectServlet extends HttpServlet {
         try {
             org.json.simple.JSONObject simpleJsonProjectInformation = connection.doGet("/api/project/" + projectId + ".json");
             JSONObject projectInformation = new JSONObject(simpleJsonProjectInformation);
-            project = new Project().setId((projectId)).setName((String) projectInformation.get("name"));
-            project = new Project().setId((projectId)).setName((String) projectInformation.get("name")).setActive(false);
+            project = new Project().setId(projectId).setName((String) projectInformation.get("name")).setActive(false);
             return project;
         } catch (CytomineException e) {
             throw new RuntimeException("Trouble fetching the project information from cytomine", e);
