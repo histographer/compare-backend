@@ -22,7 +22,8 @@ import com.mongodb.MongoClientURI;
     SessionServletTest.class,
     ProjectServletTest.class,
     CompareImageTest.class,
-    RankingTest.class
+    RankingTest.class,
+    ProjectUpdateTest.class
 })
 public class IntegrationTests {
     
