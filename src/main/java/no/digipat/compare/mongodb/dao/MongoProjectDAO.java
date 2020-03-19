@@ -63,19 +63,16 @@ public class MongoProjectDAO {
         return documentToProject(project);
     }
 
-    public Project updateProjectActive(Long id, Boolean active) throws Exception {
+    public Project updateProjectActive(long id, boolean active) {
         Bson filter = eq("_id", id);
         Bson updateOperation = set("active", active);
         UpdateResult updateResult = this.collection.updateOne(filter, updateOperation);
         Document projectFromDb = this.collection.find(filter).first();
 
         if(projectFromDb == null) {
-            throw new IllegalArgumentException("There is no session with this id that exists in the database");
+            throw new IllegalArgumentException("There is no project with this id that exists in the database");
         }
         Project project = documentToProject(projectFromDb);
-        if(project.getActive() != active) {
-            throw new Exception("Something went wrong with the update in the database. Active should be: "+active+" but was: "+project.getActive());
-        }
         return project;
     }
 

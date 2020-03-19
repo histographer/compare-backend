@@ -97,7 +97,7 @@ public class MongoProjectDAOTest {
     }
     
     @Test
-    public void testUpdateProjectActive() throws Exception {
+    public void testUpdateProjectActive() {
         dao.createProject(SAMPLE_PROJECT1);
         dao.updateProjectActive(SAMPLE_PROJECT1.getId(), true);
         
