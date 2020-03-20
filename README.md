@@ -74,10 +74,17 @@ This will add a project and insert images into the database. The active status d
 }
 ```
 
-### Get - /project/update
+### POST - /project/update
 This will update a project and return the new values. 
 
-Uses query string: `/project/update?projectId=99999&active=true`
+#### Request
+```json
+{
+  "projectId": 12345,
+  "active": true
+}
+
+```
 
 #### Response
 ```json
