@@ -27,8 +27,8 @@ public class MongoProjectDAOTest {
         client = DatabaseUnitTests.getMongoClient();
         databaseName = DatabaseUnitTests.getDatabaseName();
         dao = new MongoProjectDAO(client, databaseName);
-        SAMPLE_PROJECT1 = new Project().setId(42l).setName("Forty two");
-        SAMPLE_PROJECT2 = new Project().setId(1337l).setName("Leet");
+        SAMPLE_PROJECT1 = new Project().setId(42l).setName("Forty two").setActive(false);
+        SAMPLE_PROJECT2 = new Project().setId(1337l).setName("Leet").setActive(true);
     }
 
 
@@ -49,8 +49,8 @@ public class MongoProjectDAOTest {
         String NAME = "TEST NAME";
         String NAME2 = "TEST NAME 2";
 
-        Project project1 = new Project().setId(ID).setName(NAME);
-        Project project2 = new Project().setId(ID).setName(NAME2);
+        Project project1 = new Project().setId(ID).setName(NAME).setActive(false);
+        Project project2 = new Project().setId(ID).setName(NAME2).setActive(false);
         dao.createProject(project1);
         dao.createProject(project2);
     }

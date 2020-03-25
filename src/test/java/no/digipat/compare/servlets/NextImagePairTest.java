@@ -58,7 +58,7 @@ public class NextImagePairTest {
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         try{
             projectDao = new MongoProjectDAO(client, databaseName);
-            Project project = new Project().setId(20l).setName("testname");
+            Project project = new Project().setId(20l).setName("testname").setActive(true);
             projectDao.createProject(project);
         } catch(Exception e){
             //this is to handle duplicate _id, not sure how to fix this
