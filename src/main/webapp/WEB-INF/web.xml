@@ -33,12 +33,5 @@
     <filter-name>CorsFilter</filter-name>
     <url-pattern> /* </url-pattern>
   </filter-mapping>
-  <!-- In order to ensure that listeners are notified in a certain order, they need to be specified in this file -->
-  <listener>
-    <listener-class>no.digipat.compare.listeners.MongoDBContextListener</listener-class>
-  </listener>
-  <listener>
-    <listener-class>no.digipat.compare.listeners.CytomineContextListener</listener-class>
-  </listener>
 </web-app>
 

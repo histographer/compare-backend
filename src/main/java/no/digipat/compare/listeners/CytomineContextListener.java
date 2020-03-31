@@ -3,6 +3,7 @@ package no.digipat.compare.listeners;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
@@ -10,15 +11,12 @@ import no.digipat.compare.models.image.Image;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 /**
- * A context listener that add a Cytomine instance to the context
- *
- * @see Image
- * @see MongoImageDAO
- * @see MongoDBContextListener
+ * A context listener that adds a Cytomine instance to the context.
  * 
  * @author Jon Wallem Anundsen
  * 
  */
+@WebListener
 public class CytomineContextListener implements ServletContextListener {
     
     /**
