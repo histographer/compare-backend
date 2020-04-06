@@ -24,7 +24,7 @@ services:
     container_name: analysis_backend_test
     restart: always
     expose:
-      - 8000
+      - 80
   
   compare_backend:
     build:

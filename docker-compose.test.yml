@@ -24,7 +24,7 @@ services:
     container_name: analysis_backend_test
     restart: always
     expose:
-      - 8000
+      - 80
   
   compare_backend:
     build:
@@ -41,7 +41,7 @@ services:
       COMPARE_MONGODB_DATABASE: ${COMPARE_TEST_MONGODB_DATABASE}
       COMPARE_ANALYSIS_PROTOCOL: http
       COMPARE_ANALYSIS_HOST: analysis_backend_test
-      COMPARE_ANALYSIS_PORT: 8000
+      COMPARE_ANALYSIS_PORT: 80
       COMPARE_CYTOMINE_URL: ${COMPARE_TEST_CYTOMINE_URL}
       COMPARE_ADMIN_PUB_KEY: ${COMPARE_TEST_CYTOMINE_PUBLIC_KEY}
       COMPARE_ADMIN_PRIV_KEY: ${COMPARE_TEST_CYTOMINE_PRIVATE_KEY}
