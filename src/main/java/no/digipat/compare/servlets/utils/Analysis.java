@@ -2,14 +2,15 @@ package no.digipat.compare.servlets.utils;
 
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageComparison;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,25 +39,17 @@ public class Analysis {
         json.put("comparison_data", jsonComparisons);
         return json;
     }
-
+    
     public static JSONObject getAnalysisResponse(URL baseUrl, String prefix, JSONObject requestBody)
             throws IOException, JSONException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, prefix).openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setDoOutput(true);
-        try (PrintWriter writer = new PrintWriter(connection.getOutputStream())) {
-            writer.print(requestBody);
-            writer.flush();
-        }
-        connection.connect();
-        int responseCode = connection.getResponseCode();
+        HttpResponse response = Request.Post(new URL(baseUrl, prefix).toString())
+            .setHeader("Accept", "application/json")
+            .bodyString(requestBody.toString(), ContentType.create("application/json"))
+            .execute().returnResponse();
+        int responseCode = response.getStatusLine().getStatusCode();
         if (responseCode != 200) {
             throw new IOException("Expected response code 200 from analysis backend, but got " + responseCode);
         }
-        try (InputStream inputStream = connection.getInputStream()) {
-            return new JSONObject(new JSONTokener(inputStream));
-        }
+        return new JSONObject(new JSONTokener(response.getEntity().getContent()));
     }
 }
