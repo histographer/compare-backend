@@ -33,7 +33,7 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
  */
 @WebServlet(urlPatterns = "/imagePair")
 public class NextImagePairServlet extends HttpServlet {
-
+    
     /**
      * Gets a pair of images for comparison. The images will be retrieved from
      * a project whose ID must be given by the {@code projectId} query string
@@ -67,14 +67,10 @@ public class NextImagePairServlet extends HttpServlet {
      *                          backend.
      * 
      * @see Image
-     */
+     */ // TODO docs
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServletContext context = getServletContext();
-        MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
-        String databaseName = (String) context.getAttribute("MONGO_DATABASE");
-        MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
         long projectId;
         try {
             projectId = Long.parseLong(request.getParameter("projectId"));
@@ -83,13 +79,27 @@ public class NextImagePairServlet extends HttpServlet {
             response.getWriter().print("Project ID is not set");
             return;
         }
+        JSONArray skippedPairs;
+        try {
+            skippedPairs = getSkippedPairs(request.getParameter("skipped"));
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        
+        ServletContext context = getServletContext();
+        MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
+        String databaseName = (String) context.getAttribute("MONGO_DATABASE");
+        MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
         List<Image> images = imageDao.getAllImages(projectId);
         if (images.size() < 2) {
             throw new ServletException("Not enough images in project " + projectId);
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
+        
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
+        jsonForAnalysisBackend.put("skipped", skippedPairs);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
         try {
@@ -123,5 +133,40 @@ public class NextImagePairServlet extends HttpServlet {
         }
         return returnJson;
     }
-
+    
+    private static JSONArray getSkippedPairs(String jsonArrayString) throws IllegalArgumentException {
+        // Validates and returns the JSON array of skipped pairs
+        if (jsonArrayString == null) {
+            return new JSONArray();
+        } else {
+            JSONArray array;
+            try {
+                array = new JSONArray(jsonArrayString);
+            } catch (JSONException e) {
+                throw new IllegalArgumentException(e);
+            }
+            for (Object pairObj : array) {
+                validatePair(pairObj);
+            }
+            return array;
+        }
+    }
+    
+    private static void validatePair(Object pairObj) throws IllegalArgumentException {
+        // Validates a pair from the list of skipped image pairs
+        if (pairObj instanceof List) {
+            List pair = (List) pairObj;
+            if (pair.size() != 2) {
+                throw new IllegalArgumentException("Pairs must have size 2");
+            }
+            for (Object idObj : pair) {
+                if (!(idObj instanceof Long || idObj instanceof Integer)) {
+                    throw new IllegalArgumentException("IDs in pairs must be longs or ints");
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("Pairs must be arrays");
+        }
+    }
+    
 }
