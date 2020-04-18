@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -14,6 +15,10 @@ import java.util.function.Function;
 
 import no.digipat.compare.models.project.Project;
 import no.digipat.compare.mongodb.dao.MongoProjectDAO;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Request;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
@@ -200,12 +205,18 @@ public class NextImagePairTest {
         WebConversation conversation = new WebConversation();
         login(conversation);
         
-        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
-        request.setParameter("projectId", "20");
-        request.setParameter("skipped", skippedList);
-        WebResponse response = conversation.getResponse(request);
-        
-        assertEquals("Testing with \"skipped\" array: " + skippedList + ".", 400, response.getResponseCode());
+        // Workaround for the fact that receiving status code 400 sometimes throws an exception:
+        String encodedList = URLEncoder.encode(skippedList, "UTF8");
+        HttpResponse response = Request.Get(new URL(baseUrl, "imagePair?projectId=20&skipped=" + encodedList).toString())
+            .addHeader("Cookie", "JSESSIONID=" + conversation.getCookieValue("JSESSIONID"))
+            .execute().returnResponse();
+//        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
+//        request.setParameter("projectId", "20");
+//        request.setParameter("skipped", skippedList);
+//        WebResponse response = conversation.getResponse(request);
+        assertEquals("Testing with \"skipped\" array: " + skippedList + ". Response body:\n"
+                + IOUtils.toString(response.getEntity().getContent()) + "\n",
+                400, response.getStatusLine().getStatusCode());
     }
     
     private static String[][] getInvalidSkippedLists() {
