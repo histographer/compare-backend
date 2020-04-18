@@ -116,18 +116,18 @@ public class RankingTest {
         WebRequest request = new GetMethodWebRequest(baseUrl, "ranking?projectId=20");
         WebResponse response = conversation.sendRequest(request);
         
-        assertEquals(200, response.getResponseCode());
+        assertEquals(response.getText() + "\n", 200, response.getResponseCode());
         JSONArray json = new JSONArray(response.getText());
         List<Object> list = json.toList();
         assertEquals(2, list.size());
         Collections.sort(list, comparingInt(map -> (int) ((Map) map).get("id")));
         Map<String, Object> map1 = (Map<String, Object>) list.get(0);
-        assertEquals(image1.getImageId(), map1.get("id"));
-        assertNotNull((Float) map1.get("score")); // Check that score is non-null and has correct type
+        assertEquals((int) (long) image1.getImageId(), map1.get("id"));
+        assertNotNull((Double) map1.get("score")); // Check that score is non-null and has correct type
         assertEquals(4, map1.get("rankings"));
-        Map<String, Object> map2 = (Map<String, Object>) list.get(2);
-        assertEquals(image2.getImageId(), map2.get("id"));
-        assertNotNull((Float) map2.get("score")); // Check that score is non-null and has correct type
+        Map<String, Object> map2 = (Map<String, Object>) list.get(1);
+        assertEquals((int) (long) image2.getImageId(), map2.get("id"));
+        assertNotNull((Double) map2.get("score")); // Check that score is non-null and has correct type
         assertEquals(4, map2.get("rankings"));
     }
     
