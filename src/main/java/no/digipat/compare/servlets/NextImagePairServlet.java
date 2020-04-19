@@ -82,9 +82,8 @@ public class NextImagePairServlet extends HttpServlet {
         long projectId;
         try {
             projectId = Long.parseLong(request.getParameter("projectId"));
-        } catch(NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print("Project ID is not set");
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Project ID is missing or invalid");
             return;
         }
         String skippedParameter = request.getParameter("skipped");
@@ -115,7 +114,7 @@ public class NextImagePairServlet extends HttpServlet {
             HttpResponse analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,
                     "ranking/suggestpair/", jsonForAnalysisBackend, 200, 404);
             if (analysisResponse.getStatusLine().getStatusCode() == 404) {
-                response.setStatus(404);
+                response.sendError(404, "All pairs have been skipped");
             } else {
                 JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
                 JSONArray pair = analysisJson.getJSONArray("pair");
