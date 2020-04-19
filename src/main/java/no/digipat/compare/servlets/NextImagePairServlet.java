@@ -13,9 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.digipat.compare.servlets.utils.Analysis;
+
+import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.mongodb.MongoClient;
 
@@ -101,19 +104,24 @@ public class NextImagePairServlet extends HttpServlet {
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         jsonForAnalysisBackend.put("skipped", skippedPairs);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
-        JSONArray responseForUser;
         try {
-            JSONObject analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
-            JSONArray pair = analysisResponse.getJSONArray("pair");
-            long id1 = pair.getLong(0), id2 = pair.getLong(1);
-            Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
-            Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
-            responseForUser = createResponseJson(image1, image2);
+            HttpResponse analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,
+                    "ranking/suggestpair/", jsonForAnalysisBackend, 200, 404);
+            if (analysisResponse.getStatusLine().getStatusCode() == 404) {
+                response.setStatus(404);
+            } else {
+                JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
+                JSONArray pair = analysisJson.getJSONArray("pair");
+                long id1 = pair.getLong(0), id2 = pair.getLong(1);
+                Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
+                Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
+                JSONArray responseForUser = createResponseJson(image1, image2);
+                response.setContentType("application/json");
+                response.getWriter().print(responseForUser);
+            }
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
         }
-        response.setContentType("application/json");
-        response.getWriter().print(responseForUser);
     }
     
     private static JSONArray createResponseJson(Image image1, Image image2) {

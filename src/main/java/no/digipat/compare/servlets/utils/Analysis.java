@@ -3,12 +3,11 @@ package no.digipat.compare.servlets.utils;
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.models.image.ImageComparison;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.net.URL;
@@ -73,28 +72,32 @@ public class Analysis {
     
     /**
      * Sends a POST request to the analysis API with a JSON object
-     * as the body, returning the response as a JSON object.
+     * as the body, returning the response.
      * 
      * @param baseUrl the base URL of the analysis API, e.g. {@code http://example.com/api}.
      * @param path the relative path of the request
      * @param requestBody the JSON object to include in the request body
+     * @param acceptableStatusCodes the status codes that it is acceptable for
+     * the analysis API to return. If empty, only the code 200 is acceptable.
      * 
-     * @return the JSON object from the response body
+     * @return the response
      * 
      * @throws IOException if an I/O error occurs. In particular, if
      * the analysis API returns an unacceptable status code.
-     * @throws JSONException if the response body is not a valid JSON object
      */
-    public static JSONObject getAnalysisPostResponse(URL baseUrl, String path, JSONObject requestBody)
-            throws IOException, JSONException {
+    public static HttpResponse getAnalysisPostResponse(URL baseUrl, String path, JSONObject requestBody,
+            int... acceptableStatusCodes) throws IOException {
         HttpResponse response = Request.Post(new URL(baseUrl, path).toString())
             .setHeader("Accept", "application/json")
             .bodyString(requestBody.toString(), ContentType.create("application/json"))
             .execute().returnResponse();
-        int responseCode = response.getStatusLine().getStatusCode();
-        if (responseCode != 200) {
-            throw new IOException("Expected response code 200 from analysis backend, but got " + responseCode);
+        if (acceptableStatusCodes.length == 0) {
+            acceptableStatusCodes = new int[] {200};
         }
-        return new JSONObject(new JSONTokener(response.getEntity().getContent()));
+        int responseCode = response.getStatusLine().getStatusCode();
+        if (!ArrayUtils.contains(acceptableStatusCodes, responseCode)) {
+            throw new IOException("Analysis API returned unacceptable status code: " + responseCode);
+        }
+        return response;
     }
 }
