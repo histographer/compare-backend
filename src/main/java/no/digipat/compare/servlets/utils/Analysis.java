@@ -15,9 +15,40 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility methods for communicating with the analysis API.
+ * 
+ * @author Kent Are Torvik
+ * @author Jon Wallem Anundsen
+ *
+ */
 public class Analysis {
-
-
+    
+    /**
+     * Creates a JSON object of the following form:
+     * 
+     * <pre>
+     * {
+     *   "image_ids": [123, 1337, 99999, ...],
+     *   "comparison_data": [
+     *     {
+     *       "winner": {
+     *         "id": 123
+     *       },
+     *       "loser": {
+     *         "id": 1337
+     *       }
+     *     },
+     *     ...
+     *   ]
+     * }
+     * </pre>
+     * 
+     * @param images the images
+     * @param comparisons the comparisons
+     * 
+     * @return the JSON object
+     */
     public static JSONObject createRequestJson(List<Image> images, List<ImageComparison> comparisons) {
         JSONObject json = new JSONObject();
         List<Long> imageIds = new ArrayList<>();
@@ -40,9 +71,23 @@ public class Analysis {
         return json;
     }
     
-    public static JSONObject getAnalysisResponse(URL baseUrl, String prefix, JSONObject requestBody)
+    /**
+     * Sends a POST request to the analysis API with a JSON object
+     * as the body, returning the response as a JSON object.
+     * 
+     * @param baseUrl the base URL of the analysis API, e.g. {@code http://example.com/api}.
+     * @param path the relative path of the request
+     * @param requestBody the JSON object to include in the request body
+     * 
+     * @return the JSON object from the response body
+     * 
+     * @throws IOException if an I/O error occurs. In particular, if
+     * the analysis API returns an unacceptable status code.
+     * @throws JSONException if the response body is not a valid JSON object
+     */
+    public static JSONObject getAnalysisPostResponse(URL baseUrl, String path, JSONObject requestBody)
             throws IOException, JSONException {
-        HttpResponse response = Request.Post(new URL(baseUrl, prefix).toString())
+        HttpResponse response = Request.Post(new URL(baseUrl, path).toString())
             .setHeader("Accept", "application/json")
             .bodyString(requestBody.toString(), ContentType.create("application/json"))
             .execute().returnResponse();

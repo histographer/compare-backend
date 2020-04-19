@@ -94,7 +94,7 @@ public class RankingServlet extends HttpServlet {
         JSONObject analysisResponse;
         JSONArray score;
         try {
-            analysisResponse = Analysis.getAnalysisResponse(baseUrl, "ranking/ranking/", jsonForAnalysisBackend);
+            analysisResponse = Analysis.getAnalysisPostResponse(baseUrl, "ranking/ranking/", jsonForAnalysisBackend);
             List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage(projectId);
             score = analysisResponse.getJSONArray("scores");
             for (int i=0; i < score.length(); i++) {

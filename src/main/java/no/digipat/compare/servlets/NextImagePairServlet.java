@@ -103,7 +103,7 @@ public class NextImagePairServlet extends HttpServlet {
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
         JSONArray responseForUser;
         try {
-            JSONObject analysisResponse = Analysis.getAnalysisResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
+            JSONObject analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
             JSONArray pair = analysisResponse.getJSONArray("pair");
             long id1 = pair.getLong(0), id2 = pair.getLong(1);
             Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
