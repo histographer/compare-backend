@@ -82,11 +82,13 @@ public class NextImagePairServlet extends HttpServlet {
             response.getWriter().print("Project ID is not set");
             return;
         }
+        String skippedParameter = request.getParameter("skipped");
         JSONArray skippedPairs;
         try {
-            skippedPairs = getSkippedPairs(request.getParameter("skipped"));
+            skippedPairs = getSkippedPairs(skippedParameter);
         } catch (IllegalArgumentException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid \"skipped\" array: " + skippedParameter + ".");
             return;
         }
         
@@ -162,10 +164,10 @@ public class NextImagePairServlet extends HttpServlet {
     
     private static void validatePair(Object pairObj) throws IllegalArgumentException {
         // Validates a pair from the list of skipped image pairs
-        if (pairObj instanceof List) {
-            List pair = (List) pairObj;
-            if (pair.size() != 2) {
-                throw new IllegalArgumentException("Pairs must have size 2");
+        if (pairObj instanceof JSONArray) {
+            JSONArray pair = (JSONArray) pairObj;
+            if (pair.length() != 2) {
+                throw new IllegalArgumentException("Pairs must have length 2");
             }
             for (Object idObj : pair) {
                 if (!(idObj instanceof Long || idObj instanceof Integer)) {
