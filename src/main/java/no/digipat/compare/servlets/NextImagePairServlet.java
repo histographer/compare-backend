@@ -60,6 +60,11 @@ public class NextImagePairServlet extends HttpServlet {
      * where {@code id}, {@code projectId}, {@code width}, {@code height}, {@code depth}, and
      * {@code magnification} are longs, {@code resolution} is a double, {@code mime}
      * is a string, and {@code url1, url2, ..., urlN} are strings.
+     * <p>
+     * In order to skip certain image pairs, use the query string parameter
+     * {@code skipped}. It takes the form of a JSON array where each element is an
+     * image pair (more precisely, an array with two image IDs) that should be skipped.
+     * </p>
      * 
      * @param request  the HTTP request
      * @param response the HTTP response
@@ -70,7 +75,7 @@ public class NextImagePairServlet extends HttpServlet {
      *                          backend.
      * 
      * @see Image
-     */ // TODO docs
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
