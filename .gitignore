@@ -5,3 +5,4 @@
 .idea
 backend.iml
 /database/data
+*.env

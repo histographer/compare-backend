@@ -202,6 +202,8 @@ export COMPARE_TEST_MONGODB_INITDB_DATABASE=patornat_test
 
 ```
 
+In addition, you need to copy the contents of the file `.analysis_test.env.sample` into a file with the name `.analysis_test.env`.
+
 The integration tests will only work if the application is already running. If you have docker-compose installed,
 you can start it in a test container with the command `sudo -E ./integration_test_setup.sh`,
 and stop it with the command `sudo -E ./integration_test_teardown.sh`.

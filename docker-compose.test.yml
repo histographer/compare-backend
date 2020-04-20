@@ -21,6 +21,8 @@ services:
   
   analysis_backend:
     image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+    env_file:
+      - ".analysis_test.env"
     container_name: analysis-backend-test
     restart: always
     expose:
