@@ -13,9 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.digipat.compare.servlets.utils.Analysis;
+
+import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.mongodb.MongoClient;
 
@@ -33,7 +36,7 @@ import no.digipat.compare.mongodb.dao.MongoImageDAO;
  */
 @WebServlet(urlPatterns = "/imagePair")
 public class NextImagePairServlet extends HttpServlet {
-
+    
     /**
      * Gets a pair of images for comparison. The images will be retrieved from
      * a project whose ID must be given by the {@code projectId} query string
@@ -57,6 +60,11 @@ public class NextImagePairServlet extends HttpServlet {
      * where {@code id}, {@code projectId}, {@code width}, {@code height}, {@code depth}, and
      * {@code magnification} are longs, {@code resolution} is a double, {@code mime}
      * is a string, and {@code url1, url2, ..., urlN} are strings.
+     * <p>
+     * In order to skip certain image pairs, use the query string parameter
+     * {@code skipped}. It takes the form of a JSON array where each element is an
+     * image pair (more precisely, an array with two image IDs) that should be skipped.
+     * </p>
      * 
      * @param request  the HTTP request
      * @param response the HTTP response
@@ -71,39 +79,55 @@ public class NextImagePairServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        long projectId;
+        try {
+            projectId = Long.parseLong(request.getParameter("projectId"));
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Project ID is missing or invalid");
+            return;
+        }
+        String skippedParameter = request.getParameter("skipped");
+        JSONArray skippedPairs;
+        try {
+            skippedPairs = getSkippedPairs(skippedParameter);
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid \"skipped\" array: " + skippedParameter + ".");
+            return;
+        }
+        
         ServletContext context = getServletContext();
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoImageDAO imageDao = new MongoImageDAO(client, databaseName);
-        long projectId;
-        try {
-            projectId = Long.parseLong(request.getParameter("projectId"));
-        } catch(NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print("Project ID is not set");
-            return;
-        }
         List<Image> images = imageDao.getAllImages(projectId);
         if (images.size() < 2) {
             throw new ServletException("Not enough images in project " + projectId);
         }
         MongoImageComparisonDAO comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
+        
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
+        jsonForAnalysisBackend.put("skipped", skippedPairs);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
-        JSONArray responseForUser;
         try {
-            JSONObject analysisResponse = Analysis.getAnalysisResponse(baseUrl,  "ranking/suggestpair/", jsonForAnalysisBackend);
-            JSONArray pair = analysisResponse.getJSONArray("pair");
-            long id1 = pair.getLong(0), id2 = pair.getLong(1);
-            Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
-            Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
-            responseForUser = createResponseJson(image1, image2);
+            HttpResponse analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,
+                    "ranking/suggestpair/", jsonForAnalysisBackend, 200, 404);
+            if (analysisResponse.getStatusLine().getStatusCode() == 404) {
+                response.sendError(404, "All pairs have been skipped");
+            } else {
+                JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
+                JSONArray pair = analysisJson.getJSONArray("pair");
+                long id1 = pair.getLong(0), id2 = pair.getLong(1);
+                Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
+                Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
+                JSONArray responseForUser = createResponseJson(image1, image2);
+                response.setContentType("application/json");
+                response.getWriter().print(responseForUser);
+            }
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
         }
-        response.setContentType("application/json");
-        response.getWriter().print(responseForUser);
     }
     
     private static JSONArray createResponseJson(Image image1, Image image2) {
@@ -123,5 +147,40 @@ public class NextImagePairServlet extends HttpServlet {
         }
         return returnJson;
     }
-
+    
+    private static JSONArray getSkippedPairs(String jsonArrayString) throws IllegalArgumentException {
+        // Validates and returns the JSON array of skipped pairs
+        if (jsonArrayString == null) {
+            return new JSONArray();
+        } else {
+            JSONArray array;
+            try {
+                array = new JSONArray(jsonArrayString);
+            } catch (JSONException e) {
+                throw new IllegalArgumentException(e);
+            }
+            for (Object pairObj : array) {
+                validatePair(pairObj);
+            }
+            return array;
+        }
+    }
+    
+    private static void validatePair(Object pairObj) throws IllegalArgumentException {
+        // Validates a pair from the list of skipped image pairs
+        if (pairObj instanceof JSONArray) {
+            JSONArray pair = (JSONArray) pairObj;
+            if (pair.length() != 2) {
+                throw new IllegalArgumentException("Pairs must have length 2");
+            }
+            for (Object idObj : pair) {
+                if (!(idObj instanceof Long || idObj instanceof Integer)) {
+                    throw new IllegalArgumentException("IDs in pairs must be longs or ints");
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("Pairs must be arrays");
+        }
+    }
+    
 }

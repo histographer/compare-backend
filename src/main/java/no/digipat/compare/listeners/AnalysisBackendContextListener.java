@@ -37,7 +37,7 @@ public class AnalysisBackendContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         String protocol = System.getenv("COMPARE_ANALYSIS_PROTOCOL");
-        String host = System.getenv("COMPARE_ANALYSIS_URL");
+        String host = System.getenv("COMPARE_ANALYSIS_HOST");
         String port = System.getenv("COMPARE_ANALYSIS_PORT");
         try {
             URL url = null;

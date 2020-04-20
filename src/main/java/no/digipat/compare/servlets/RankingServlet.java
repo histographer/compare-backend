@@ -7,9 +7,12 @@ import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
 import no.digipat.compare.mongodb.dao.MongoImageDAO;
 import no.digipat.compare.mongodb.dao.MongoProjectDAO;
 import no.digipat.compare.servlets.utils.Analysis;
+
+import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -91,12 +94,13 @@ public class RankingServlet extends HttpServlet {
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(projectId);
         JSONObject jsonForAnalysisBackend = Analysis.createRequestJson(images, comparisons);
         URL baseUrl = (URL) context.getAttribute("ANALYSIS_BASE_URL");
-        JSONObject analysisResponse;
         JSONArray score;
         try {
-            analysisResponse = Analysis.getAnalysisResponse(baseUrl, "ranking/ranking/", jsonForAnalysisBackend);
+            HttpResponse analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,
+                    "ranking/ranking/", jsonForAnalysisBackend);
+            JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
             List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage(projectId);
-            score = analysisResponse.getJSONArray("scores");
+            score = analysisJson.getJSONArray("scores");
             for (int i=0; i < score.length(); i++) {
                 JSONObject tempObject = score.getJSONObject(i);
                 Long id = tempObject.getLong("id");
