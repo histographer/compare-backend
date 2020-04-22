@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -19,9 +20,12 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.mongodb.MongoClient;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import no.digipat.compare.models.session.Session;
 import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 
+@RunWith(JUnitParamsRunner.class)
 public class SessionServletTest {
     
     private static URL baseUrl;
@@ -64,6 +68,28 @@ public class SessionServletTest {
         assertEquals(hospital, session.getHospital());
         assertEquals(monitorType, session.getMonitorType());
         assertEquals(projectId, session.getProjectId());
+    }
+    
+    @Test
+    @Parameters(method="getInvalidBodies")
+    public void testStatusCode400(String body) throws Exception {
+        WebRequest request = new PostMethodWebRequest(new URL(baseUrl, "session").toString(),
+                new ByteArrayInputStream(body.getBytes("UTF8")), "application/json");
+        WebConversation conversation = new WebConversation();
+        WebResponse response = conversation.getResponse(request);
+        
+        assertEquals(400, response.getResponseCode());
+    }
+    
+    private static String[][] getInvalidBodies() {
+        return new String[][] {
+            {""},
+            {"not JSON"},
+            {"{}"},
+            {"{\"hospital\": \"st. olavs\", \"monitorType\": \"normal\"}"},
+            {"{\"hospital\": \"st. olavs\", \"projectId\": 123}"},
+            {"{\"monitorType\": \"normal\", \"projectId\": 123}"}
+        };
     }
     
     @After
