@@ -48,7 +48,12 @@ public class SessionServletTest {
         projectDao.createProject(project);
         sessionDao = new MongoSessionDAO(client, databaseName);
     }
-
+    
+    @After
+    public void tearDown() {
+        client.getDatabase(databaseName).drop();
+    }
+    
     @Test
     public void testCreateSession() throws Exception {
         JSONObject json = new JSONObject();
@@ -88,12 +93,23 @@ public class SessionServletTest {
             {"{}"},
             {"{\"hospital\": \"st. olavs\", \"monitorType\": \"normal\"}"},
             {"{\"hospital\": \"st. olavs\", \"projectId\": 123}"},
-            {"{\"monitorType\": \"normal\", \"projectId\": 123}"}
+            {"{\"monitorType\": \"normal\", \"projectId\": 123}"},
+            {"{\"monitorType\": \"normal\", \"projectId\": 123, \"hospital\": null}"}
         };
     }
     
-    @After
-    public void tearDown() {
-        client.getDatabase(databaseName).drop();
+    @Test
+    public void test404OnNonexistentProject() throws Exception {
+        JSONObject json = new JSONObject()
+                .put("projectId", 123)
+                .put("hospital", "St. Olavs")
+                .put("monitorType", "normal");
+        WebRequest request = new PostMethodWebRequest(new URL(baseUrl, "session").toString(),
+                new ByteArrayInputStream(json.toString().getBytes("UTF8")), "application/json");
+        WebConversation conversation = new WebConversation();
+        WebResponse response = conversation.getResponse(request);
+        
+        assertEquals(404, response.getResponseCode());
     }
+    
 }

@@ -10,7 +10,6 @@ import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
@@ -22,8 +21,7 @@ import java.io.IOException;
 
 @WebServlet(name = "no.digipat.compare.servlets.SessionServlet", urlPatterns = {"/session"})
 public class SessionServlet extends HttpServlet {
-
-
+    
     /**
      * Creates a new session for the user. The request body must contain
      * a JSON object with the following format:
@@ -51,12 +49,13 @@ public class SessionServlet extends HttpServlet {
             String database = (String) context.getAttribute("MONGO_DATABASE");
             MongoSessionDAO sessionDAO = new MongoSessionDAO(client, database);
             MongoProjectDAO projectDAO = new MongoProjectDAO(client, database);
-            if(!sessionDAO.sessionExists(servletSessionID)) {
+            if (!sessionDAO.sessionExists(servletSessionID)) {
                 sessionDAO.createSession(jsonToSession(sessionJson, projectDAO, servletSessionID));
             }
-        } catch (JSONException | NullPointerException | NotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print(e);
+        } catch (JSONException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request body");
+        } catch (NotFoundException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "A project with this ID does not exist");
         }
     }
     
@@ -77,16 +76,11 @@ public class SessionServlet extends HttpServlet {
         }
     }
     
-    private static Session jsonToSession(JSONObject json, MongoProjectDAO projectDAO, String id) throws NotFoundException {
+    private static Session jsonToSession(JSONObject json, MongoProjectDAO projectDAO, String id)
+            throws NotFoundException, JSONException {
             String hospital = json.getString("hospital");
             String monitorType = json.getString("monitorType");
             long projectId = json.getLong("projectId");
-            if (hospital == null) {
-                throw new NullPointerException("hospital field has to be set");
-            }
-            if (monitorType == null) {
-                throw new NullPointerException("monitorType field has to be set");
-            }
             if (!projectDAO.projectExists(projectId)) {
                 throw new NotFoundException("A project with this ID does not exist");
             }
