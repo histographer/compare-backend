@@ -87,10 +87,10 @@ public class RankingTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testWithValidServerState() throws Exception {
-        Image image1 = new Image().setImageId(42L).setProjectId(20L);
-        Image image2 = new Image().setImageId(1337L).setProjectId(20L);
-        Image image3 = new Image().setImageId(69L).setProjectId(30L);
-        Image image4 = new Image().setImageId(56L).setProjectId(30L);
+        Image image1 = new Image().setImageId(42L).setProjectId(20L).setFileName("image1.png");
+        Image image2 = new Image().setImageId(1337L).setProjectId(20L).setFileName("image2.jpg");
+        Image image3 = new Image().setImageId(69L).setProjectId(30L).setFileName("image3.jpeg");
+        Image image4 = new Image().setImageId(56L).setProjectId(30L).setFileName("image4.gif");
         imageDao.createImage(image1);
         imageDao.createImage(image2);
         imageDao.createImage(image3);
@@ -123,10 +123,12 @@ public class RankingTest {
         Collections.sort(list, comparingInt(map -> (int) ((Map) map).get("id")));
         Map<String, Object> map1 = (Map<String, Object>) list.get(0);
         assertEquals((int) (long) image1.getImageId(), map1.get("id"));
+        assertEquals(image1.getFileName(), map1.get("fileName"));
         assertNotNull((Double) map1.get("score")); // Check that score is non-null and has correct type
         assertEquals(4, map1.get("rankings"));
         Map<String, Object> map2 = (Map<String, Object>) list.get(1);
         assertEquals((int) (long) image2.getImageId(), map2.get("id"));
+        assertEquals(image2.getFileName(), map2.get("fileName"));
         assertNotNull((Double) map2.get("score")); // Check that score is non-null and has correct type
         assertEquals(4, map2.get("rankings"));
     }

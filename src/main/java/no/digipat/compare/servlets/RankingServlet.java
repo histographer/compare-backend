@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
  */
 @WebServlet(urlPatterns = "/ranking")
 public class RankingServlet extends HttpServlet {
-
+    
     /**
      * Gets a ranking of the images in a project given by the query string parameter
      * {@code projectId}. The response body will contain a JSON array whose elements
@@ -44,12 +44,14 @@ public class RankingServlet extends HttpServlet {
      * <pre>
      * {
      *   "id": id,
+     *   "fileName": fileName,
      *   "score": score,
      *   "rankings": rankings
      * },
      * </pre>
      *
-     * where {@code id} is a long, {@code score} is a float, and {@code rankings} is a long.
+     * where {@code id} is a long, {@code fileName} is a string, {@code score} is a float,
+     * and {@code rankings} is a long.
      *
      * @param request  the HTTP request
      * @param response the HTTP response
@@ -99,13 +101,16 @@ public class RankingServlet extends HttpServlet {
             HttpResponse analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,
                     "ranking/ranking/", jsonForAnalysisBackend);
             JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
-            List<Map.Entry<Long, Long>> rankings = comparisonDao.getNumberOfComparisonsForEachImage(projectId);
+            List<Map.Entry<Long, Long>> numberOfComparisonsForEachImage = comparisonDao.getNumberOfComparisonsForEachImage(projectId);
             score = analysisJson.getJSONArray("scores");
-            for (int i=0; i < score.length(); i++) {
+            for (int i = 0; i < score.length(); i++) {
                 JSONObject tempObject = score.getJSONObject(i);
-                Long id = tempObject.getLong("id");
-                Long ranking = rankings.stream().filter(rank -> rank.getKey().equals(id)).findFirst().get().getValue();
-                tempObject.put("rankings", ranking);
+                long id = tempObject.getLong("id");
+                long numberOfComparisons = numberOfComparisonsForEachImage
+                        .stream().filter(rank -> rank.getKey().equals(id)).findFirst().get().getValue();
+                tempObject.put("rankings", numberOfComparisons);
+                Image image = images.stream().filter(img -> img.getImageId().equals(id)).findFirst().get();
+                tempObject.put("fileName", image.getFileName());
             }
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
