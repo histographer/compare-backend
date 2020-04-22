@@ -169,12 +169,14 @@ Returns an array of rankings. Needs a query string `/ranking?projectId=99999`
     {
         "score": 1000,
         "rankings": 0,
-        "id": 4011
+        "id": 4011,
+        "fileName": "an_image.png"
     },
     {
         "score": 1000,
         "rankings": 0,
-        "id": 78860
+        "id": 78860,
+        "fileName": "another_image.jpeg"
     }
 ]
 ```
