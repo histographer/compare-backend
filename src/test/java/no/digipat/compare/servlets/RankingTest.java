@@ -87,8 +87,8 @@ public class RankingTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testWithValidServerState() throws Exception {
-        Image image1 = new Image().setImageId(42L).setProjectId(20L).setFileName("image1.png");
-        Image image2 = new Image().setImageId(1337L).setProjectId(20L).setFileName("image2.jpg");
+        Image image1 = new Image().setImageId(42L).setProjectId(20L).setFileName("imαge1.png");
+        Image image2 = new Image().setImageId(1337L).setProjectId(20L).setFileName("imæge2.jpg");
         Image image3 = new Image().setImageId(69L).setProjectId(30L).setFileName("image3.jpeg");
         Image image4 = new Image().setImageId(56L).setProjectId(30L).setFileName("image4.gif");
         imageDao.createImage(image1);

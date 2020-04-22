@@ -123,7 +123,7 @@ public class NextImagePairTest {
         Image image2 = new Image().setImageId(1337L).setWidth(100L).setHeight(50L)
                 .setDepth(5L).setMagnification(3L).setResolution(123.45)
                 .setMimeType("image/jpeg").setProjectId(20l)
-                .setImageServerURLs(new String[] {"https://example.com"});
+                .setImageServerURLs(new String[] {"https://example.com/Ææα"});
         imageDao.createImage(image2);
         comparisonDao.createImageComparison(new ImageComparison().setProjectId(20L).setSessionID("some_user")
                 .setWinner(new ImageChoice(1337L, "good")).setLoser(new ImageChoice(42L, "really bad")));

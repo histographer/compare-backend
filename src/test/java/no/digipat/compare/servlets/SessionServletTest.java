@@ -2,9 +2,7 @@ package no.digipat.compare.servlets;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 
 import no.digipat.compare.models.project.Project;
@@ -19,8 +17,6 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import com.meterware.httpunit.protocol.MessageBody;
-import com.meterware.httpunit.protocol.ParameterCollection;
 import com.mongodb.MongoClient;
 
 import no.digipat.compare.models.session.Session;
@@ -50,40 +46,26 @@ public class SessionServletTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void testCreateSession() throws Exception {
         JSONObject json = new JSONObject();
-        final String hospital = "St. Olavs";
+        final String hospital = "St. Ølavs";
         final Long projectId = 30l;
-        final String monitorType = "normal";
+        final String monitorType = "normαl";
         json.put("hospital", hospital);
         json.put("projectId", projectId);
         json.put("monitorType", monitorType);
         WebConversation conversation = new WebConversation();
-        WebRequest request = new PostMethodWebRequest(new URL(baseUrl, "session").toString()) {
-            @Override
-            protected MessageBody getMessageBody() {
-                return new MessageBody("utf8") {
-                    @Override
-                    public void writeTo(OutputStream outputStream, ParameterCollection parameters) throws IOException {
-                        PrintWriter writer = new PrintWriter(outputStream);
-                        writer.print(json);
-                        writer.flush();
-                    }
-                    @Override
-                    public String getContentType() {
-                        return "application/json";
-                    }
-                };
-            }
-        };
+        WebRequest request = new PostMethodWebRequest(new URL(baseUrl, "session").toString(),
+                new ByteArrayInputStream(json.toString().getBytes("UTF8")), "application/json");
         WebResponse response = conversation.sendRequest(request);
+        
         assertEquals(200, response.getResponseCode());
         Session session = sessionDao.getSession(conversation.getCookieValue("JSESSIONID"));
         assertEquals(hospital, session.getHospital());
         assertEquals(monitorType, session.getMonitorType());
         assertEquals(projectId, session.getProjectId());
     }
-
+    
     @After
     public void tearDown() {
         client.getDatabase(databaseName).drop();

@@ -13,7 +13,8 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -33,16 +34,25 @@ public class ProjectServletTest {
     private static URL baseUrl;
     private static MongoClient client;
     private static String databaseName;
-    private static MongoProjectDAO dao;
+    private MongoProjectDAO dao;
     
     @BeforeClass
     public static void setUpClass() {
         baseUrl = IntegrationTests.getBaseUrl();
         client = IntegrationTests.getMongoClient();
         databaseName = IntegrationTests.getDatabaseName();
+    }
+    
+    @Before
+    public void setUp() {
         dao = new MongoProjectDAO(client, databaseName);
-        dao.createProject(new Project().setId(42L).setName("a project").setActive(true));
+        dao.createProject(new Project().setId(42L).setName("α prøject").setActive(true));
         dao.createProject(new Project().setId(1337L).setName("leet project").setActive(true));
+    }
+    
+    @After
+    public void tearDown() {
+        client.getDatabase(databaseName).drop();
     }
     
     @Test
@@ -54,7 +64,7 @@ public class ProjectServletTest {
         assertEquals(200, response.getResponseCode());
         JSONObject json = new JSONObject(response.getText());
         assertEquals(42, json.get("id"));
-        assertEquals("a project", json.get("name"));
+        assertEquals("α prøject", json.get("name"));
     }
     
     @Test
@@ -73,7 +83,7 @@ public class ProjectServletTest {
         List<Project> projectList = Arrays.asList(projectArray);
         Collections.sort(projectList, comparingLong(project -> project.getId()));
         assertEquals((Long) 42L, projectList.get(0).getId());
-        assertEquals("a project", projectList.get(0).getName());
+        assertEquals("α prøject", projectList.get(0).getName());
         assertEquals((Long) 1337L, projectList.get(1).getId());
         assertEquals("leet project", projectList.get(1).getName());
     }
@@ -100,9 +110,17 @@ public class ProjectServletTest {
         assertEquals(400, connection.getResponseCode());
     }
     
-    @AfterClass
-    public static void tearDown() {
-        client.getDatabase(databaseName).drop();
+    @Test
+    public void testUnicodeCharactersOnRetrieval() throws Exception {
+        String projectName = "ÆØÅæøåαβγ";
+        dao.createProject(new Project().setActive(true).setId(20L).setName(projectName));
+        
+        WebRequest request = new GetMethodWebRequest(baseUrl, "/project?projectId=" + 20);
+        WebResponse response = new WebConversation().getResponse(request);
+        
+        assertEquals(200, response.getResponseCode());
+        JSONObject json = new JSONObject(response.getText());
+        assertEquals(projectName, json.getString("name"));
     }
     
 }

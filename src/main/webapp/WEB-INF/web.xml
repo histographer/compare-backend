@@ -4,7 +4,8 @@
 
 <web-app>
   <display-name>Compare Backend</display-name>
-
+  <request-character-encoding>UTF-8</request-character-encoding>
+  
   <filter>
     <filter-name>CorsFilter</filter-name>
     <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>

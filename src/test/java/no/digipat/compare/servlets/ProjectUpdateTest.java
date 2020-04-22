@@ -41,7 +41,7 @@ public class ProjectUpdateTest {
         client = IntegrationTests.getMongoClient();
         databaseName = IntegrationTests.getDatabaseName();
         dao = new MongoProjectDAO(client, databaseName);
-        dao.createProject(new Project().setId(42L).setName("a project").setActive(true));
+        dao.createProject(new Project().setId(42L).setName("α prøject").setActive(true));
     }
     
     private static PostMethodWebRequest createPostRequestWithMessageBody(String path, String messageBody, String contentType) throws MalformedURLException {
@@ -81,7 +81,7 @@ public class ProjectUpdateTest {
         JSONObject responseJson = new JSONObject(response.getText());
         assertEquals(active, responseJson.getBoolean("active"));
         assertEquals(42, responseJson.getLong("id"));
-        assertEquals("a project", responseJson.getString("name"));
+        assertEquals("α prøject", responseJson.getString("name"));
     }
     
     @Test

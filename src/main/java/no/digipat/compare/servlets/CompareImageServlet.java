@@ -6,9 +6,9 @@ import no.digipat.compare.models.image.ImageChoice;
 import no.digipat.compare.models.image.ImageComparison;
 import no.digipat.compare.mongodb.dao.MongoImageComparisonDAO;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -16,7 +16,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet(name = "CompareImage",  urlPatterns = {"/scoring"})
@@ -39,32 +38,30 @@ public class CompareImageServlet extends HttpServlet {
      * @param response
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         ServletContext context = request.getServletContext();
         String servletSessionID = request.getSession().getId();
-        JSONParser parser = new JSONParser();
         try {
-            BufferedReader reader = request.getReader();
-            JSONObject imageComparisonJson = (JSONObject) parser.parse(reader);
+            JSONObject imageComparisonJson = new JSONObject(
+                    IOUtils.toString(request.getInputStream(), request.getCharacterEncoding()));
             ImageComparison imageComparison = jsonToImageComparison(imageComparisonJson, servletSessionID);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
             MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
             comparisonDAO.createImageComparison(imageComparison);
-        } catch (ParseException | NullPointerException | ClassCastException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (JSONException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
     
-    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) throws NullPointerException {
-        ImageChoice winner = jsonToImageChoice((JSONObject) json.get("chosen"));
-        ImageChoice loser = jsonToImageChoice((JSONObject) json.get("other"));
-        long projectId = (long) json.get("projectId");
+    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) throws JSONException {
+        ImageChoice winner = jsonToImageChoice(json.getJSONObject("chosen"));
+        ImageChoice loser = jsonToImageChoice(json.getJSONObject("other"));
+        long projectId = json.getLong("projectId");
         return new ImageComparison().setSessionID(sessionID).setWinner(winner).setLoser(loser).setProjectId(projectId);
     }
     
-    private static ImageChoice jsonToImageChoice(JSONObject json) throws NullPointerException {
-        long id = (Long) json.get("id");
-        String comment = (String) json.getOrDefault("comment", "");
+    private static ImageChoice jsonToImageChoice(JSONObject json) throws JSONException {
+        long id = json.getLong("id");
+        String comment = json.has("comment") ? json.getString("comment") : null;
         return new ImageChoice(id, comment);
     }
     

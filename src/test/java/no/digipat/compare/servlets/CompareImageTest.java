@@ -10,7 +10,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,15 +39,19 @@ public class CompareImageTest {
     private static URL baseUrl;
     private static MongoClient client;
     private static String databaseName;
-    private static MongoImageComparisonDAO comparisonDao;
-    private static MongoProjectDAO projectDao;
-    private static WebConversation conversation;
+    private MongoImageComparisonDAO comparisonDao;
+    private MongoProjectDAO projectDao;
+    private WebConversation conversation;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
         baseUrl = IntegrationTests.getBaseUrl();
         client = IntegrationTests.getMongoClient();
         databaseName = IntegrationTests.getDatabaseName();
+    }
+    
+    @Before
+    public void setUp() throws Exception {
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         projectDao = new MongoProjectDAO(client, databaseName);
         
@@ -55,6 +61,11 @@ public class CompareImageTest {
         conversation = new WebConversation();
         login(conversation);
         conversation.setExceptionsThrownOnErrorStatus(false);
+    }
+    
+    @After
+    public void tearDown() {
+        client.getDatabase(databaseName).drop();
     }
     
     private static void login(WebConversation conversation) throws Exception {
@@ -92,7 +103,7 @@ public class CompareImageTest {
                 "application/json");
         WebResponse response = conversation.sendRequest(request);
         
-        assertEquals(200, response.getResponseCode());
+        assertEquals("\n" + response.getText() + "\n", 200, response.getResponseCode());
         List<ImageComparison> comparisons = comparisonDao.getAllImageComparisons(20L);
         assertEquals(1, comparisons.size());
         ImageComparison comparison = comparisons.get(0);
@@ -140,9 +151,23 @@ public class CompareImageTest {
         };
     }
     
-    @AfterClass
-    public static void tearDown() {
-        client.getDatabase(databaseName).drop();
+    @Test
+    public void testUnicodeCharactersOnCreation() throws Exception {
+        String comment = "ÆØÅæøåαβγ";
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("projectId", 20);
+        requestJson.put("other", new JSONObject("{\"id\": 2}"));
+        JSONObject winnerJson = new JSONObject();
+        winnerJson.put("comment", comment);
+        winnerJson.put("id", 1);
+        requestJson.put("chosen", winnerJson);
+        
+        WebRequest request = createPostRequestWithMessageBody("scoring", requestJson.toString(), "application/json");
+        WebResponse response = conversation.getResponse(request);
+        
+        assertEquals("\n" + response.getText() + "\n", 200, response.getResponseCode());
+        ImageComparison comparison = comparisonDao.getAllImageComparisons(20L).get(0);
+        assertEquals(comment, comparison.getWinner().getComment());
     }
     
 }
