@@ -122,7 +122,6 @@ public class NextImagePairServlet extends HttpServlet {
                 Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
                 Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
                 JSONArray responseForUser = createResponseJson(image1, image2);
-                response.setContentType("application/json");
                 response.getWriter().print(responseForUser);
             }
         } catch (JSONException | NoSuchElementException e) {

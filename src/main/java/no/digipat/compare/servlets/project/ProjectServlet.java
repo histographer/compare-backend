@@ -90,7 +90,6 @@ public class ProjectServlet extends HttpServlet {
         MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
         String databaseName = (String) context.getAttribute("MONGO_DATABASE");
         MongoProjectDAO projectDao = new MongoProjectDAO(client, databaseName);
-        response.setContentType("application/json");
         String projectIdString = request.getParameter("projectId");
         if (projectIdString == null) {
             // The projectId parameter is missing, so we return all projects

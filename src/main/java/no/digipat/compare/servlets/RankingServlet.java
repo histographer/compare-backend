@@ -115,7 +115,6 @@ public class RankingServlet extends HttpServlet {
         } catch (JSONException | NoSuchElementException e) {
             throw new IOException("Analysis backend returned an invalid response", e);
         }
-        response.setContentType("application/json");
         response.getWriter().print(score);
     }
 

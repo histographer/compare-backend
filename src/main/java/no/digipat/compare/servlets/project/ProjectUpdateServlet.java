@@ -63,7 +63,6 @@ public class ProjectUpdateServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             } else {
                 Project project = projectDao.updateProjectActive(projectId, active);
-                response.setContentType("application/json");
                 response.getWriter().print(getProjectResponse(project));
             }
         } catch(JSONException e) {
