@@ -35,8 +35,8 @@ public class IntegrationTests {
     public static void setUpClass() throws UnsupportedEncodingException, MalformedURLException {
         String databaseHost = System.getenv("COMPARE_TEST_MONGODB_HOST");
         String databasePort = System.getenv("COMPARE_TEST_MONGODB_PORT");
-        String databaseUsername = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_USERNAME"), "UTF-8");
-        String databasePassword = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_PASSWORD"), "UTF-8");
+        String databaseUsername = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_ROOT_USERNAME"), "UTF-8");
+        String databasePassword = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_ROOT_PASSWORD"), "UTF-8");
         String databaseName = System.getenv("COMPARE_TEST_MONGODB_DATABASE");
         IntegrationTests.databaseName = databaseName;
         MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://" + databaseUsername + ":" + databasePassword
