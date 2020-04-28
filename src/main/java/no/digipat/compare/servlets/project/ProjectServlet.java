@@ -75,7 +75,7 @@ public class ProjectServlet extends HttpServlet {
 
     /**
      * Gets a project or all projects.
-     * Get a single project by using the query /project?projectId={@code id}.
+     * Get a single project by using the query {@code /project?projectId=id}.
      *
      * @param request the request
      * @param response the response

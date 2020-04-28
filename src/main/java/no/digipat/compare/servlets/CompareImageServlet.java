@@ -22,7 +22,8 @@ import java.io.IOException;
 public class CompareImageServlet extends HttpServlet {
     
     /**
-     * The json request looks like this
+     * The JSON request looks like this:
+     * <pre>
      * {
      *   projectId: 3,
      *   "chosen": {
@@ -34,6 +35,8 @@ public class CompareImageServlet extends HttpServlet {
      *     "comment": "testcomment2",
      *   }
      * }
+     * </pre>
+     * 
      * @param request
      * @param response
      */
