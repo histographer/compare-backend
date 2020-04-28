@@ -125,7 +125,7 @@ public class NextImagePairTest {
                 .setMimeType("image/jpeg").setProjectId(20l)
                 .setImageServerURLs(new String[] {"https://example.com/Ææα"});
         imageDao.createImage(image2);
-        comparisonDao.createImageComparison(new ImageComparison().setProjectId(20L).setSessionID("some_user")
+        comparisonDao.createImageComparison(new ImageComparison().setProjectId(20L).setSessionId("some_user")
                 .setWinner(new ImageChoice(1337L, "good")).setLoser(new ImageChoice(42L, "really bad")));
         WebConversation conversation = new WebConversation();
         login(conversation);

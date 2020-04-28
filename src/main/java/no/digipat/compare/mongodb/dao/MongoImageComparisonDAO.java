@@ -20,21 +20,22 @@ public class MongoImageComparisonDAO {
     private String databaseName;
     private MongoClient client;
 
-    public MongoImageComparisonDAO(MongoClient mongo, String DB) {
-        this.collection = mongo.getDatabase(DB).getCollection("ImageComparison");
-        this.databaseName = DB;
+    public MongoImageComparisonDAO(MongoClient mongo, String databaseName) {
+        this.collection = mongo.getDatabase(databaseName).getCollection("ImageComparison");
+        this.databaseName = databaseName;
         this.client = mongo;
     }
 
     /**
-     * Inserts a new scoring to the database
+     * Inserts a new image comparison into the database.
+     * 
      * @param imageComparison
+     * 
      * @return
      */
-    public ImageComparison createImageComparison(ImageComparison imageComparison) {
+    public void createImageComparison(ImageComparison imageComparison) {
         Document document = imageComparisonToDBDocument(imageComparison);
         this.collection.insertOne(document);
-        return imageComparison;
     }
     
     /**
@@ -94,7 +95,7 @@ public class MongoImageComparisonDAO {
         return new Document().
                 append("winner", imageChoiceToDBDocument(imageComparison.getWinner()))
                 .append("loser", imageChoiceToDBDocument(imageComparison.getLoser()))
-                .append("sessionId", imageComparison.getSessionID())
+                .append("sessionId", imageComparison.getSessionId())
                 .append("projectId", imageComparison.getProjectId());
     }
     
@@ -110,7 +111,7 @@ public class MongoImageComparisonDAO {
             long loserId = (Long) loserDoc.get("id");
             String loserComment = loserDoc.getString("comment");
             ImageChoice loser = new ImageChoice(loserId, loserComment);
-            ImageComparison imageComparison = new ImageComparison().setSessionID(sessionId)
+            ImageComparison imageComparison = new ImageComparison().setSessionId(sessionId)
                     .setWinner(winner).setLoser(loser).setProjectId(projectId);
             return imageComparison;
         } catch (NullPointerException | ClassCastException e) {

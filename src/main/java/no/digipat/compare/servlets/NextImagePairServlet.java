@@ -118,7 +118,8 @@ public class NextImagePairServlet extends HttpServlet {
             } else {
                 JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
                 JSONArray pair = analysisJson.getJSONArray("pair");
-                long id1 = pair.getLong(0), id2 = pair.getLong(1);
+                long id1 = pair.getLong(0);
+                long id2 = pair.getLong(1);
                 Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
                 Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
                 JSONArray responseForUser = createResponseJson(image1, image2);
@@ -131,7 +132,7 @@ public class NextImagePairServlet extends HttpServlet {
     
     private static JSONArray createResponseJson(Image image1, Image image2) {
         JSONArray returnJson = new JSONArray();
-        for (Image image : new Image[] { image1, image2 }) {
+        for (Image image : new Image[] {image1, image2}) {
             JSONObject imageJson = new JSONObject();
             imageJson.put("projectId", image.getProjectId());
             imageJson.put("id", image.getImageId());

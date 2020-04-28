@@ -60,7 +60,9 @@ public class SessionServlet extends HttpServlet {
     }
     
     /**
-     * Invalidates a session
+     * Invalidates a session if the query parameter {@code logout}
+     * is {@code true}.
+     * 
      * @param request the request
      * @param response the response
      *

@@ -30,13 +30,13 @@ public class AuthorizationFilter implements Filter {
         ServletContext context = config.getServletContext();
         HttpSession session = request.getSession(false);
 
-        if(session == null) {
+        if (session == null) {
             ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not initiated session, please add session.");
         } else {
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
             MongoSessionDAO sessionDAO = new MongoSessionDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
             String sessionID = session.getId();
-            if(!sessionDAO.sessionExists(sessionID)) {
+            if (!sessionDAO.sessionExists(sessionID)) {
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session is not initiated correctly, please initiate again.");
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);

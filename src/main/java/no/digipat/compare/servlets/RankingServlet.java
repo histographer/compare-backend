@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * A servlet for retrieving a ranking and score for all the images
+ * A servlet for retrieving a ranking and score for all the images.
  *
  *
  * @author Kent Are Torvik
@@ -79,7 +79,7 @@ public class RankingServlet extends HttpServlet {
         long projectId;
         try {
             projectId = Long.parseLong(request.getParameter("projectId"));
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().print("Project ID is invalid");
             return;

@@ -21,7 +21,11 @@ import java.util.List;
  * @author Jon Wallem Anundsen
  *
  */
-public class Analysis {
+public final class Analysis {
+    
+    private Analysis() {
+        throw new UnsupportedOperationException("This is a utility class.");
+    }
     
     /**
      * Creates a JSON object of the following form:

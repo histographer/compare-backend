@@ -41,10 +41,10 @@ public class AnalysisBackendContextListener implements ServletContextListener {
         String port = System.getenv("COMPARE_ANALYSIS_PORT");
         try {
             URL url = null;
-            if(port != null) {
+            if (port != null) {
                 url = new URL(protocol, host, Integer.parseInt(port), "");
             } else {
-                url = new URL(protocol+"://"+host);
+                url = new URL(protocol + "://" + host);
             }
             servletContextEvent.getServletContext().setAttribute("ANALYSIS_BASE_URL", url);
         } catch (MalformedURLException | NumberFormatException | NullPointerException e) {

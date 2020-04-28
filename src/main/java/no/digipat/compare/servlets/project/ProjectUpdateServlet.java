@@ -65,7 +65,7 @@ public class ProjectUpdateServlet extends HttpServlet {
                 Project project = projectDao.updateProjectActive(projectId, active);
                 response.getWriter().print(getProjectResponse(project));
             }
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }

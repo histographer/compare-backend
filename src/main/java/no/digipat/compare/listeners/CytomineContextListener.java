@@ -7,8 +7,6 @@ import javax.servlet.annotation.WebListener;
 
 import be.cytomine.client.Cytomine;
 import be.cytomine.client.CytomineConnection;
-import no.digipat.compare.models.image.Image;
-import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 /**
  * A context listener that adds a Cytomine instance to the context.

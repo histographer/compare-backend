@@ -29,7 +29,6 @@ public class MongoProjectDAO {
      * @param client the client used to connect to the database
      * @param database the name of the database
      */
-
     public MongoProjectDAO(MongoClient client, String database) {
         this.collection = client.getDatabase(database).getCollection("projects");
     }
@@ -45,8 +44,7 @@ public class MongoProjectDAO {
     public void createProject(Project project) {
         try {
             this.collection.insertOne(projectToDocument(project));
-        }
-        catch (MongoWriteException e) {
+        } catch (MongoWriteException e) {
             if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
                 throw new IllegalStateException("Duplicate ID", e);
             } else {
@@ -57,7 +55,7 @@ public class MongoProjectDAO {
 
     public Project getProject(long id) {
         Document project = this.collection.find(eq("_id", id)).first();
-        if(project == null) {
+        if (project == null) {
             throw new IllegalArgumentException("There is no project with this id that exists in the database");
         }
         return documentToProject(project);
@@ -69,7 +67,7 @@ public class MongoProjectDAO {
         UpdateResult updateResult = this.collection.updateOne(filter, updateOperation);
         Document projectFromDb = this.collection.find(filter).first();
 
-        if(projectFromDb == null) {
+        if (projectFromDb == null) {
             throw new IllegalArgumentException("There is no project with this id that exists in the database");
         }
         Project project = documentToProject(projectFromDb);
@@ -79,9 +77,9 @@ public class MongoProjectDAO {
 
     public List<Project> getAllProjects() {
         final List<Project> projects = new ArrayList<>();
-        for(Document document : this.collection.find()){
+        for (Document document : this.collection.find()) {
            projects.add(documentToProject(document));
-        };
+        }
         return projects;
     }
 
@@ -89,7 +87,7 @@ public class MongoProjectDAO {
         try {
             getProject(id);
             return true;
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return false;
         }
 
@@ -101,7 +99,8 @@ public class MongoProjectDAO {
         String name = project.getName();
         Boolean active = project.getActive();
         if (id == null || name == null || active == null) {
-            throw new NullPointerException("One or more value is null. id="+id+". name="+name+". active="+active);
+            throw new NullPointerException("One or more value is null. id="
+                    + id + ". name=" + name + ". active=" + active);
         }
         document.put("_id", id);
         document.put("name", name);

@@ -38,13 +38,13 @@ public class MongoImageComparisonDAOTest {
         assertEquals(0, dao.getAllImageComparisons(1).size());
         // Test with some data
         final long projectId1 = 1, projectId2 = 2;
-        ImageComparison comparison1 = new ImageComparison().setSessionID("user1")
+        ImageComparison comparison1 = new ImageComparison().setSessionId("user1")
                 .setWinner(new ImageChoice(1, "comment1")).setLoser(new ImageChoice(2, "comment2"))
                 .setProjectId(projectId1);
-        ImageComparison comparison2 = new ImageComparison().setSessionID("user2")
+        ImageComparison comparison2 = new ImageComparison().setSessionId("user2")
                 .setWinner(new ImageChoice(3, "comment3")).setLoser(new ImageChoice(1, "comment4"))
                 .setProjectId(projectId1);
-        ImageComparison comparison3 = new ImageComparison().setSessionID("some guy")
+        ImageComparison comparison3 = new ImageComparison().setSessionId("some guy")
                 .setWinner(new ImageChoice(1, "")).setLoser(new ImageChoice(2, ""))
                 .setProjectId(projectId2);
         dao.createImageComparison(comparison1);
@@ -61,14 +61,14 @@ public class MongoImageComparisonDAOTest {
         });
         ImageComparison retrievedComparison1 = allComparisons.get(0);
         ImageComparison retrievedComparison2 = allComparisons.get(1);
-        assertEquals(comparison1.getSessionID(), retrievedComparison1.getSessionID());
+        assertEquals(comparison1.getSessionId(), retrievedComparison1.getSessionId());
         assertEquals(comparison1.getWinner().getImageId(), retrievedComparison1.getWinner().getImageId());
         assertEquals(comparison1.getWinner().getComment(), retrievedComparison1.getWinner().getComment());
         assertEquals(comparison1.getLoser().getImageId(), retrievedComparison1.getLoser().getImageId());
         assertEquals(comparison1.getLoser().getComment(), retrievedComparison1.getLoser().getComment());
         assertEquals(comparison1.getProjectId(), retrievedComparison1.getProjectId());
         
-        assertEquals(comparison2.getSessionID(), retrievedComparison2.getSessionID());
+        assertEquals(comparison2.getSessionId(), retrievedComparison2.getSessionId());
         assertEquals(comparison2.getWinner().getImageId(), retrievedComparison2.getWinner().getImageId());
         assertEquals(comparison2.getWinner().getComment(), retrievedComparison2.getWinner().getComment());
         assertEquals(comparison2.getLoser().getImageId(), retrievedComparison2.getLoser().getImageId());
@@ -87,11 +87,11 @@ public class MongoImageComparisonDAOTest {
         imageDao.createImage(new Image().setImageId(42L).setHeight(100L).setProjectId(projectId1));
         imageDao.createImage(new Image().setImageId(69L).setProjectId(projectId2));
         imageDao.createImage(new Image().setImageId(420L).setProjectId(projectId2));
-        comparisonDao.createImageComparison(new ImageComparison().setSessionID("blah-blah")
+        comparisonDao.createImageComparison(new ImageComparison().setSessionId("blah-blah")
                 .setWinner(new ImageChoice(1L, "")).setLoser(new ImageChoice(2L, "")).setProjectId(projectId1));
-        comparisonDao.createImageComparison(new ImageComparison().setSessionID("blah-2").setWinner(new ImageChoice(2L, ""))
+        comparisonDao.createImageComparison(new ImageComparison().setSessionId("blah-2").setWinner(new ImageChoice(2L, ""))
                 .setLoser(new ImageChoice(42L, "")).setProjectId(projectId1));
-        comparisonDao.createImageComparison(new ImageComparison().setSessionID("blerg")
+        comparisonDao.createImageComparison(new ImageComparison().setSessionId("blerg")
                 .setWinner(new ImageChoice(69L, "")).setLoser(new ImageChoice(420L, "")).setProjectId(projectId2));
         List<Map.Entry<Long, Long>> comparisonNumbers = comparisonDao.getNumberOfComparisonsForEachImage(projectId1);
         Collections.sort(comparisonNumbers, (entry1, entry2) -> (int) (entry1.getKey() - entry2.getKey()));

@@ -5,8 +5,6 @@ public class Session {
     private Long projectId;
     private String hospital;
     private String monitorType;
-    
-    public Session(){}
 
     public String getId() {
         return id;

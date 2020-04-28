@@ -22,7 +22,7 @@ import java.io.IOException;
 public class CompareImageServlet extends HttpServlet {
     
     /**
-     * The JSON request looks like this:
+     * Submits a comparison of two images. The request body looks like this:
      * <pre>
      * {
      *   projectId: 3,
@@ -59,7 +59,7 @@ public class CompareImageServlet extends HttpServlet {
         ImageChoice winner = jsonToImageChoice(json.getJSONObject("chosen"));
         ImageChoice loser = jsonToImageChoice(json.getJSONObject("other"));
         long projectId = json.getLong("projectId");
-        return new ImageComparison().setSessionID(sessionID).setWinner(winner).setLoser(loser).setProjectId(projectId);
+        return new ImageComparison().setSessionId(sessionID).setWinner(winner).setLoser(loser).setProjectId(projectId);
     }
     
     private static ImageChoice jsonToImageChoice(JSONObject json) throws JSONException {

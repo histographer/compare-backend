@@ -24,11 +24,11 @@ public class ImageComparison {
         return this;
     }
 
-    public String getSessionID() {
+    public String getSessionId() {
         return sessionId;
     }
     
-    public ImageComparison setSessionID(String sessionId) {
+    public ImageComparison setSessionId(String sessionId) {
         this.sessionId = sessionId;
         return this;
     }

@@ -11,14 +11,14 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 /**
- * Handles mongodb singleton connection
+ * Handles mongodb singleton connection.
  */
 @WebListener
 public class MongoDBContextListener implements ServletContextListener {
 
 
     /**
-     * Initialize a mongoclient and make it available for servlets to use
+     * Initializes a mongoclient and make it available for servlets to use.
      * @param servletContextEvent
      */
     @Override
@@ -28,25 +28,28 @@ public class MongoDBContextListener implements ServletContextListener {
             String host = System.getenv("COMPARE_MONGODB_HOST");
             String portString = System.getenv("COMPARE_MONGODB_PORT");
             int port = Integer.parseInt(portString);
-            // Username and password need to be percent encoded in case they contain special characters such as '@' or ':'
+            // Username and password need to be percent encoded in case
+            // they contain special characters such as '@' or ':'
             String username = URLEncoder.encode(System.getenv("COMPARE_MONGODB_USERNAME"), "utf8");
             String password = URLEncoder.encode(System.getenv("COMPARE_MONGODB_PASSWORD"), "utf8");
             String database = System.getenv("COMPARE_MONGODB_DATABASE");
-            MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://"+username+":"+password+"@"+host+":"+port);
+            MongoClientURI  mongoUri = new MongoClientURI("mongodb://" + username + ":"
+                    + password + "@" + host + ":" + port);
 
 
-            MongoClient client = new MongoClient(MONGO_URI);
-            context.log("Mongoclient connected successfully at "+host+":"+port);
+            MongoClient client = new MongoClient(mongoUri);
+            context.log("Mongoclient connected successfully at " + host + ":" + port);
             context.setAttribute("MONGO_DATABASE", database);
             context.setAttribute("MONGO_CLIENT", client);
-        } catch(Exception error) {
+        } catch (Exception error) {
             throw new RuntimeException("Mongoclient initialization failed", error);
         }
     }
 
 
     /**
-     * When the context is destroyed, terminate the mongodb connection
+     * When the context is destroyed, terminate the mongodb connection.
+     * 
      * @param servletContextEvent
      */
     @Override
