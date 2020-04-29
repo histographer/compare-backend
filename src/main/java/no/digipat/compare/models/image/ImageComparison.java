@@ -1,5 +1,11 @@
 package no.digipat.compare.models.image;
 
+/**
+ * A representation of a comparison of two images.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 public class ImageComparison {
     private ImageChoice winner;
     private ImageChoice loser;

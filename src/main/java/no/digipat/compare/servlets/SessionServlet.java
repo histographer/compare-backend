@@ -19,6 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * A servlet for dealing with sessions.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 @WebServlet("/session")
 public class SessionServlet extends HttpServlet {
     

@@ -15,23 +15,34 @@ import org.bson.Document;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.or;
 
+/**
+ * A Data Access Object (DAO) for image comparisons.
+ * 
+ * @author Kent Are Torvik
+ * @author Jon Wallem Anundsen
+ *
+ */
 public class MongoImageComparisonDAO {
     private MongoCollection<Document> collection;
     private String databaseName;
     private MongoClient client;
 
-    public MongoImageComparisonDAO(MongoClient mongo, String databaseName) {
-        this.collection = mongo.getDatabase(databaseName).getCollection("ImageComparison");
+    /**
+     * Creates a DAO.
+     * 
+     * @param client the client used to connect to the database
+     * @param databaseName the name of the database
+     */
+    public MongoImageComparisonDAO(MongoClient client, String databaseName) {
+        this.collection = client.getDatabase(databaseName).getCollection("ImageComparison");
         this.databaseName = databaseName;
-        this.client = mongo;
+        this.client = client;
     }
 
     /**
      * Inserts a new image comparison into the database.
      * 
      * @param imageComparison
-     * 
-     * @return
      */
     public void createImageComparison(ImageComparison imageComparison) {
         Document document = imageComparisonToDBDocument(imageComparison);

@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * A filter that blocks a request if the user does not have a valid session.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 @WebFilter(urlPatterns = {
         "/scoring",
         "/imagePair"

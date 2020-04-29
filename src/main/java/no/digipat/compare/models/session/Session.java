@@ -1,5 +1,11 @@
 package no.digipat.compare.models.session;
 
+/**
+ * A representation of a user session.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 public class Session {
     private String id;
     private Long projectId;

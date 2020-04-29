@@ -16,6 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * A servlet for updating a project.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 @WebServlet("/project/update")
 public class ProjectUpdateServlet extends HttpServlet {
 

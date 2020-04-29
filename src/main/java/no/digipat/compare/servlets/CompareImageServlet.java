@@ -18,6 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * A servlet for comparing two images.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 @WebServlet("/scoring")
 public class CompareImageServlet extends HttpServlet {
     

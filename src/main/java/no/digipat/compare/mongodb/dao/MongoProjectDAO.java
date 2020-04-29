@@ -1,4 +1,5 @@
 package no.digipat.compare.mongodb.dao;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
@@ -34,14 +35,15 @@ public class MongoProjectDAO {
     }
 
     /**
-     * inserts a new project to the database.
+     * Inserts a new project into the database.
      *
-     * @param project the project that has to be inserted
+     * @param project the project
      *
      * @throws IllegalStateException if a project with the given ID already exists
      * @throws NullPointerException if {@code project} or {@code project.getId()} is {@code null}
      */
-    public void createProject(Project project) {
+    public void createProject(Project project)
+            throws IllegalStateException, NullPointerException {
         try {
             this.collection.insertOne(projectToDocument(project));
         } catch (MongoWriteException e) {
@@ -53,7 +55,16 @@ public class MongoProjectDAO {
         }
     }
 
-    public Project getProject(long id) {
+    /**
+     * Gets a project from the database.
+     * 
+     * @param id the ID of the project
+     * 
+     * @return the project
+     * 
+     * @throws IllegalArgumentException if the project does not exist
+     */
+    public Project getProject(long id) throws IllegalArgumentException {
         Document project = this.collection.find(eq("_id", id)).first();
         if (project == null) {
             throw new IllegalArgumentException(
@@ -63,7 +74,18 @@ public class MongoProjectDAO {
         return documentToProject(project);
     }
 
-    public Project updateProjectActive(long id, boolean active) {
+    /**
+     * Updates a project's "active" status.
+     * 
+     * @param id the ID of the project
+     * @param active whether the project is active
+     * 
+     * @return the project
+     * 
+     * @throws IllegalArgumentException if the project does not exist
+     */
+    public Project updateProjectActive(long id, boolean active)
+            throws IllegalArgumentException {
         Bson filter = eq("_id", id);
         Bson updateOperation = set("active", active);
         UpdateResult updateResult = this.collection.updateOne(filter, updateOperation);
@@ -79,6 +101,11 @@ public class MongoProjectDAO {
     }
 
 
+    /**
+     * Gets all the projects from the database.
+     * 
+     * @return a list of all the projects
+     */
     public List<Project> getAllProjects() {
         final List<Project> projects = new ArrayList<>();
         for (Document document : this.collection.find()) {
@@ -87,6 +114,13 @@ public class MongoProjectDAO {
         return projects;
     }
 
+    /**
+     * Tests whether a project exists in the database.
+     * 
+     * @param id the ID of the project
+     * 
+     * @return whether the project exists
+     */
     public boolean projectExists(long id) {
         try {
             getProject(id);

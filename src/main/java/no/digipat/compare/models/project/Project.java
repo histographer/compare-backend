@@ -1,5 +1,12 @@
 package no.digipat.compare.models.project;
 
+/**
+ * A representation of a Cytomine project whose images can be
+ * compared by users.
+ * 
+ * @author Kent Are Torvik
+ *
+ */
 public class Project {
     private Long id;
     private String name;

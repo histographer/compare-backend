@@ -22,6 +22,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * A servlet for creating and retrieving projects.
+ * 
+ * @author Kent Are Torvik
+ * @author Jon Wallem Anundsen
+ *
+ */
 @WebServlet("/project")
 public class ProjectServlet extends HttpServlet {
 
