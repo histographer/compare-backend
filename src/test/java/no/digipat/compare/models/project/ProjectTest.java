@@ -1,5 +1,5 @@
 package no.digipat.compare.models.project;
-import no.digipat.compare.models.project.Project;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -8,15 +8,15 @@ public class ProjectTest {
 
     @Test
     public void testSetFields() {
-        Long ID = 20l;
-        String NAME = "Project Name";
-        Boolean ACTIVE = true;
+        Long id = 20L;
+        String name = "Project Name";
+        Boolean active = true;
 
-        Project project = new Project().setId(ID).setName(NAME).setActive(ACTIVE);
+        Project project = new Project().setId(id).setName(name).setActive(active);
 
-        assertEquals(project.getId(), ID);
-        assertEquals(project.getName(), NAME);
-        assertEquals(project.getActive(), ACTIVE);
-        assertNotEquals(project.getId(), NAME);
+        assertEquals(project.getId(), id);
+        assertEquals(project.getName(), name);
+        assertEquals(project.getActive(), active);
+        assertNotEquals(project.getId(), name);
     }
 }

@@ -56,7 +56,9 @@ public class MongoProjectDAO {
     public Project getProject(long id) {
         Document project = this.collection.find(eq("_id", id)).first();
         if (project == null) {
-            throw new IllegalArgumentException("There is no project with this id that exists in the database");
+            throw new IllegalArgumentException(
+                    "There is no project with this id that exists in the database"
+            );
         }
         return documentToProject(project);
     }
@@ -68,7 +70,9 @@ public class MongoProjectDAO {
         Document projectFromDb = this.collection.find(filter).first();
 
         if (projectFromDb == null) {
-            throw new IllegalArgumentException("There is no project with this id that exists in the database");
+            throw new IllegalArgumentException(
+                    "There is no project with this id that exists in the database"
+            );
         }
         Project project = documentToProject(projectFromDb);
         return project;

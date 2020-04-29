@@ -100,16 +100,21 @@ public class RankingServlet extends HttpServlet {
         try {
             HttpResponse analysisResponse = Analysis.getAnalysisPostResponse(baseUrl,
                     "ranking/ranking/", jsonForAnalysisBackend);
-            JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
-            List<Map.Entry<Long, Long>> numberOfComparisonsForEachImage = comparisonDao.getNumberOfComparisonsForEachImage(projectId);
+            JSONObject analysisJson = new JSONObject(
+                    new JSONTokener(analysisResponse.getEntity().getContent())
+            );
+            List<Map.Entry<Long, Long>> numberOfComparisonsForEachImage = comparisonDao
+                    .getNumberOfComparisonsForEachImage(projectId);
             score = analysisJson.getJSONArray("scores");
             for (int i = 0; i < score.length(); i++) {
                 JSONObject tempObject = score.getJSONObject(i);
                 long id = tempObject.getLong("id");
                 long numberOfComparisons = numberOfComparisonsForEachImage
-                        .stream().filter(rank -> rank.getKey().equals(id)).findFirst().get().getValue();
+                        .stream().filter(rank -> rank.getKey().equals(id))
+                        .findFirst().get().getValue();
                 tempObject.put("rankings", numberOfComparisons);
-                Image image = images.stream().filter(img -> img.getImageId().equals(id)).findFirst().get();
+                Image image = images.stream().filter(img -> img.getImageId().equals(id))
+                        .findFirst().get();
                 tempObject.put("fileName", image.getFileName());
             }
         } catch (JSONException | NoSuchElementException e) {

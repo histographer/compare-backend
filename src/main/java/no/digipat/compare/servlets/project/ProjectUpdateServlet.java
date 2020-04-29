@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "no.digipat.compare.servlets.project.ProjectUpdateServlet", urlPatterns = {"/project/update"})
+@WebServlet("/project/update")
 public class ProjectUpdateServlet extends HttpServlet {
 
 

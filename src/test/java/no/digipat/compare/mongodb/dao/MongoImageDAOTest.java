@@ -14,7 +14,6 @@ import com.mongodb.MongoClient;
 
 import no.digipat.compare.models.image.Image;
 import no.digipat.compare.mongodb.DatabaseUnitTests;
-import no.digipat.compare.mongodb.dao.MongoImageDAO;
 
 public class MongoImageDAOTest {
 
@@ -29,17 +28,17 @@ public class MongoImageDAOTest {
         dao = new MongoImageDAO(client, databaseName);
     }
     
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateNullImage() {
         dao.createImage(null);
     }
     
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateImageWithNullImageId() {
         dao.createImage(new Image().setProjectId(123L));
     }
     
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateImageWithNullProjectId() {
         dao.createImage(new Image().setImageId(42L));
     }
@@ -52,7 +51,7 @@ public class MongoImageDAOTest {
         dao.createImage(new Image().setImageId(1L).setProjectId(456L));
     }
     
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testCreateImageWithDuplicateCompositeId() {
         dao.createImage(new Image().setImageId(1L).setProjectId(123L).setDepth(2L));
         dao.createImage(new Image().setImageId(1L).setProjectId(123L).setWidth(100L));
@@ -63,14 +62,18 @@ public class MongoImageDAOTest {
         // Test with no data
         assertEquals(0, dao.getAllImages(1L).size());
         // Test with data
-        final long projectId1 = 1, projectId2 = 2;
-        Image image1 = new Image().setImageId(1L).setProjectId(projectId1).setDepth(12L).setHeight(150L)
-                    .setWidth(200L).setFileName("image 1.jpeg"),
-                image2 = new Image().setImageId(69L).setProjectId(projectId1).setMagnification(4L)
-                    .setResolution(100.1).setMimeType("image/png"),
-                image3 = new Image().setImageId(1337L).setProjectId(projectId1)
-                    .setImageServerURLs(new String[] {"http://www.example.com"}),
-                image4 = new Image().setImageId(10L).setProjectId(projectId2); // Image 4 belongs to a different project
+        final long projectId1 = 1;
+        final long projectId2 = 2;
+        Image image1 = new Image().setImageId(1L).setProjectId(projectId1)
+                .setDepth(12L).setHeight(150L).setWidth(200L)
+                .setFileName("image 1.jpeg");
+        Image image2 = new Image().setImageId(69L).setProjectId(projectId1)
+                .setMagnification(4L).setResolution(100.1)
+                .setMimeType("image/png");
+        Image image3 = new Image().setImageId(1337L).setProjectId(projectId1)
+                .setImageServerURLs(new String[] {"http://www.example.com"});
+        // Image 4 belongs to a different project:
+        Image image4 = new Image().setImageId(10L).setProjectId(projectId2);
         dao.createImage(image1);
         dao.createImage(image2);
         dao.createImage(image3);

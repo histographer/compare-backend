@@ -4,7 +4,6 @@ import com.mongodb.MongoClient;
 
 import no.digipat.compare.models.session.Session;
 import no.digipat.compare.mongodb.DatabaseUnitTests;
-import no.digipat.compare.mongodb.dao.MongoSessionDAO;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -26,47 +25,49 @@ public class MongoSessionDAOTest {
 
 
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateNullSession() {
         dao.createSession(null);
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateSessionWithNullId() {
         dao.createSession(new Session());
     }
 
 
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testCreateSessionWithDuplicateId() {
-        String ID = "TESTID";
-        String HOSPITAL1 = "TESTHOSPITAL";
-        String MONITOR_TYPE1 = "TESTMONITOR";
-        String HOSPITAL2 = "TEPITAL";
-        String MONITOR_TYPE2 = "TEITOR";
+        String id = "TESTID";
+        String hospital1 = "TESTHOSPITAL";
+        String monitorType1 = "TESTMONITOR";
+        String hospital2 = "TEPITAL";
+        String monitorType2 = "TEITOR";
 
-        Session session1 = new Session().setId(ID).setHospital(HOSPITAL1).setMonitorType(MONITOR_TYPE1);
-        Session session2 = new Session().setId(ID).setHospital(HOSPITAL2).setMonitorType(MONITOR_TYPE2);
+        Session session1 = new Session().setId(id).setHospital(hospital1)
+                .setMonitorType(monitorType1);
+        Session session2 = new Session().setId(id).setHospital(hospital2)
+                .setMonitorType(monitorType2);
         dao.createSession(session1);
         dao.createSession(session2);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetSessionWithNoInserts() {
         dao.getSession("NOID");
     }
 
     @Test
     public void testGetSession() {
-        String ID = "getSession";
-        String HOSPITAL1 = "hospitalz";
-        String MONITOR_TYPE1 = "hospitalz1";
-        long PROJECT_ID = 123;
-        Session session1 = new Session().setId(ID).setHospital(HOSPITAL1).setMonitorType(MONITOR_TYPE1)
-                .setProjectId(PROJECT_ID);
+        String id = "getSession";
+        String hospital1 = "hospitalz";
+        String monitorType1 = "hospitalz1";
+        long projectId = 123;
+        Session session1 = new Session().setId(id).setHospital(hospital1)
+                .setMonitorType(monitorType1).setProjectId(projectId);
         dao.createSession(session1);
 
-        Session fetchedSession = dao.getSession(ID);
+        Session fetchedSession = dao.getSession(id);
 
         assertEquals(session1.getId(), fetchedSession.getId());
         assertEquals(session1.getHospital(), fetchedSession.getHospital());
@@ -76,10 +77,11 @@ public class MongoSessionDAOTest {
     
     @Test
     public void testSessionExists() {
-        String ID = "getSession";
-        String HOSPITAL1 = "hospitalz";
-        String MONITOR_TYPE1 = "hospitalz1";
-        Session session1 = new Session().setId(ID).setHospital(HOSPITAL1).setMonitorType(MONITOR_TYPE1);
+        String id = "getSession";
+        String hospital1 = "hospitalz";
+        String monitorType1 = "hospitalz1";
+        Session session1 = new Session().setId(id).setHospital(hospital1)
+                .setMonitorType(monitorType1);
         dao.createSession(session1);
 
         boolean exists = dao.sessionExists(session1.getId());

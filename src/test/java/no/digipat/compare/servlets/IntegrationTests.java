@@ -35,13 +35,18 @@ public class IntegrationTests {
     public static void setUpClass() throws UnsupportedEncodingException, MalformedURLException {
         String databaseHost = System.getenv("COMPARE_TEST_MONGODB_HOST");
         String databasePort = System.getenv("COMPARE_TEST_MONGODB_PORT");
-        String databaseUsername = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_ROOT_USERNAME"), "UTF-8");
-        String databasePassword = URLEncoder.encode(System.getenv("COMPARE_TEST_MONGODB_ROOT_PASSWORD"), "UTF-8");
-        String databaseName = System.getenv("COMPARE_TEST_MONGODB_DATABASE");
-        IntegrationTests.databaseName = databaseName;
-        MongoClientURI  MONGO_URI = new MongoClientURI("mongodb://" + databaseUsername + ":" + databasePassword
-                + "@" + databaseHost + ":" + databasePort);
-        client = new MongoClient(MONGO_URI);
+        String databaseUsername = URLEncoder.encode(
+                System.getenv("COMPARE_TEST_MONGODB_ROOT_USERNAME"),
+                "UTF-8"
+        );
+        String databasePassword = URLEncoder.encode(
+                System.getenv("COMPARE_TEST_MONGODB_ROOT_PASSWORD"),
+                "UTF-8"
+        );
+        databaseName = System.getenv("COMPARE_TEST_MONGODB_DATABASE");
+        MongoClientURI  mongoUri = new MongoClientURI("mongodb://" + databaseUsername
+                + ":" + databasePassword + "@" + databaseHost + ":" + databasePort);
+        client = new MongoClient(mongoUri);
         String tomcatProtocol = System.getenv("COMPARE_TEST_TOMCAT_PROTOCOL"); // http or https
         String tomcatHost = System.getenv("COMPARE_TEST_TOMCAT_HOST");
         String tomcatPort = System.getenv("COMPARE_TEST_TOMCAT_PORT");

@@ -23,8 +23,9 @@ public class AnalysisBackendContextListener implements ServletContextListener {
      * attribute will have been set to an instance of {@link URL} containing the
      * base URL of the analysis backend.
      * <p>
-     * The base URL is constructed from the environment variables {@code COMPARE_ANALYSIS_BACKEND_PROTOCOL},
-     * {@code COMPARE_ANALYSIS_BACKEND_HOST}, and (optionally) {@code COMPARE_ANALYSIS_BACKEND_PORT}.
+     * The base URL is constructed from the environment variables
+     * {@code COMPARE_ANALYSIS_BACKEND_PROTOCOL}, {@code COMPARE_ANALYSIS_BACKEND_HOST},
+     * and (optionally) {@code COMPARE_ANALYSIS_BACKEND_PORT}.
      * </p>
      * 
      * @param servletContextEvent the context event whose context will have its
@@ -48,7 +49,10 @@ public class AnalysisBackendContextListener implements ServletContextListener {
             }
             servletContextEvent.getServletContext().setAttribute("ANALYSIS_BASE_URL", url);
         } catch (MalformedURLException | NumberFormatException | NullPointerException e) {
-            throw new IllegalStateException("Environment variables have not been set correctly", e);
+            throw new IllegalStateException(
+                    "Environment variables have not been set correctly",
+                    e
+            );
         }
     }
     

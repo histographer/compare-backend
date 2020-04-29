@@ -17,8 +17,8 @@ public class MongoProjectDAOTest {
     private static MongoClient client;
     private static String databaseName;
     private static MongoProjectDAO dao;
-    private static Project SAMPLE_PROJECT1;
-    private static Project SAMPLE_PROJECT2;
+    private static Project sampleProject1;
+    private static Project sampleProject2;
 
 
     @BeforeClass
@@ -26,56 +26,56 @@ public class MongoProjectDAOTest {
         client = DatabaseUnitTests.getMongoClient();
         databaseName = DatabaseUnitTests.getDatabaseName();
         dao = new MongoProjectDAO(client, databaseName);
-        SAMPLE_PROJECT1 = new Project().setId(42l).setName("Forty two").setActive(false);
-        SAMPLE_PROJECT2 = new Project().setId(1337l).setName("Leet").setActive(false);
+        sampleProject1 = new Project().setId(42L).setName("Forty two").setActive(false);
+        sampleProject2 = new Project().setId(1337L).setName("Leet").setActive(false);
     }
 
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateNullProject() {
         dao.createProject(null);
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateProjectWithNullId() {
         dao.createProject(new Project());
     }
 
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testCreateProjectWithDuplicateId() {
-        Long ID = 69l;
-        String NAME = "TEST NAME";
-        String NAME2 = "TEST NAME 2";
+        Long id = 69L;
+        String name1 = "TEST NAME";
+        String name2 = "TEST NAME 2";
 
-        Project project1 = new Project().setId(ID).setName(NAME).setActive(false);
-        Project project2 = new Project().setId(ID).setName(NAME2).setActive(false);
+        Project project1 = new Project().setId(id).setName(name1).setActive(false);
+        Project project2 = new Project().setId(id).setName(name2).setActive(false);
         dao.createProject(project1);
         dao.createProject(project2);
     }
 
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetProjectWithNoInserts() {
-        dao.getProject(999l);
+        dao.getProject(999L);
     }
 
 
     @Test
-    public void testGetProject () {
-        dao.createProject(SAMPLE_PROJECT1);
+    public void testGetProject() {
+        dao.createProject(sampleProject1);
 
-        Project fetchedProject = dao.getProject(SAMPLE_PROJECT1.getId());
+        Project fetchedProject = dao.getProject(sampleProject1.getId());
 
-        assertEquals(SAMPLE_PROJECT1.getId(), fetchedProject.getId());
-        assertEquals(SAMPLE_PROJECT1.getName(), fetchedProject.getName());
+        assertEquals(sampleProject1.getId(), fetchedProject.getId());
+        assertEquals(sampleProject1.getName(), fetchedProject.getName());
     }
 
 
     @Test
-    public void testGetAllProjects () {
-        dao.createProject(SAMPLE_PROJECT1);
-        dao.createProject(SAMPLE_PROJECT2);
+    public void testGetAllProjects() {
+        dao.createProject(sampleProject1);
+        dao.createProject(sampleProject2);
 
         List<Project> fetchedProjects = dao.getAllProjects();
 
@@ -88,24 +88,24 @@ public class MongoProjectDAOTest {
             }
         });
 
-        Project PROJECT1 = fetchedProjects.get(0);
-        Project PROJECT2 = fetchedProjects.get(1);
-        assertEquals(SAMPLE_PROJECT1.getId(), PROJECT1.getId());
-        assertEquals(SAMPLE_PROJECT1.getName(), PROJECT1.getName());
-        assertEquals(SAMPLE_PROJECT2.getId(), PROJECT2.getId());
-        assertEquals(SAMPLE_PROJECT2.getName(), PROJECT2.getName());
+        Project project1 = fetchedProjects.get(0);
+        Project project2 = fetchedProjects.get(1);
+        assertEquals(sampleProject1.getId(), project1.getId());
+        assertEquals(sampleProject1.getName(), project1.getName());
+        assertEquals(sampleProject2.getId(), project2.getId());
+        assertEquals(sampleProject2.getName(), project2.getName());
     }
     
     @Test
     public void testUpdateProjectActive() {
-        dao.createProject(SAMPLE_PROJECT1);
-        dao.updateProjectActive(SAMPLE_PROJECT1.getId(), true);
+        dao.createProject(sampleProject1);
+        dao.updateProjectActive(sampleProject1.getId(), true);
         
-        assertTrue(dao.getProject(SAMPLE_PROJECT1.getId()).getActive());
+        assertTrue(dao.getProject(sampleProject1.getId()).getActive());
         
-        dao.updateProjectActive(SAMPLE_PROJECT1.getId(), false);
+        dao.updateProjectActive(sampleProject1.getId(), false);
         
-        assertFalse(dao.getProject(SAMPLE_PROJECT1.getId()).getActive());
+        assertFalse(dao.getProject(sampleProject1.getId()).getActive());
     }
     
     @After

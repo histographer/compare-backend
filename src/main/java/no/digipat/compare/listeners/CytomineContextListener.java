@@ -39,10 +39,13 @@ public class CytomineContextListener implements ServletContextListener {
         String cytominePublicKey = System.getenv("COMPARE_ADMIN_PUB_KEY");
         String cytominePrivateKey = System.getenv("COMPARE_ADMIN_PRIV_KEY");
         if (cytomineUrl == null || cytominePublicKey == null || cytominePrivateKey == null) {
-            throw new IllegalStateException("One or more required environment variables have not been set");
+            throw new IllegalStateException(
+                    "One or more required environment variables have not been set"
+            );
         }
         ServletContext context = servletContextEvent.getServletContext();
-        CytomineConnection connection = Cytomine.connection(cytomineUrl, cytominePublicKey, cytominePrivateKey);
+        CytomineConnection connection = Cytomine.connection(cytomineUrl,
+                cytominePublicKey, cytominePrivateKey);
         context.setAttribute("CYTOMINE_CONNECTION", connection);
     }
     

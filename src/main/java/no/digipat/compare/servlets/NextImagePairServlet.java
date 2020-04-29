@@ -83,7 +83,8 @@ public class NextImagePairServlet extends HttpServlet {
         try {
             projectId = Long.parseLong(request.getParameter("projectId"));
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Project ID is missing or invalid");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Project ID is missing or invalid");
             return;
         }
         String skippedParameter = request.getParameter("skipped");
@@ -116,12 +117,16 @@ public class NextImagePairServlet extends HttpServlet {
             if (analysisResponse.getStatusLine().getStatusCode() == 404) {
                 response.sendError(404, "All pairs have been skipped");
             } else {
-                JSONObject analysisJson = new JSONObject(new JSONTokener(analysisResponse.getEntity().getContent()));
+                JSONObject analysisJson = new JSONObject(
+                        new JSONTokener(analysisResponse.getEntity().getContent())
+                );
                 JSONArray pair = analysisJson.getJSONArray("pair");
                 long id1 = pair.getLong(0);
                 long id2 = pair.getLong(1);
-                Image image1 = images.stream().filter(image -> image.getImageId() == id1).findFirst().get();
-                Image image2 = images.stream().filter(image -> image.getImageId() == id2).findFirst().get();
+                Image image1 = images.stream().filter(image -> image.getImageId() == id1)
+                        .findFirst().get();
+                Image image2 = images.stream().filter(image -> image.getImageId() == id2)
+                        .findFirst().get();
                 JSONArray responseForUser = createResponseJson(image1, image2);
                 response.getWriter().print(responseForUser);
             }
@@ -148,7 +153,8 @@ public class NextImagePairServlet extends HttpServlet {
         return returnJson;
     }
     
-    private static JSONArray getSkippedPairs(String jsonArrayString) throws IllegalArgumentException {
+    private static JSONArray getSkippedPairs(String jsonArrayString)
+            throws IllegalArgumentException {
         // Validates and returns the JSON array of skipped pairs
         if (jsonArrayString == null) {
             return new JSONArray();

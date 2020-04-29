@@ -2,9 +2,7 @@ package no.digipat.compare.servlets;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -32,8 +30,6 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import com.meterware.httpunit.protocol.MessageBody;
-import com.meterware.httpunit.protocol.ParameterCollection;
 import com.mongodb.MongoClient;
 
 import junitparams.JUnitParamsRunner;
@@ -66,7 +62,7 @@ public class NextImagePairTest {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         projectDao = new MongoProjectDAO(client, databaseName);
-        Project project = new Project().setId(20l).setName("testname").setActive(true);
+        Project project = new Project().setId(20L).setName("testname").setActive(true);
         projectDao.createProject(project);
     }
     
@@ -76,24 +72,14 @@ public class NextImagePairTest {
     }
     
     private static void login(WebConversation conversation) throws Exception {
-
-        WebRequest loginRequest = new PostMethodWebRequest(new URL(baseUrl, "session").toString()) {
-            @Override
-            protected MessageBody getMessageBody() {
-                return new MessageBody("UTF8") {
-                    @Override
-                    public void writeTo(OutputStream outputStream, ParameterCollection parameters) throws IOException {
-                        PrintWriter writer = new PrintWriter(outputStream);
-                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\", \"projectId\": 20}");
-                        writer.flush();
-                    }
-                    @Override
-                    public String getContentType() {
-                        return "application/json";
-                    }
-                };
-            }
-        };
+        WebRequest loginRequest = new PostMethodWebRequest(
+                new URL(baseUrl, "session").toString(),
+                new ByteArrayInputStream(
+                        ("{\"monitorType\": \"normal\", \"hospital\": "
+                        + "\"St. Olavs\", \"projectId\": 20}").getBytes("UTF8")
+                ),
+                "application/json"
+        );
         conversation.sendRequest(loginRequest);
     }
     
@@ -116,17 +102,19 @@ public class NextImagePairTest {
     public void testWithValidServerState() throws Exception {
         Image image1 = new Image().setImageId(42L).setWidth(150L).setHeight(200L)
                 .setDepth(10L).setMagnification(4L).setResolution(50.67)
-                .setMimeType("image/png").setProjectId(20l)
+                .setMimeType("image/png").setProjectId(20L)
                 .setImageServerURLs(new String[] {"https://example.com"});
 
         imageDao.createImage(image1);
         Image image2 = new Image().setImageId(1337L).setWidth(100L).setHeight(50L)
                 .setDepth(5L).setMagnification(3L).setResolution(123.45)
-                .setMimeType("image/jpeg").setProjectId(20l)
+                .setMimeType("image/jpeg").setProjectId(20L)
                 .setImageServerURLs(new String[] {"https://example.com/Ææα"});
         imageDao.createImage(image2);
-        comparisonDao.createImageComparison(new ImageComparison().setProjectId(20L).setSessionId("some_user")
-                .setWinner(new ImageChoice(1337L, "good")).setLoser(new ImageChoice(42L, "really bad")));
+        comparisonDao.createImageComparison(new ImageComparison()
+                .setProjectId(20L).setSessionId("some_user")
+                .setWinner(new ImageChoice(1337L, "good"))
+                .setLoser(new ImageChoice(42L, "really bad")));
         WebConversation conversation = new WebConversation();
         login(conversation);
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair?projectId=20");
@@ -151,7 +139,10 @@ public class NextImagePairTest {
                         .setMagnification((long) (int) map.get("magnification"))
                         .setResolution((double) map.get("resolution"))
                         .setMimeType((String) map.get("mime"))
-                        .setImageServerURLs(((List<String>) map.get("imageServerURLs")).toArray(new String[] {}));
+                        .setImageServerURLs(
+                                ((List<String>) map.get("imageServerURLs"))
+                                .toArray(new String[] {})
+                        );
             }
         }).toArray(Image[]::new);
         Arrays.sort(receivedImages, new Comparator<Image>() {
@@ -164,8 +155,9 @@ public class NextImagePairTest {
     }
     
     @Test
-    @Parameters(method="getSkipParameters")
-    public void testSkipPairs(String skippedList, long expectedId1, long expectedId2) throws Exception {
+    @Parameters(method = "getSkipParameters")
+    public void testSkipPairs(String skippedList, long expectedId1, long expectedId2)
+            throws Exception {
         // Parametrized to test every possible pair when there are three images.
         // If the "skipped" parameter is ignored or doesn't work as it should,
         // it's pretty unlikely that every run of the test will succeed, as the expected
@@ -184,11 +176,14 @@ public class NextImagePairTest {
         
         assertEquals(response.getText(), 200, response.getResponseCode());
         JSONArray responseArray = new JSONArray(response.getText());
-        JSONObject object1 = responseArray.getJSONObject(0),
-                object2 = responseArray.getJSONObject(1);
-        long id1 = object1.getLong("id"), id2 = object2.getLong("id");
-        assertTrue("Expected the unordered pair (" + expectedId1 + ", "  + expectedId2 + "), but got (" + id1 + ", " + id2 + ")",
-                (id1 == expectedId1 && id2 == expectedId2) || (id1 == expectedId2 && id2 == expectedId1));
+        JSONObject object1 = responseArray.getJSONObject(0);
+        JSONObject object2 = responseArray.getJSONObject(1);
+        long id1 = object1.getLong("id");
+        long id2 = object2.getLong("id");
+        assertTrue("Expected the unordered pair (" + expectedId1 + ", "  + expectedId2
+                + "), but got (" + id1 + ", " + id2 + ")",
+                (id1 == expectedId1 && id2 == expectedId2)
+                || (id1 == expectedId2 && id2 == expectedId1));
     }
     
     private static Object[][] getSkipParameters() {
@@ -200,15 +195,16 @@ public class NextImagePairTest {
     }
     
     @Test
-    @Parameters(method="getInvalidSkippedLists")
+    @Parameters(method = "getInvalidSkippedLists")
     public void testStatusCode400InvalidSkipList(String skippedList) throws Exception {
         WebConversation conversation = new WebConversation();
         login(conversation);
         
         // Workaround for the fact that receiving status code 400 sometimes throws an exception:
         String encodedList = URLEncoder.encode(skippedList, "UTF8");
-        HttpResponse response = Request.Get(new URL(baseUrl, "imagePair?projectId=20&skipped=" + encodedList).toString())
-            .addHeader("Cookie", "JSESSIONID=" + conversation.getCookieValue("JSESSIONID"))
+        HttpResponse response = Request.Get(
+                new URL(baseUrl, "imagePair?projectId=20&skipped=" + encodedList).toString()
+            ).addHeader("Cookie", "JSESSIONID=" + conversation.getCookieValue("JSESSIONID"))
             .execute().returnResponse();
 //        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
 //        request.setParameter("projectId", "20");
@@ -240,7 +236,8 @@ public class NextImagePairTest {
         
         WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
         request.setParameter("projectId", "20");
-        request.setParameter("skipped", "[[1, 2], [1, 3], [2, 3]]"); // Skip all three possible unordered pairs
+        // Skip all three possible unordered pairs:
+        request.setParameter("skipped", "[[1, 2], [1, 3], [2, 3]]");
         WebResponse response = conversation.getResponse(request);
         
         assertEquals(404, response.getResponseCode());

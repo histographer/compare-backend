@@ -2,9 +2,7 @@ package no.digipat.compare.servlets;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Collections;
 import static java.util.Comparator.comparingInt;
@@ -23,8 +21,6 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import com.meterware.httpunit.protocol.MessageBody;
-import com.meterware.httpunit.protocol.ParameterCollection;
 import com.mongodb.MongoClient;
 
 import junitparams.JUnitParamsRunner;
@@ -59,28 +55,17 @@ public class RankingTest {
         imageDao = new MongoImageDAO(client, databaseName);
         comparisonDao = new MongoImageComparisonDAO(client, databaseName);
         projectDao = new MongoProjectDAO(client, databaseName);
-        projectDao.createProject(new Project().setId(20l).setName("testname").setActive(true));
+        projectDao.createProject(new Project().setId(20L).setName("testname").setActive(true));
     }
     
     private static void login(WebConversation conversation) throws Exception {
-
-        WebRequest loginRequest = new PostMethodWebRequest(new URL(baseUrl, "session").toString()) {
-            @Override
-            protected MessageBody getMessageBody() {
-                return new MessageBody("UTF8") {
-                    @Override
-                    public void writeTo(OutputStream outputStream, ParameterCollection parameters) throws IOException {
-                        PrintWriter writer = new PrintWriter(outputStream);
-                        writer.print("{\"monitorType\": \"normal\", \"hospital\": \"St. Olavs\", \"projectId\": 20}");
-                        writer.flush();
-                    }
-                    @Override
-                    public String getContentType() {
-                        return "application/json";
-                    }
-                };
-            }
-        };
+        WebRequest loginRequest = new PostMethodWebRequest(
+                new URL(baseUrl, "session").toString(),
+                new ByteArrayInputStream(
+                        ("{\"monitorType\": \"normal\", \"hospital\": "
+                        + "\"St. Olavs\", \"projectId\": 20}").getBytes("UTF8")
+                ),
+                "application/json");
         conversation.sendRequest(loginRequest);
     }
     
@@ -124,12 +109,14 @@ public class RankingTest {
         Map<String, Object> map1 = (Map<String, Object>) list.get(0);
         assertEquals((int) (long) image1.getImageId(), map1.get("id"));
         assertEquals(image1.getFileName(), map1.get("fileName"));
-        assertNotNull((Double) map1.get("score")); // Check that score is non-null and has correct type
+        // Check that score is non-null and has correct type:
+        assertNotNull((Double) map1.get("score"));
         assertEquals(4, map1.get("rankings"));
         Map<String, Object> map2 = (Map<String, Object>) list.get(1);
         assertEquals((int) (long) image2.getImageId(), map2.get("id"));
         assertEquals(image2.getFileName(), map2.get("fileName"));
-        assertNotNull((Double) map2.get("score")); // Check that score is non-null and has correct type
+        // Check that score is non-null and has correct type:
+        assertNotNull((Double) map2.get("score"));
         assertEquals(4, map2.get("rankings"));
     }
     

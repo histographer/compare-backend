@@ -78,7 +78,9 @@ public class ProjectServletTest {
         Project[] projectArray = json.toList().stream().<Project>map(object -> {
             @SuppressWarnings("unchecked")
             Map<String, Object> mapObject = (Map<String, Object>) object;
-            return new Project().setId((long) (int) mapObject.get("id")).setName((String) mapObject.get("name"));
+            return new Project()
+                    .setId((long) (int) mapObject.get("id"))
+                    .setName((String) mapObject.get("name"));
         }).toArray(Project[]::new);
         List<Project> projectList = Arrays.asList(projectArray);
         Collections.sort(projectList, comparingLong(project -> project.getId()));
@@ -102,10 +104,13 @@ public class ProjectServletTest {
     public void test400() throws Exception {
         // Use HttpURLConnection to work around the fact that HttpUnit throws an exception
         // on status code 400 even if setExceptionsThrownOnErrorStatus(false) has been called
-        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl, "project?projectId=notANumber").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(baseUrl,
+                "project?projectId=notANumber").openConnection();
         try {
             connection.connect();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            
+        }
         
         assertEquals(400, connection.getResponseCode());
     }

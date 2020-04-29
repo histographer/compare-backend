@@ -52,7 +52,8 @@ public final class Analysis {
      * 
      * @return the JSON object
      */
-    public static JSONObject createRequestJson(List<Image> images, List<ImageComparison> comparisons) {
+    public static JSONObject createRequestJson(List<Image> images,
+            List<ImageComparison> comparisons) {
         JSONObject json = new JSONObject();
         List<Long> imageIds = new ArrayList<>();
         for (Image image : images) {
@@ -89,8 +90,8 @@ public final class Analysis {
      * @throws IOException if an I/O error occurs. In particular, if
      * the analysis API returns an unacceptable status code.
      */
-    public static HttpResponse getAnalysisPostResponse(URL baseUrl, String path, JSONObject requestBody,
-            int... acceptableStatusCodes) throws IOException {
+    public static HttpResponse getAnalysisPostResponse(URL baseUrl, String path,
+            JSONObject requestBody, int... acceptableStatusCodes) throws IOException {
         HttpResponse response = Request.Post(new URL(baseUrl, path).toString())
             .setHeader("Accept", "application/json")
             .bodyString(requestBody.toString(), ContentType.create("application/json"))
@@ -100,7 +101,8 @@ public final class Analysis {
         }
         int responseCode = response.getStatusLine().getStatusCode();
         if (!ArrayUtils.contains(acceptableStatusCodes, responseCode)) {
-            throw new IOException("Analysis API returned unacceptable status code: " + responseCode);
+            throw new IOException("Analysis API returned unacceptable status code: "
+                    + responseCode);
         }
         return response;
     }

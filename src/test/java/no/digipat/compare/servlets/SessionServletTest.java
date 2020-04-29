@@ -44,7 +44,7 @@ public class SessionServletTest {
     @Before
     public void setUp() {
         projectDao = new MongoProjectDAO(client, databaseName);
-        Project project = new Project().setId(30l).setName("testname").setActive(true);
+        Project project = new Project().setId(30L).setName("testname").setActive(true);
         projectDao.createProject(project);
         sessionDao = new MongoSessionDAO(client, databaseName);
     }
@@ -58,7 +58,7 @@ public class SessionServletTest {
     public void testCreateSession() throws Exception {
         JSONObject json = new JSONObject();
         final String hospital = "St. Ølavs";
-        final Long projectId = 30l;
+        final Long projectId = 30L;
         final String monitorType = "normαl";
         json.put("hospital", hospital);
         json.put("projectId", projectId);
@@ -76,7 +76,7 @@ public class SessionServletTest {
     }
     
     @Test
-    @Parameters(method="getInvalidBodies")
+    @Parameters(method = "getInvalidBodies")
     public void testStatusCode400(String body) throws Exception {
         WebRequest request = new PostMethodWebRequest(new URL(baseUrl, "session").toString(),
                 new ByteArrayInputStream(body.getBytes("UTF8")), "application/json");

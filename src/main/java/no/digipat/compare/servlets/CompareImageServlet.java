@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "CompareImage",  urlPatterns = {"/scoring"})
+@WebServlet("/scoring")
 public class CompareImageServlet extends HttpServlet {
     
     /**
@@ -40,26 +40,34 @@ public class CompareImageServlet extends HttpServlet {
      * @param request
      * @param response
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         ServletContext context = request.getServletContext();
         String servletSessionID = request.getSession().getId();
         try {
             JSONObject imageComparisonJson = new JSONObject(
                     IOUtils.toString(request.getInputStream(), request.getCharacterEncoding()));
-            ImageComparison imageComparison = jsonToImageComparison(imageComparisonJson, servletSessionID);
+            ImageComparison imageComparison = jsonToImageComparison(imageComparisonJson,
+                    servletSessionID);
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
-            MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
+            MongoImageComparisonDAO comparisonDAO = new MongoImageComparisonDAO(client,
+                    (String) context.getAttribute("MONGO_DATABASE"));
             comparisonDAO.createImageComparison(imageComparison);
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
     
-    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID) throws JSONException {
+    private static ImageComparison jsonToImageComparison(JSONObject json, String sessionID)
+            throws JSONException {
         ImageChoice winner = jsonToImageChoice(json.getJSONObject("chosen"));
         ImageChoice loser = jsonToImageChoice(json.getJSONObject("other"));
         long projectId = json.getLong("projectId");
-        return new ImageComparison().setSessionId(sessionID).setWinner(winner).setLoser(loser).setProjectId(projectId);
+        return new ImageComparison()
+                .setSessionId(sessionID)
+                .setWinner(winner)
+                .setLoser(loser)
+                .setProjectId(projectId);
     }
     
     private static ImageChoice jsonToImageChoice(JSONObject json) throws JSONException {

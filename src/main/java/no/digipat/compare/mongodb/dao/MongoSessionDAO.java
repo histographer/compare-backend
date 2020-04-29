@@ -76,7 +76,9 @@ public class MongoSessionDAO {
     public Session getSession(String id) throws IllegalArgumentException {
        Document session = this.collection.find(eq("_id", id)).first();
        if (session == null) {
-           throw new IllegalArgumentException("There is no session with this id that exists in the database");
+           throw new IllegalArgumentException(
+                   "There is no session with this id that exists in the database"
+           );
        }
        return documentToSession(session);
     }

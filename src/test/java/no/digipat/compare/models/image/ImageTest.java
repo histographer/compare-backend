@@ -2,15 +2,17 @@ package no.digipat.compare.models.image;
 
 import static org.junit.Assert.*;
 
-import no.digipat.compare.models.image.Image;
 import org.junit.Test;
 
 public class ImageTest {
     
     @Test
     public void testEquality() {
-        Image image1 = new Image(), image2 = new Image(), image3 = new Image(),
-                image4 = new Image(), image5 = new Image();
+        Image image1 = new Image();
+        Image image2 = new Image();
+        Image image3 = new Image();
+        Image image4 = new Image();
+        Image image5 = new Image();
         for (Image image : new Image[] {image1, image2, image3, image4, image5}) {
             image.setImageId(1L).setWidth(100L).setHeight(50L)
             .setDepth(10L).setMagnification(4L).setResolution(100.1)
@@ -29,7 +31,8 @@ public class ImageTest {
     
     @Test
     public void testHashCode() {
-        Image image1 = new Image(), image2 = new Image();
+        Image image1 = new Image();
+        Image image2 = new Image();
         for (Image image : new Image[] {image1, image2}) {
             image.setImageId(1L).setWidth(100L).setHeight(50L)
                 .setDepth(10L).setMagnification(4L).setResolution(100.1)

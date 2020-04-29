@@ -24,20 +24,26 @@ public class AuthorizationFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+            FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         ServletContext context = config.getServletContext();
         HttpSession session = request.getSession(false);
 
         if (session == null) {
-            ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not initiated session, please add session.");
+            ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    "You need to initiate a session.");
         } else {
             MongoClient client = (MongoClient) context.getAttribute("MONGO_CLIENT");
-            MongoSessionDAO sessionDAO = new MongoSessionDAO(client, (String) context.getAttribute("MONGO_DATABASE"));
+            MongoSessionDAO sessionDAO = new MongoSessionDAO(client,
+                    (String) context.getAttribute("MONGO_DATABASE"));
             String sessionID = session.getId();
             if (!sessionDAO.sessionExists(sessionID)) {
-                ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session is not initiated correctly, please initiate again.");
+                ((HttpServletResponse) servletResponse).sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Session is not initiated correctly, please initiate again."
+                );
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);
             }

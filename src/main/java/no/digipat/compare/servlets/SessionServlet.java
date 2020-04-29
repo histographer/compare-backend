@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "no.digipat.compare.servlets.SessionServlet", urlPatterns = {"/session"})
+@WebServlet("/session")
 public class SessionServlet extends HttpServlet {
     
     /**
@@ -39,7 +39,8 @@ public class SessionServlet extends HttpServlet {
      * 
      * @throws IOException if an I/O error occurs
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         ServletContext context = getServletContext();
         String servletSessionID = request.getSession().getId();
         try {
@@ -55,7 +56,8 @@ public class SessionServlet extends HttpServlet {
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request body");
         } catch (NotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "A project with this ID does not exist");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                    "A project with this ID does not exist");
         }
     }
     
@@ -69,7 +71,8 @@ public class SessionServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         HttpSession session = request.getSession(false);
         boolean logout = Boolean.parseBoolean(request.getParameter("logout"));
         if (session != null && logout) {

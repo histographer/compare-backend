@@ -22,7 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "no.digipat.compare.servlets.project.ProjectServlet", urlPatterns = {"/project"})
+@WebServlet("/project")
 public class ProjectServlet extends HttpServlet {
 
 
@@ -41,13 +41,15 @@ public class ProjectServlet extends HttpServlet {
      * 
      * @throws IOException if an I/O error occurs
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         ServletContext context = getServletContext();
 
         JSONParser parser = new JSONParser();
         try {
             BufferedReader reader = request.getReader();
-            org.json.simple.JSONObject projectJson = (org.json.simple.JSONObject) parser.parse(reader);
+            org.json.simple.JSONObject projectJson =
+                    (org.json.simple.JSONObject) parser.parse(reader);
             Long projectId = jsonToProjectId(projectJson);
 
             MongoClient mongoClient = (MongoClient) context.getAttribute("MONGO_CLIENT");
@@ -59,12 +61,14 @@ public class ProjectServlet extends HttpServlet {
                 response.getWriter().print("A project with this ID already exists");
                 // TODO is there a more appropriate response code?
             } else {
-                CytomineConnection connection = (CytomineConnection) context.getAttribute("CYTOMINE_CONNECTION");
+                CytomineConnection connection = (CytomineConnection) context
+                        .getAttribute("CYTOMINE_CONNECTION");
                 Project project = retrieveProjectInformation(connection, projectId);
                 
                 MongoImageDAO imageDao = new MongoImageDAO(mongoClient, databaseName);
                 retrieveAndAddImages(connection, projectId, imageDao, context);
-                // Placed last so if there is an exception with retrieve and add images it will not create a project
+                // Placed last so if there is an exception with retrieve and
+                // add images it will not create a project
                 projectDao.createProject(project);
             }
         } catch (ParseException | IllegalArgumentException e) {
@@ -134,7 +138,8 @@ public class ProjectServlet extends HttpServlet {
     }
 
 
-    private static Long jsonToProjectId(org.json.simple.JSONObject json) throws IllegalArgumentException {
+    private static Long jsonToProjectId(org.json.simple.JSONObject json)
+            throws IllegalArgumentException {
         try {
             long projectId = (Long) json.get("projectId");
             return projectId;
@@ -151,15 +156,23 @@ public class ProjectServlet extends HttpServlet {
      * @param projectId {@code long}
      * @return {@code Project}
      */
-    private static Project retrieveProjectInformation(CytomineConnection connection, long projectId) {
+    private static Project retrieveProjectInformation(CytomineConnection connection,
+            long projectId) {
         Project project;
         try {
-            org.json.simple.JSONObject simpleJsonProjectInformation = connection.doGet("/api/project/" + projectId + ".json");
+            org.json.simple.JSONObject simpleJsonProjectInformation = connection
+                    .doGet("/api/project/" + projectId + ".json");
             JSONObject projectInformation = new JSONObject(simpleJsonProjectInformation);
-            project = new Project().setId(projectId).setName((String) projectInformation.get("name")).setActive(false);
+            project = new Project()
+                    .setId(projectId)
+                    .setName((String) projectInformation.get("name"))
+                    .setActive(false);
             return project;
         } catch (CytomineException e) {
-            throw new RuntimeException("Trouble fetching the project information from cytomine", e);
+            throw new RuntimeException(
+                    "Trouble fetching the project information from cytomine",
+                    e
+            );
         }
     }
     
@@ -175,9 +188,11 @@ public class ProjectServlet extends HttpServlet {
      * @param imageDao the DAO with which to update the database
      * @param context the servlet context
      */
-    private static void retrieveAndAddImages(CytomineConnection connection, long projectId, MongoImageDAO imageDao, ServletContext context) {
+    private static void retrieveAndAddImages(CytomineConnection connection,
+            long projectId, MongoImageDAO imageDao, ServletContext context) {
         try {
-            org.json.simple.JSONObject abstractImageListJsonSimple = connection.doGet("/api/project/" + projectId + "/image.json");
+            org.json.simple.JSONObject abstractImageListJsonSimple = connection
+                    .doGet("/api/project/" + projectId + "/image.json");
             JSONObject abstractImageListJson = new JSONObject(abstractImageListJsonSimple);
             JSONArray arr = (JSONArray) abstractImageListJson.get("collection");
             
@@ -206,7 +221,8 @@ public class ProjectServlet extends HttpServlet {
                 try {
                     imageDao.createImage(image);
                 } catch (IllegalStateException e) {
-                    context.log("Image with ID " + image.getImageId() + " already exists and was not added to the database");
+                    context.log("Image with ID " + image.getImageId()
+                        + " already exists and was not added to the database");
                 }
             }
         } catch (CytomineException e) {

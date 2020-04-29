@@ -51,7 +51,10 @@ public class MongoImageDAO {
             collection.insertOne(imageToDocument(image));
         } catch (MongoWriteException e) {
             if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
-                throw new IllegalStateException("Duplicate combination of image ID and project ID", e);
+                throw new IllegalStateException(
+                        "Duplicate combination of image ID and project ID",
+                        e
+                );
             } else {
                 throw e;
             }
