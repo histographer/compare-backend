@@ -144,6 +144,8 @@
           <configLocation>checkstyle.xml</configLocation>
           <consoleOutput>true</consoleOutput>
           <failsOnError>false</failsOnError>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
         </configuration>
       </plugin>
       
