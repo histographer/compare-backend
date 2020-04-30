@@ -81,6 +81,13 @@ mvn -Dskip.unit.tests=true verify
 
 ```
 
+To run the style tests:
+
+```console
+mvn checkstyle:check
+
+```
+
 ## Deployment
 TODO
 
