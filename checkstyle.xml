@@ -111,6 +111,7 @@
     <!-- module name="FinalParameters"/ -->
     <module name="TodoComment">
       <property name="format" value="(TODO)|(todo)"/>
+      <property name="severity" value="warning"/>
     </module>
     <module name="UpperEll"/>
     
