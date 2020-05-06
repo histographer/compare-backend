@@ -33,7 +33,7 @@ COMPARE_ADMIN_PRIV_KEY: private key
 
 The variable `COMPARE_CYTOMINE_URL` should contain the URL of the Cytomine instance hosting the images for comparison. The variables `COMPARE_ADMIN_{PUB, PRIV}_KEY` should contain a key pair that can be used to connect to this instance.
 
-Secondly, clone [the analysis API repository](https://github.com/histographer/analysis-rest-api) into the directory `../analysis-rest-api` (relative to the directory containing this repository). (TODO: could we use the Docker image instead?) Copy the contents of `.analysis.env.sample` into a file called `.analysis_dev.env`.
+Secondly, copy the contents of `.analysis.env.sample` into a file called `.analysis_dev.env`.
 
 Finally, run the command `docker-compose -f docker-compose.dev.yml up --build -d`. A development container will become available at `http://localhost:9292`.
 
