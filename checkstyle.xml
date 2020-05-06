@@ -75,6 +75,8 @@
     <module name="TypecastParenPad"/>
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround"/>
+    <module name="CommentsIndentation"/>
+    <module name="Indentation"/>
     
     <module name="ModifierOrder"/>
     <module name="RedundantModifier"/>

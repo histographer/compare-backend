@@ -3,6 +3,12 @@
   "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
   "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
-  <suppress checks="MissingJavadocMethod|MissingJavadocType|HideUtilityClassConstructor"
+  <suppress
+  checks="MissingJavadocMethod|MissingJavadocType|JavadocVariable|HideUtilityClassConstructor"
   files="src/test/.*"/>
+  <suppress
+  checks="MissingJavadocMethod|MissingJavadocType"
+  files="src/main/java/no/digipat/compare/servlets/.*"
+  /> <!-- There's not really a point in requring Javadoc comments for servlets
+          since we're currently documenting the API in API.md. -->
 </suppressions>
