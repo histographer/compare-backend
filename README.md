@@ -98,7 +98,4 @@ The API is described in [API.md](API.md).
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
-TODO
-
-## Acknowledgements
-TODO
+See [LICENSE](LICENSE).
