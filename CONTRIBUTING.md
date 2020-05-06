@@ -15,7 +15,7 @@ Finally, this repository uses [Apache Maven](https://maven.apache.org/) for thin
 
 ### How the code in this repository works, including some examples
 #### Interacting with the database
-We use the Data Access Object (DAO) design pattern when interacting with the database. Within the application, data is represented by data models in the `no.digipat.compares.models` package and other packages starting with the same prefix. A model class typically just contains getters and setters for its properties, but may also override methods such as `toString()`, or `equals(Object)` and `hashCode()`. For example:
+We use the Data Access Object (DAO) design pattern when interacting with the database. Within the application, data is represented by data models in the `no.digipat.compare.models` package and other packages starting with the same prefix. A model class typically just contains getters and setters for its properties, but may also override methods such as `toString()`, or `equals(Object)` and `hashCode()`. For example:
 
 ```java
 package no.digipat.compare.models;
