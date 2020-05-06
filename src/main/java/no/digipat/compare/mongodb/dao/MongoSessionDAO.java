@@ -41,8 +41,7 @@ public class MongoSessionDAO {
     public void createSession(Session session) throws IllegalStateException {
         try {
             this.collection.insertOne(sessionToDocument(session));
-        } catch (
-            MongoWriteException e) {
+        } catch (MongoWriteException e) {
             if (e.getCode() == 11000) { // Error code 11000 indicates a duplicate key
                 throw new IllegalStateException("Duplicate session ID", e);
             } else {
@@ -74,13 +73,13 @@ public class MongoSessionDAO {
      * @throws IllegalArgumentException if not found exception
      */
     public Session getSession(String id) throws IllegalArgumentException {
-       Document session = this.collection.find(eq("_id", id)).first();
-       if (session == null) {
-           throw new IllegalArgumentException(
-                   "There is no session with this id that exists in the database"
-           );
-       }
-       return documentToSession(session);
+        Document session = this.collection.find(eq("_id", id)).first();
+        if (session == null) {
+            throw new IllegalArgumentException(
+                    "There is no session with this id that exists in the database"
+            );
+        }
+        return documentToSession(session);
     }
 
     private static Document sessionToDocument(Session session) {

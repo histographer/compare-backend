@@ -206,10 +206,10 @@ public class NextImagePairTest {
                 new URL(baseUrl, "imagePair?projectId=20&skipped=" + encodedList).toString()
             ).addHeader("Cookie", "JSESSIONID=" + conversation.getCookieValue("JSESSIONID"))
             .execute().returnResponse();
-//        WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
-//        request.setParameter("projectId", "20");
-//        request.setParameter("skipped", skippedList);
-//        WebResponse response = conversation.getResponse(request);
+        //WebRequest request = new GetMethodWebRequest(baseUrl, "imagePair");
+        //request.setParameter("projectId", "20");
+        //request.setParameter("skipped", skippedList);
+        //WebResponse response = conversation.getResponse(request);
         assertEquals("Testing with \"skipped\" array: " + skippedList + ". Response body:\n"
                 + IOUtils.toString(response.getEntity().getContent()) + "\n",
                 400, response.getStatusLine().getStatusCode());

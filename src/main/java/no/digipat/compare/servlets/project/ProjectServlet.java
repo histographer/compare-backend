@@ -135,7 +135,7 @@ public class ProjectServlet extends HttpServlet {
         JSONArray jsonArray = new JSONArray();
 
         for (Project project : projects) {
-           JSONObject json = new JSONObject();
+            JSONObject json = new JSONObject();
             json.put("id", project.getId());
             json.put("name", project.getName());
             json.put("active", project.getActive());
@@ -206,7 +206,7 @@ public class ProjectServlet extends HttpServlet {
             for (Object object : arr) {
                 JSONObject abstractImageJson = (JSONObject) object;
                 try {
-                   Long getWith = (Long) abstractImageJson.get("width");
+                    abstractImageJson.get("width");
                 } catch (org.json.JSONException e) {
                     // this means that these values are null, and we will not use this object
                     // some images have this value as null, and are therefore unusable

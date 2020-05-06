@@ -97,9 +97,9 @@ public class MongoImageComparisonDAO {
     }
     
     private static Document imageChoiceToDBDocument(ImageChoice imageChoice) {
-       return new Document()
-               .append("id", imageChoice.getImageId())
-               .append("comment", imageChoice.getComment());
+        return new Document()
+                .append("id", imageChoice.getImageId())
+                .append("comment", imageChoice.getComment());
     }
     
     private static Document imageComparisonToDBDocument(ImageComparison imageComparison) {

@@ -118,7 +118,7 @@ public class MongoImageComparisonDAOTest {
         List<Map.Entry<Long, Long>> comparisonNumbers = comparisonDao
                 .getNumberOfComparisonsForEachImage(projectId1);
         Collections.sort(comparisonNumbers,
-                (entry1, entry2) -> (int) (entry1.getKey() - entry2.getKey()));
+            (entry1, entry2) -> (int) (entry1.getKey() - entry2.getKey()));
         long[] numbers = comparisonNumbers.stream()
                 .mapToLong(entry -> entry.getValue()).toArray();
         // Image 1 is in 1 comparison, image 2 is in 2 comparisons, 42 is in 1 comparison:

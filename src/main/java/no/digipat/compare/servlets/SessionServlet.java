@@ -89,14 +89,14 @@ public class SessionServlet extends HttpServlet {
     
     private static Session jsonToSession(JSONObject json, MongoProjectDAO projectDAO, String id)
             throws NotFoundException, JSONException {
-            String hospital = json.getString("hospital");
-            String monitorType = json.getString("monitorType");
-            long projectId = json.getLong("projectId");
-            if (!projectDAO.projectExists(projectId)) {
-                throw new NotFoundException("A project with this ID does not exist");
-            }
-            return new Session().setHospital(hospital).setMonitorType(monitorType)
-                    .setId(id).setProjectId(projectId);
+        String hospital = json.getString("hospital");
+        String monitorType = json.getString("monitorType");
+        long projectId = json.getLong("projectId");
+        if (!projectDAO.projectExists(projectId)) {
+            throw new NotFoundException("A project with this ID does not exist");
+        }
+        return new Session().setHospital(hospital).setMonitorType(monitorType)
+                .setId(id).setProjectId(projectId);
     }
 
 }

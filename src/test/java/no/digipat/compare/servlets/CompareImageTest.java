@@ -126,11 +126,11 @@ public class CompareImageTest {
         
         assertEquals(failureMessage, 400, connection.getResponseCode());
         
-//        PostMethodWebRequest request = createPostRequestWithMessageBody("scoring",
-//              messageBody, "application/json");
-//        WebResponse response = conversation.sendRequest(request);
-//        
-//        assertEquals(failureMessage, 400, response.getResponseCode());
+        //PostMethodWebRequest request = createPostRequestWithMessageBody("scoring",
+        //        messageBody, "application/json");
+        //WebResponse response = conversation.sendRequest(request);
+        //
+        //assertEquals(failureMessage, 400, response.getResponseCode());
     }
     
     private String[][] getStatusCodeParameters() {

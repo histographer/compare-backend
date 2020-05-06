@@ -109,7 +109,7 @@ public class MongoProjectDAO {
     public List<Project> getAllProjects() {
         final List<Project> projects = new ArrayList<>();
         for (Document document : this.collection.find()) {
-           projects.add(documentToProject(document));
+            projects.add(documentToProject(document));
         }
         return projects;
     }
