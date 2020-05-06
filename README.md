@@ -7,7 +7,7 @@ In order to build the application, you need Docker and Docker Compose. For devel
 
 ### How to set environment variables
 - [Windows](https://www.techjunkie.com/environment-variables-windows-10/)
-- TODO MacOS
+- [Mac](https://apple.stackexchange.com/questions/106778)
 - Linux:
     - Open `/etc/environment` in a text editor
     - For each variable, add a line of the form `export VARIABLE_NAME=value`
