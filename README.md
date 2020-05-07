@@ -1,5 +1,5 @@
 # Compare Backend
-This is the backend/middleware component of the Compare application. TODO link to more info
+This is the backend/middleware component of the Compare application.
 
 ## Getting started
 ### Prerequisites
