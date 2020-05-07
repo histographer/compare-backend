@@ -15,7 +15,7 @@ In order to build the application, you need Docker and Docker Compose. For devel
     - The variables should now be set for that terminal session.
     They will be set globally whenever the system reboots. 
 
-### Installing
+### Installing for local development
 First, set the following environment variables:
 
 ```
@@ -89,7 +89,7 @@ mvn checkstyle:check
 ```
 
 ## Deployment
-TODO
+We recommend using [the infrastructure repository](https://github.com/histographer/infrastructure) for deploying to production.
 
 ## Documentation
 The API is described in [API.md](API.md).
